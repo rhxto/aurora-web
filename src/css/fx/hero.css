@@ -1,0 +1,155 @@
+/* hero.js — motion of the home hero. Nothing here applies without the module:
+     html.hero-live       fx/hero.js runs the scroll transformation (sticky stage + runway)
+     html.hero-boot       set before first paint by the inline gate in partials/hero.mjs: effects are
+                          about to start. The layout of html.hero-live applies already, so the
+                          page never changes height when hero.js takes over (it swaps the class
+                          for hero-live; the gate drops it if the module never starts)
+     html.hero-intro      set by the same gate: the opening sequence is about to play. The hero
+                          stays unpainted while html.fx-boot lasts, then while hero.js waits for
+                          the fonts (html.hero-wait)
+     html.hero-intro-run  the sequence is playing (hero.js swaps hero-intro for this one)
+   hero.js writes the scroll transformation inline: clip-path of the feed, transforms and
+   opacities of the picture, the words, the marks, the outline and the cue. */
+
+/* ── kinetic wordmark ───────────────────────────────────────────────────── */
+
+/* Every letter sits in a box as wide as its advance at rest (the widest, heaviest setting), so
+   changing a glyph's weight/width never moves its neighbours. */
+.hero__word.is-kinetic {
+  display: flex;
+  letter-spacing: 0;
+}
+.hero__char {
+  flex: none;
+  contain: layout style;
+}
+.hero__glyph {
+  display: inline-block;
+  transform-origin: 50% 64%;
+}
+/* While letters move (hero.js .is-awake) each glyph is a layer of its own: its offset and lean
+   are composited, and a change of shape repaints one letter, not the line. */
+.hero__title.is-awake .hero__glyph { will-change: transform; }
+/* Laid out but never painted: holds one instance of the font per shape step (hero.js warm()). */
+.hero__warm {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ── scroll transformation: full-bleed feed → framed monitor ────────────── */
+
+/* Layout and paint of the armed hero — also while effects boot (html.hero-boot), so the hand-over
+   to hero.js changes neither the height of the page nor a pixel of the picture. */
+html:is(.hero-live, .hero-boot) .hero {
+  --hero-runway: 85vh;
+  height: calc(100vh + var(--hero-runway));
+  height: calc(100svh + var(--hero-runway));
+}
+html:is(.hero-live, .hero-boot) .hero__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  min-height: 0;
+}
+/* The window has crisp edges: the clip (inline) replaces the dissolve of the static state. */
+html:is(.hero-live, .hero-boot) .hero__feed {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+@media (max-width: 860px) {
+  html:is(.hero-live, .hero-boot) .hero { --hero-runway: 70vh; }
+}
+/* Everything hero.js animates is a compositor layer of its own: scrolling repaints nothing. */
+html.hero-live :is(.hero__video, .hero__mark) { will-change: transform; }
+html.hero-live :is(.hero__shade, .hero__cue) { will-change: opacity; }
+html.hero-live .hero__word { will-change: transform, opacity; }
+html.hero-live .hero__outline {
+  display: block;
+  position: absolute;
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--radius-m);
+  opacity: 0;
+  will-change: opacity;
+}
+/* the cue fades out with the scroll (inline opacity) but must stay visible when focused */
+html.hero-live .hero__cue:focus-visible { opacity: 1 !important; }
+
+/* ── ambient motion ─────────────────────────────────────────────────────── */
+
+html.fx-on .hero:not(.is-away) .hero__grain::after { animation: hero-grain 0.8s steps(1) infinite; }
+html.fx-on .hero:not(.is-away) .hero__cue-line::after { animation: hero-cue 2.4s var(--ease-in-out) infinite; }
+html.fx-on .hero.is-rec:not(.is-away) .hero__led { animation: hero-rec 1.4s steps(1) infinite; }
+
+@keyframes hero-grain {
+  0% { transform: translate3d(0, 0, 0); }
+  12.5% { transform: translate3d(-41px, 27px, 0); }
+  25% { transform: translate3d(33px, -58px, 0); }
+  37.5% { transform: translate3d(-72px, -19px, 0); }
+  50% { transform: translate3d(57px, 64px, 0); }
+  62.5% { transform: translate3d(-18px, -77px, 0); }
+  75% { transform: translate3d(79px, 12px, 0); }
+  87.5% { transform: translate3d(-63px, 49px, 0); }
+}
+@keyframes hero-cue {
+  0% { transform: translateY(-101%); }
+  55%, 100% { transform: translateY(101%); }
+}
+@keyframes hero-rec {
+  50% { opacity: 0.25; }
+}
+
+/* ── opening sequence ───────────────────────────────────────────────────── */
+
+html.hero-intro:is(.fx-boot, .hero-wait) :is(.hero__feed, .hero__osd, .hero__inner, .hero__cue) {
+  opacity: 0;
+}
+
+/* The letters rise from behind their own baseline (hero.js moves and morphs each glyph). */
+html.hero-intro-run .hero__word { clip-path: inset(-0.2em -0.3em 0.055em); }
+
+html.hero-intro-run .hero__feed { animation: hero-fade 1200ms var(--ease-out) backwards; }
+html.hero-intro-run .hero__video { animation: hero-settle 2000ms var(--ease-out) backwards; }
+/* signal lock: one scan line travels down the feed */
+html.hero-intro-run .hero__grain::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 22vh;
+  background: linear-gradient(to bottom, transparent, rgba(var(--rgb-sky), 0.1) 92%, rgba(var(--rgb-sky), 0.55));
+  transform: translateY(100vh);
+  animation: hero-scan 1100ms var(--ease-in-out) 80ms backwards;
+}
+html.hero-intro-run .hero__horizon { animation: hero-horizon 900ms var(--ease-in-out) 100ms backwards; }
+html.hero-intro-run .hero__kicker { animation: hero-fade 500ms linear 700ms backwards; }
+html.hero-intro-run .hero__slogan { animation: hero-fade 500ms linear 880ms backwards; }
+html.hero-intro-run .hero__mark { animation: hero-fade 420ms linear 1150ms backwards; }
+html.hero-intro-run .hero__mark--tr { animation-delay: 1220ms; }
+html.hero-intro-run .hero__mark--br { animation-delay: 1290ms; }
+html.hero-intro-run .hero__mark--bl { animation-delay: 1360ms; }
+html.hero-intro-run .hero__cue { animation: hero-fade 600ms linear 1400ms backwards; }
+
+@keyframes hero-fade {
+  from { opacity: 0; }
+}
+@keyframes hero-settle {
+  from { scale: 1.12; }
+}
+@keyframes hero-scan {
+  from { transform: translateY(-22vh); }
+  to { transform: translateY(100vh); }
+}
+@keyframes hero-horizon {
+  from { transform: scaleX(0); }
+}
+
+@media print {
+  html:is(.hero-live, .hero-boot) .hero { height: auto; }
+  html:is(.hero-live, .hero-boot) .hero__stage { position: relative; }
+}

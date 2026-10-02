@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sky harness</title>
+<!--
+  Standalone harness for src/js/fx/sky.js (not shipped). Switches (query string, combinable):
+    ?nowebgl   force the no-WebGL fallback (getContext('webgl') returns null)
+    ?fx=off    start with effects disabled (static frame)      ?fx=on  force them on
+    ?rocket    fake cursor rocket: core.rocket follows the pointer (as fx/rocket.js would)
+    ?bare      hide the page content to judge the sky alone
+    ?t=120     start the session clock 120 s in (review other moments of the aurora)
+  window.__skyPerf  → { frames, avg, p95, max } frame times in ms;  window.__skyPerfReset()
+-->
+<link rel="stylesheet" href="/src/css/fonts.css">
+<link rel="stylesheet" href="/src/css/tokens.css">
+<link rel="stylesheet" href="/src/css/fx/sky.css">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;background:var(--c-void);color:var(--c-ink);font-family:var(--font-body);font-size:16px;line-height:var(--lh-body)}
+  a{color:inherit}
+  .bare header,.bare main,.bare footer{visibility:hidden}
+  header{position:fixed;inset:0 0 auto 0;z-index:var(--z-header);height:var(--header-h);display:flex;align-items:center;justify-content:space-between;padding:0 var(--gutter)}
+  header nav{display:flex;gap:var(--space-6);font-family:var(--font-mono);font-size:var(--fs-small);letter-spacing:var(--track-label)}
+  header nav a{text-decoration:none}
+  @media (max-width:700px){header nav{display:none}}
+  .brand{font-family:var(--font-display);font-stretch:125%;font-weight:900;letter-spacing:var(--track-display)}
+  main{position:relative;z-index:var(--z-content)}
+  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:var(--header-h) var(--gutter) var(--space-8);max-width:calc(var(--container) + 2 * var(--gutter));margin:0 auto}
+  .label{font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:var(--track-label);text-transform:uppercase;color:var(--c-mute)}
+  h1{font-family:var(--font-display);font-stretch:125%;font-weight:900;font-size:var(--fs-hero);line-height:var(--lh-tight);letter-spacing:var(--track-display);text-transform:uppercase;margin:var(--space-4) 0}
+  h1 span{display:block;color:var(--c-coral)}
+  h2{font-family:var(--font-display);font-stretch:125%;font-weight:900;font-size:var(--fs-h2);line-height:var(--lh-snug);text-transform:uppercase;margin:0 0 var(--space-5)}
+  .lead{font-size:var(--fs-lead);max-width:44ch;margin:0}
+  section{max-width:calc(var(--container-narrow) + 2 * var(--gutter));margin:0 auto;padding:var(--section-gap) var(--gutter) 0}
+  section p{margin:0 0 var(--space-5)}
+  .mute{color:var(--c-mute)}
+  .cta{display:inline-block;margin-top:var(--space-4);padding:var(--space-3) var(--space-5);border:1px solid var(--c-line-strong);border-radius:var(--radius-pill);font-family:var(--font-mono);font-size:var(--fs-small);letter-spacing:var(--track-label);text-decoration:none}
+  footer{position:relative;z-index:var(--z-content);padding:var(--section-gap) var(--gutter) var(--space-7);text-align:center}
+  #readout{position:fixed;right:var(--space-4);bottom:var(--space-3);z-index:var(--z-hud);margin:0;font-family:var(--font-mono);font-size:11px;color:var(--c-dim);text-align:right;pointer-events:none}
+</style>
+</head>
+<body data-page="home">
+<div id="fx-sky" aria-hidden="true"></div>
+<header>
+  <span class="brand">AURORA</span>
+  <nav><a href="#projects">PROJECTS</a><a href="#departments">DEPARTMENTS</a><a href="#partners">PARTNERS</a><a href="#contact">CONTACT</a></nav>
+</header>
+<main>
+  <div class="hero">
+    <div class="label">The University of Bologna rocketry team</div>
+    <h1>Aurora <span>Rocketry</span></h1>
+    <p class="lead">Where the sky is the limit. Aurora Rocketry is an Italian non-profit organisation of the University of Bologna based in Forlì.</p>
+    <a class="cta" href="#who">DISCOVER THE TEAM</a>
+  </div>
+  <section id="who">
+    <div class="label">01 / 03</div>
+    <h2>Who we are</h2>
+    <p>Aurora Rocketry is an Italian non-profit organisation of the University of Bologna based in Forlì. Our team brings together passionate minds from diverse academic backgrounds, creating a truly multidisciplinary environment. This diversity pushes us to think beyond limits, combining knowledge and approaches to achieve ambitious goals and shape future careers in engineering, aerospace and more.</p>
+    <p class="mute">Secondary text in --c-mute: 90+ passionate students building sounding rockets, 3 involved campuses of the University of Bologna, 8+ private sponsors supporting the team. Read more about <a href="#projects">the projects</a> or <a href="#departments">the departments</a>.</p>
+    <a class="cta" href="#projects">DISCOVER THE PROJECTS</a>
+  </section>
+  <section id="projects">
+    <div class="label">02 / 03</div>
+    <h2>What we do</h2>
+    <p>We offer students an exciting, hands-on journey into the world of aerospace engineering by designing, building and testing rockets from the ground up. To operate efficiently, our association is structured into departments, each covering a specific area of expertise.</p>
+    <p>We offer students an exciting, hands-on journey into the world of aerospace engineering by designing, building and testing rockets from the ground up. To operate efficiently, our association is structured into departments, each covering a specific area of expertise.</p>
+    <p class="mute">We offer students an exciting, hands-on journey into the world of aerospace engineering by designing, building and testing rockets from the ground up.</p>
+  </section>
+  <section id="departments">
+    <div class="label">03 / 03</div>
+    <h2>Departments</h2>
+    <p>Aurora Rocketry is an Italian non-profit organisation of the University of Bologna based in Forlì. Our team brings together passionate minds from diverse academic backgrounds, creating a truly multidisciplinary environment. This diversity pushes us to think beyond limits, combining knowledge and approaches to achieve ambitious goals and shape future careers in engineering, aerospace and more.</p>
+    <p>We offer students an exciting, hands-on journey into the world of aerospace engineering by designing, building and testing rockets from the ground up. To operate efficiently, our association is structured into departments, each covering a specific area of expertise.</p>
+    <p class="mute">Aurora Rocketry is an Italian non-profit organisation of the University of Bologna based in Forlì. Our team brings together passionate minds from diverse academic backgrounds.</p>
+  </section>
+  <section id="partners">
+    <h2>Partners</h2>
+    <p>Our team brings together passionate minds from diverse academic backgrounds, creating a truly multidisciplinary environment. This diversity pushes us to think beyond limits, combining knowledge and approaches to achieve ambitious goals and shape future careers in engineering, aerospace and more.</p>
+    <p>We offer students an exciting, hands-on journey into the world of aerospace engineering by designing, building and testing rockets from the ground up.</p>
+  </section>
+</main>
+<footer id="contact"><p class="mute">© 2024 Aurora Rocketry, All Rights Reserved — <a href="mailto:info@aurorarocketry.eu">info@aurorarocketry.eu</a></p></footer>
+<pre id="readout"></pre>
+<script type="module">
+const params = new URLSearchParams(location.search);
+if (params.has('bare')) document.documentElement.classList.add('bare');
+
+// Must run before the module asks for a context.
+if (params.has('nowebgl')) {
+  const getContext = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = function (type, ...rest) {
+    return /webgl/.test(type) ? null : getContext.call(this, type, ...rest);
+  };
+}
+
+if (params.has('t')) sessionStorage.setItem('aurora:sky-t0', String(Date.now() - Number(params.get('t')) * 1000));
+
+const { core } = await import('/src/js/core.js');
+if (params.get('fx') === 'off') core.setFx(false, { persist: false });
+if (params.get('fx') === 'on') core.setFx(true, { persist: false });
+
+if (params.has('rocket')) {
+  // Stand-in for fx/rocket.js: a light that chases the pointer and boosts while the button is down.
+  core.tick((dt) => {
+    const { rocket, pointer, utils } = core;
+    rocket.visible = pointer.active;
+    rocket.x = utils.damp(rocket.x, pointer.x, 5, dt);
+    rocket.y = utils.damp(rocket.y, pointer.y, 5, dt);
+    rocket.boost = utils.damp(rocket.boost, pointer.down ? 1 : 0, 8, dt);
+  }, { order: -10 });
+}
+
+const { default: initSky } = await import('/src/js/fx/sky.js');
+window.__sky = initSky();
+
+// Frame-time meter (independent of the module's own adaptive-quality measurement).
+let samples = [];
+let last = 0;
+window.__skyPerfReset = () => { samples = []; last = 0; };
+const readout = document.getElementById('readout');
+core.tick(() => {
+  const now = performance.now();
+  if (last) samples.push(now - last);
+  last = now;
+  if (samples.length > 600) samples.shift();
+  if (core.time.frame % 30 === 0 && samples.length) {
+    const sorted = [...samples].sort((a, b) => a - b);
+    const avg = samples.reduce((a, b) => a + b, 0) / samples.length;
+    window.__skyPerf = { frames: samples.length, avg: +avg.toFixed(2), p95: +sorted[Math.floor(sorted.length * 0.95)].toFixed(2), max: +sorted[sorted.length - 1].toFixed(2) };
+    const gl = document.querySelector('.sky-aurora');
+    readout.textContent = `${(1000 / avg).toFixed(0)} fps · ${avg.toFixed(1)} ms\naurora ${gl ? gl.width + '×' + gl.height : 'css'} · fx ${core.fx.enabled ? 'on' : 'off'}`;
+  }
+}, { always: true, order: 100 });
+</script>
+</body>
+</html>

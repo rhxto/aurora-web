@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>reveal harness</title>
+<link rel="stylesheet" href="/src/css/fonts.css">
+<link rel="stylesheet" href="/src/css/tokens.css">
+<link rel="stylesheet" href="/src/css/fx/reveal.css">
+<style>
+  /* Harness-only layout (the real site gets this from base.css / pages.css). */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--c-void); color: var(--c-ink); font-family: var(--font-body); font-size: var(--fs-body); line-height: var(--lh-body); }
+  body { background: radial-gradient(120% 60% at 70% 0%, var(--c-navy-deep), var(--c-void) 60%) no-repeat, var(--c-void); }
+  img { display: block; max-width: 100%; height: auto; }
+  a { color: inherit; }
+  h1, h2, h3, p { margin: 0; }
+  .wrap { width: min(var(--container), 100% - 2 * var(--gutter)); margin-inline: auto; }
+  section { padding-block: calc(var(--section-gap) / 2); }
+  .display { font-family: var(--font-display); font-stretch: 125%; font-weight: 900; text-transform: uppercase; line-height: var(--lh-tight); letter-spacing: var(--track-display); }
+  .label { font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--c-mute); }
+  .accent { color: var(--c-coral); }
+  .btn { display: inline-flex; align-items: center; gap: var(--space-3); padding: 0.85rem 1.4rem; border: 1px solid var(--c-coral); border-radius: var(--radius-pill); color: var(--c-coral); font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; text-decoration: none; }
+
+  .bar { position: fixed; inset: 0 0 auto 0; z-index: var(--z-header); display: flex; align-items: center; justify-content: space-between; height: var(--header-h); padding-inline: var(--gutter); background: var(--c-panel); backdrop-filter: blur(12px); border-bottom: 1px solid var(--c-line); }
+  .bar nav { display: flex; gap: var(--space-5); }
+  .bar a { text-decoration: none; }
+  .bar button { font: inherit; background: none; border: 1px solid var(--c-line-strong); border-radius: var(--radius-s); padding: 0.45rem 0.75rem; cursor: pointer; }
+
+  .hero { min-height: 100vh; display: grid; align-content: center; gap: var(--space-5); padding-top: var(--header-h); }
+  .hero h1 { font-size: clamp(2.5rem, 11.5vw, 11rem); }
+  .hero .lead { max-width: 34ch; font-size: var(--fs-lead); color: var(--c-mute); }
+  .hero__cta { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-4); }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); text-align: center; }
+  .stat__num { font-family: var(--font-display); font-stretch: 125%; font-weight: 800; font-size: var(--fs-h1); line-height: 1; }
+  .stat__text { margin-top: var(--space-3); font-size: var(--fs-small); letter-spacing: 0.04em; }
+  .stat__text strong { background: var(--c-coral); color: var(--c-ink); font-weight: 500; padding-inline: 0.2em; }
+
+  /* .step-title — minimal local copy of the base.css component, to check that .is-inview arrives. */
+  .step-title { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--space-4); margin-block: var(--space-8); }
+  .step-title__text { font-family: var(--font-display); font-stretch: 125%; font-weight: 800; font-size: var(--fs-h3); letter-spacing: 0.12em; text-transform: uppercase; }
+  .step-title__line { width: 100%; height: 48px; overflow: visible; }
+  .step-title__line path { fill: none; stroke: var(--c-coral); stroke-width: 3; vector-effect: non-scaling-stroke; stroke-dasharray: 1; }
+  html.reveal-ready.fx-on .step-title__line path { stroke-dashoffset: 1; }
+  html.reveal-ready.fx-on .step-title__line--l path { stroke-dashoffset: -1; }
+  html.reveal-ready.fx-on .step-title.is-inview path { stroke-dashoffset: 0; transition: stroke-dashoffset var(--dur-4) var(--ease-out); }
+  html.reveal-ready.fx-on .step-title__text { opacity: 0; }
+  html.reveal-ready.fx-on .step-title.is-inview .step-title__text { opacity: 1; transition: opacity var(--dur-3) var(--ease-out) 200ms; }
+
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; margin-bottom: var(--section-gap); }
+  .row--flip > :first-child { order: 2; }
+  .row h3 { font-family: var(--font-display); font-stretch: 125%; font-weight: 800; font-size: var(--fs-h2); text-transform: uppercase; line-height: var(--lh-snug); margin-bottom: var(--space-5); }
+  .row p { color: var(--c-mute); margin-bottom: var(--space-6); }
+  .frame { margin: 0; overflow: hidden; border-radius: var(--radius-s); aspect-ratio: 4 / 3; }
+  .frame img { width: 100%; height: 100%; object-fit: cover; }
+  /* a parallaxed picture is taller than its frame so its edges never show */
+  .frame img[data-parallax] { height: 124%; margin-top: -12%; }
+
+  .types { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+  .type { border: 1px solid var(--c-line); border-radius: var(--radius-m); background: var(--c-panel); padding: var(--space-5); min-height: 180px; display: grid; align-content: space-between; }
+  .type b { font-family: var(--font-display); font-stretch: 125%; font-weight: 800; font-size: var(--fs-h3); text-transform: uppercase; }
+  .type--img { padding: 0; overflow: hidden; }
+  .type--img img { width: 100%; height: 100%; object-fit: cover; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+  .card { border: 1px solid var(--c-line); border-radius: var(--radius-m); background: var(--c-panel); padding: var(--space-6); text-align: center; }
+  .card img { width: 62%; margin: 0 auto var(--space-5); }
+  .card h3 { font-family: var(--font-display); font-stretch: 125%; font-weight: 800; font-size: var(--fs-h3); }
+
+  .band { border-block: 1px solid var(--c-line); padding-block: var(--space-5); }
+  .band + .band { border-top: 0; }
+  .band span { font-family: var(--font-display); font-stretch: 125%; font-weight: 900; font-size: var(--fs-h2); text-transform: uppercase; }
+  .band span:nth-child(even) { color: transparent; -webkit-text-stroke: 1px var(--c-coral); }
+  .band--mono span:nth-child(n) { font-family: var(--font-mono); font-size: var(--fs-small); font-weight: 400; letter-spacing: var(--track-label); color: var(--c-mute); -webkit-text-stroke: 0; }
+
+  .collage { position: relative; height: 150vh; }
+  .collage img { position: absolute; border-radius: var(--radius-s); object-fit: cover; }
+  .collage img:nth-child(1) { left: 0; top: 12%; width: 38%; aspect-ratio: 4 / 3; }
+  .collage img:nth-child(2) { right: 4%; top: 30%; width: 30%; aspect-ratio: 3 / 4; }
+  .collage img:nth-child(3) { left: 30%; top: 58%; width: 34%; aspect-ratio: 16 / 10; }
+  .collage h2 { position: absolute; left: 44%; top: 8%; font-size: var(--fs-h1); }
+
+  .depts { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4) var(--space-6); }
+  .depts a { display: block; padding-block: var(--space-4); border-bottom: 1px solid var(--c-line); text-decoration: none; font-family: var(--font-mono); letter-spacing: var(--track-label); }
+
+  footer { padding-block: var(--space-9); text-align: center; }
+
+  @media (max-width: 760px) {
+    .stats, .row, .types, .cards, .depts { grid-template-columns: 1fr; }
+    .row--flip > :first-child { order: 0; }
+    .bar nav { display: none; }
+    .step-title { grid-template-columns: 1fr auto 1fr; gap: var(--space-2); }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <span class="label" data-scramble>AURORA ROCKETRY / REVEAL HARNESS</span>
+  <nav class="label">
+    <a href="#stats" data-scramble="hover">PROJECTS</a>
+    <a href="#about" data-scramble="hover">DEPARTMENTS</a>
+    <a href="#types" data-scramble="hover">PARTNERS</a>
+    <a href="#depts" data-scramble="hover">CONTACT</a>
+  </nav>
+  <button class="label" id="fx" type="button">FX ON</button>
+</header>
+
+<main>
+  <section class="hero wrap">
+    <p class="label" data-reveal data-scramble>THE UNIVERSITY OF BOLOGNA ROCKETRY TEAM</p>
+    <h1 class="display" data-reveal data-split="chars">AURORA <span class="accent">ROCKETRY</span></h1>
+    <p class="lead" data-reveal data-reveal-delay="250" data-split="words">Aurora Rocketry is an Italian non-profit organisation of the University of Bologna based in Forlì.</p>
+    <div class="hero__cta" data-reveal-group>
+      <a class="btn" href="#about" data-reveal data-reveal-delay="500">DISCOVER THE TEAM</a>
+      <a class="btn" href="#projects" data-reveal data-reveal-delay="500">DISCOVER THE PROJECTS</a>
+    </div>
+  </section>
+
+  <section class="wrap" id="stats">
+    <p class="label" data-reveal="fade" style="text-align:center;margin-bottom:var(--space-7)">WHERE THE SKY IS THE LIMIT</p>
+    <div class="stats" data-reveal-group>
+      <div data-reveal><div class="stat__num" data-count="90" data-suffix="+">90+</div><p class="stat__text"><strong>PASSIONATE STUDENTS</strong> BUILDING SOUNDING ROCKETS.</p></div>
+      <div data-reveal><div class="stat__num"><span data-count="3">3</span></div><p class="stat__text"><strong>INVOLVED CAMPUSES</strong> OF THE UNIVERSITY OF BOLOGNA</p></div>
+      <div data-reveal><div class="stat__num"><span data-count="8">8</span><span class="accent">+</span></div><p class="stat__text"><strong>PRIVATE SPONSORS</strong> SUPPORTING THE TEAM.</p></div>
+    </div>
+    <!-- formats the counter must reproduce exactly: unit suffix, decimals, grouping, nested markup -->
+    <p class="label" id="formats" data-reveal-group style="display:flex;flex-wrap:wrap;justify-content:center;gap:var(--space-6);margin-top:var(--space-7)">
+      <span data-reveal>TARGET APOGEE <b data-count="3000">3000 m</b></span>
+      <span data-reveal>BURN TIME <b data-count="5.3">5.3 s</b></span>
+      <span data-reveal>TOTAL IMPULSE <b data-count="8187">8,187 Ns</b></span>
+      <span data-reveal>TELEMETRY <b data-count="868"><i>868</i> MHz</b></span>
+    </p>
+  </section>
+
+  <section class="wrap" id="about">
+    <div class="step-title" data-reveal="custom"><svg class="step-title__line step-title__line--l" viewBox="0 0 420 48" preserveAspectRatio="none" aria-hidden="true"><path d="M0 4 H388 V44 H420" pathLength="1"/></svg><h2 class="step-title__text">ABOUT THE TEAM</h2><svg class="step-title__line step-title__line--r" viewBox="0 0 420 48" preserveAspectRatio="none" aria-hidden="true"><path d="M0 4 H32 V44 H420" pathLength="1"/></svg></div>
+
+    <div class="row">
+      <div data-reveal-group>
+        <p class="label" data-reveal data-scramble>01 / 02</p>
+        <h3 data-reveal data-split="chars">WHO WE ARE</h3>
+        <p data-reveal>Aurora Rocketry is an Italian non-profit organisation of the University of Bologna based in Forlì. Our team brings together passionate minds from diverse academic backgrounds, creating a truly multidisciplinary environment. This diversity pushes us to think beyond limits, combining knowledge and approaches to achieve ambitious goals and shape future careers in engineering, aerospace and more.</p>
+        <a class="btn" href="#depts" data-reveal>DISCOVER THE TEAM</a>
+      </div>
+      <figure class="frame" data-reveal="clip"><img src="/img/photos/team-laptops-outdoor-800.webp" width="800" height="600" alt="Three team members outdoors checking data on their laptops" data-parallax="0.12"></figure>
+    </div>
+
+    <div class="row row--flip">
+      <div data-reveal-group>
+        <p class="label" data-reveal data-scramble>02 / 02</p>
+        <h3 data-reveal data-split="chars">WHAT WE DO</h3>
+        <p data-reveal>We offer students an exciting, hands-on journey into the world of aerospace engineering by designing, building and testing rockets from the ground up. To operate efficiently, our association is structured into departments, each covering a specific area of expertise.</p>
+        <a class="btn" href="#projects" data-reveal>DISCOVER THE PROJECTS</a>
+      </div>
+      <figure class="frame" data-reveal="clip"><img src="/img/photos/breadboard-prototype-800.webp" width="800" height="533" alt="Avionics prototype wired on a breadboard" loading="lazy"></figure>
+    </div>
+  </section>
+
+  <section class="wrap" id="types">
+    <p class="label" data-reveal style="margin-bottom:var(--space-5)">EVERY data-reveal TYPE</p>
+    <div class="types">
+      <div class="type" data-reveal="up"><span class="label">data-reveal="up"</span><b>RISE</b></div>
+      <div class="type" data-reveal="fade"><span class="label">data-reveal="fade"</span><b>FADE</b></div>
+      <div class="type" data-reveal="scale"><span class="label">data-reveal="scale"</span><b>SCALE</b></div>
+      <div class="type" data-reveal="left"><span class="label">data-reveal="left"</span><b>FROM LEFT</b></div>
+      <div class="type" data-reveal="right" data-reveal-delay="150"><span class="label">data-reveal="right" + delay 150</span><b>FROM RIGHT</b></div>
+      <div class="type type--img" data-reveal="clip"><img src="/img/photos/ground-station-sunset-800.webp" width="800" height="533" alt="Ground station antenna at sunset" loading="lazy"></div>
+    </div>
+  </section>
+
+  <section class="wrap" id="projects">
+    <div class="step-title" data-reveal="custom"><svg class="step-title__line step-title__line--l" viewBox="0 0 420 48" preserveAspectRatio="none" aria-hidden="true"><path d="M0 4 H388 V44 H420" pathLength="1"/></svg><h2 class="step-title__text">PROJECTS</h2><svg class="step-title__line step-title__line--r" viewBox="0 0 420 48" preserveAspectRatio="none" aria-hidden="true"><path d="M0 4 H32 V44 H420" pathLength="1"/></svg></div>
+    <div class="cards" data-reveal-group>
+      <article class="card" data-reveal><img src="/img/patches/borealis.svg" width="811" height="719" alt="Borealis mission patch" loading="lazy"><h3 class="display">BOREALIS</h3><p class="label" data-scramble>2024</p></article>
+      <article class="card" data-reveal><img src="/img/patches/nemesis.svg" width="1881" height="1631" alt="Nemesis mission patch" loading="lazy"><h3 class="display">NEMESIS</h3><p class="label" data-scramble>EUROC 2025</p></article>
+      <article class="card" data-reveal><img src="/img/patches/atlas.svg" width="2017" height="2017" alt="Atlas mission patch" loading="lazy"><h3 class="display">ATLAS</h3><p class="label" data-scramble>EUROC 2026</p></article>
+    </div>
+  </section>
+
+  <section id="marquee">
+    <div class="band" data-marquee><span>BOREALIS</span><span>2024</span><span>NEMESIS</span><span>EUROC 2025</span><span>ATLAS</span><span>EUROC 2026</span></div>
+    <div class="band band--mono" data-marquee="-40" style="--marquee-gap: var(--space-6)"><span>AERODYNAMICS</span><span>PROPULSION</span><span>GNC</span><span>SOFTWARE</span><span>STRUCTURE</span><span>MISSION ANALYSIS</span><span>ELECTRONICS</span><span>RECOVERY</span><span>PUBLIC RELATIONS</span></div>
+  </section>
+
+  <section class="wrap" id="parallax">
+    <div class="collage">
+      <img src="/img/photos/nemesis-carried-to-pad-800.webp" width="800" height="600" alt="Nemesis carried to the launch pad" loading="lazy" data-parallax="0.18" data-reveal>
+      <img src="/img/photos/fin-can-integration-800.webp" width="800" height="1067" alt="Fin can integration" loading="lazy" data-parallax="-0.12" data-reveal>
+      <img src="/img/photos/parachute-packing-800.webp" width="800" height="500" alt="Parachute packing" loading="lazy" data-parallax="0.3" data-reveal="scale">
+      <h2 class="display" data-parallax="-0.25" data-split="chars">DEPTH</h2>
+    </div>
+  </section>
+
+  <section class="wrap" id="depts">
+    <p class="label" data-reveal style="margin-bottom:var(--space-5)">data-scramble="hover"</p>
+    <ul class="depts" data-reveal-group>
+      <li data-reveal><a href="#" data-scramble="hover">DISCOVER AERODYNAMICS</a></li>
+      <li data-reveal><a href="#" data-scramble="hover">DISCOVER PROPULSION</a></li>
+      <li data-reveal><a href="#" data-scramble="hover">DISCOVER GNC</a></li>
+      <li data-reveal><a href="#" data-scramble="hover">DISCOVER SOFTWARE</a></li>
+      <li data-reveal><a href="#" data-scramble="hover">DISCOVER STRUCTURE</a></li>
+      <li data-reveal><a href="#" data-scramble="hover">DISCOVER MISSION ANALYSIS</a></li>
+      <li data-reveal><a href="#" data-scramble="hover">DISCOVER ELECTRONICS</a></li>
+      <li data-reveal><a href="#" data-scramble="hover">DISCOVER RECOVERY</a></li>
+      <li data-reveal><a href="#" data-scramble="hover">DISCOVER PUBLIC RELATIONS</a></li>
+    </ul>
+  </section>
+
+  <footer class="wrap">
+    <h2 class="display" data-split="chars" style="font-size:var(--fs-h1)">JOIN <span class="accent">US</span></h2>
+    <p class="label" data-reveal data-scramble style="margin-top:var(--space-5)">info@aurorarocketry.eu</p>
+  </footer>
+</main>
+
+<script type="module">
+import { core } from '/src/js/core.js';
+import init, * as reveal from '/src/js/fx/reveal.js';
+
+// Server-rendered text of every text effect, captured before the module touches anything.
+window.__original = Array.from(document.querySelectorAll('[data-split], [data-scramble], [data-count]'), (el) => [el, el.textContent]);
+/** Elements whose text differs from the server-rendered one, or that lost their accessible name. */
+window.__textCheck = () => window.__original
+  .filter(([el, text]) => el.textContent !== text || (el.matches('h1,h2,h3,a,button,[role],[data-scramble],[data-count]') && !el.getAttribute('aria-label')))
+  .map(([el, text]) => ({ now: el.textContent, text }));
+
+// ?curtain  pretend transition.js is lifting its wall: the first reveals must wait for it.
+// ?late=900 boot the module long after first paint: content already on screen must not blink.
+const params = new URLSearchParams(location.search);
+const root = document.documentElement;
+if (params.has('curtain')) {
+  root.classList.add('is-entering');
+  setTimeout(() => root.classList.add('transition-live'), 500);
+  setTimeout(() => root.classList.remove('is-entering', 'transition-live'), 1200);
+}
+if (params.has('late')) await new Promise((done) => setTimeout(done, Number(params.get('late'))));
+
+window.__reveal = reveal;
+window.__handle = init();
+
+const button = document.getElementById('fx');
+const label = () => { button.textContent = core.fx.enabled ? 'FX ON' : 'FX OFF'; };
+button.addEventListener('click', () => core.toggleFx());
+core.on('fx:change', label);
+label();
+</script>
+</body>
+</html>

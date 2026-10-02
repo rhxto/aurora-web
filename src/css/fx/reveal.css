@@ -1,0 +1,203 @@
+/* reveal.js — scroll choreography.
+   Hidden/initial states exist only under html.reveal-ready.fx-on (class added by reveal.js), so
+   content is visible with no JS, with effects off, or if the module fails.
+
+   Entrances are keyframe animations with `from` only: they run from the hidden state to whatever
+   the element's own styles are, use the individual `translate` / `scale` properties (so they
+   compose with a component's `transform`, e.g. the tilt), never set `transition`, and stop
+   applying altogether once reveal.js adds .is-revealed. */
+
+/* ── before the module runs ─────────────────────────────────────────────── */
+
+/* html.fx-boot is set before first paint by the inline head snippet (layout.mjs) when effects are
+   going to run: what is about to animate in must not be painted first in its final state.
+   main.js removes the class in the task in which reveal.js adds .reveal-ready, so the rules below
+   hand over to the ones under html.reveal-ready.fx-on without a frame in between. Failsafe: the
+   snippet removes the class by itself after 2.5 s. Without JS the class never exists. */
+html.fx-boot [data-reveal],
+html.fx-boot [data-split] {
+  opacity: 0;
+}
+
+/* ── [data-reveal] ──────────────────────────────────────────────────────── */
+
+html.reveal-ready.fx-on [data-reveal]:not(.is-inview, [data-reveal='custom'], [data-split]) {
+  opacity: 0;
+}
+
+/* Two tracks: the fade is short and even, the travel is the long, fast-settling ease-out. */
+html.reveal-ready.fx-on [data-reveal].is-inview:not(.is-revealed) {
+  animation: reveal-fade 480ms ease-out backwards, reveal-rise 860ms var(--ease-out) backwards;
+  animation-delay: calc(var(--reveal-delay, 0ms) + var(--reveal-i, 0) * var(--reveal-step, 70ms));
+}
+html.reveal-ready.fx-on [data-reveal='fade'].is-inview:not(.is-revealed) {
+  animation-name: reveal-fade;
+  animation-duration: 700ms;
+}
+html.reveal-ready.fx-on [data-reveal='left'].is-inview:not(.is-revealed) { animation-name: reveal-fade, reveal-from-left; }
+html.reveal-ready.fx-on [data-reveal='right'].is-inview:not(.is-revealed) { animation-name: reveal-fade, reveal-from-right; }
+html.reveal-ready.fx-on [data-reveal='scale'].is-inview:not(.is-revealed) { animation-name: reveal-fade, reveal-grow; }
+html.reveal-ready.fx-on [data-reveal='clip'].is-inview:not(.is-revealed) {
+  animation-name: reveal-clip;
+  animation-duration: 900ms;
+  animation-timing-function: var(--ease-in-out);
+}
+/* The parallax owns `translate` on its element: such elements fade in place instead of travelling. */
+html.reveal-ready.fx-on [data-reveal][data-parallax].is-inview:not(.is-revealed, [data-reveal='clip'], [data-reveal='scale']) {
+  animation-name: reveal-fade;
+  animation-duration: 700ms;
+}
+/* custom = class toggle only; a split heading is revealed by its letters, not as a block. */
+html.reveal-ready.fx-on [data-reveal='custom'].is-inview:not(.is-revealed),
+html.reveal-ready.fx-on [data-reveal][data-split].is-inview:not(.is-revealed) {
+  animation: none;
+}
+
+@keyframes reveal-fade {
+  from { opacity: 0; }
+}
+@keyframes reveal-rise {
+  from { translate: 0 var(--reveal-distance, 36px); }
+}
+@keyframes reveal-from-left {
+  from { translate: calc(var(--reveal-distance, 44px) * -1) 0; }
+}
+@keyframes reveal-from-right {
+  from { translate: var(--reveal-distance, 44px) 0; }
+}
+@keyframes reveal-grow {
+  from { scale: 0.92; }
+}
+
+/* ── clip wipe (images) ─────────────────────────────────────────────────── */
+
+/* The injected scan line needs a positioning context; :where() keeps this overridable. */
+:where(html.reveal-ready.fx-on [data-reveal='clip']) {
+  position: relative;
+}
+/* The picture settles from a slight zoom while the wipe uncovers it. */
+html.reveal-ready.fx-on [data-reveal='clip'].is-inview:not(.is-revealed) :is(img, video) {
+  animation: reveal-settle 1500ms var(--ease-out) backwards;
+  animation-delay: calc(var(--reveal-delay, 0ms) + var(--reveal-i, 0) * var(--reveal-step, 70ms));
+}
+/* A full-size sheet whose right edge is the scan line; it travels in lockstep with the clip edge. */
+.reveal-scan {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-right: 2px solid var(--c-coral);
+  background: linear-gradient(to left, rgba(var(--rgb-coral), 0.42), rgba(var(--rgb-coral), 0.08) 9%, rgba(var(--rgb-coral), 0) 22%);
+  opacity: 0;
+}
+html.reveal-ready.fx-on [data-reveal='clip'].is-inview:not(.is-revealed) > .reveal-scan {
+  animation: reveal-scan 900ms var(--ease-in-out) backwards;
+  animation-delay: calc(var(--reveal-delay, 0ms) + var(--reveal-i, 0) * var(--reveal-step, 70ms));
+}
+
+@keyframes reveal-clip {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes reveal-settle {
+  from { scale: 1.16; }
+}
+@keyframes reveal-scan {
+  from { translate: -100% 0; opacity: 1; }
+  82% { opacity: 1; }
+  to { translate: 0 0; opacity: 0; }
+}
+
+/* ── [data-split] kinetic type ──────────────────────────────────────────── */
+
+/* Structure (also what splitText() gives other modules): words never break mid-word. */
+.is-split .word {
+  display: inline-block;
+  white-space: nowrap;
+}
+.is-split .char {
+  display: inline-block;
+}
+
+/* Effects switched off mid-wave: letters must not finish their travel in slow motion. */
+html.fx-off .is-split :is(.word, .char) {
+  transition: none;
+}
+
+/* chars: every word is a mask, its letters rise from below the baseline with a slight rotation.
+   The mask is open on the top and sides (accents, overhangs) and is removed once the wave is over. */
+html.reveal-ready.fx-on [data-split='chars'].is-split:not(.is-split-done) .word {
+  clip-path: inset(-0.4em -0.3em -0.08em);
+}
+html.reveal-ready.fx-on [data-split='chars'].is-split:not(.is-split-in) .char {
+  translate: 0 125%;
+  rotate: 9deg;
+}
+html.reveal-ready.fx-on [data-split='chars'].is-split-in:not(.is-split-done) .char {
+  transform-origin: 0 100%;
+  transition: translate 900ms var(--ease-out), rotate 900ms var(--ease-out);
+  transition-delay: calc(var(--reveal-delay, 0ms) + var(--reveal-i, 0) * var(--reveal-step, 70ms) + var(--i, 0) * var(--split-step, 26ms));
+}
+
+/* words: a softer wave for sentences — each word lifts and fades in. */
+html.reveal-ready.fx-on [data-split='words'].is-split:not(.is-split-in) .word {
+  opacity: 0;
+  translate: 0 0.55em;
+}
+html.reveal-ready.fx-on [data-split='words'].is-split-in:not(.is-split-done) .word {
+  transition: opacity 600ms var(--ease-out), translate 800ms var(--ease-out);
+  transition-delay: calc(var(--reveal-delay, 0ms) + var(--reveal-i, 0) * var(--reveal-step, 70ms) + var(--i, 0) * var(--split-step, 50ms));
+}
+
+/* ── [data-scramble] / [data-count] ─────────────────────────────────────── */
+
+/* While a text effect runs, the element holds a visually hidden copy of its real text (.sr-only,
+   base.css) and .reveal-live, an aria-hidden inline wrapper around the moving text.
+   .reveal-noise: glyphs that have not resolved yet. */
+.reveal-noise {
+  color: var(--c-coral);
+  opacity: 0.85;
+}
+[data-count] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── [data-parallax] ────────────────────────────────────────────────────── */
+
+html.reveal-ready.fx-on.pointer-fine [data-parallax] {
+  will-change: translate;
+}
+
+/* ── [data-marquee] ─────────────────────────────────────────────────────── */
+
+/* Classes are added by reveal.js: without JS the children keep their normal layout. */
+.reveal-marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, var(--c-void) 7%, var(--c-void) 93%, transparent);
+  mask-image: linear-gradient(to right, transparent, var(--c-void) 7%, var(--c-void) 93%, transparent);
+}
+.reveal-marquee__track {
+  display: flex;
+  width: max-content;
+}
+.reveal-marquee__set {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--marquee-gap, var(--space-7));
+  padding-inline-end: var(--marquee-gap, var(--space-7));
+  white-space: nowrap;
+}
+
+/* ── print ──────────────────────────────────────────────────────────────── */
+
+@media print {
+  html.reveal-ready.fx-on [data-reveal],
+  html.reveal-ready.fx-on [data-split] :is(.word, .char) {
+    opacity: 1 !important;
+    translate: none !important;
+    rotate: none !important;
+    clip-path: none !important;
+    animation: none !important;
+  }
+}

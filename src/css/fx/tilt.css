@@ -1,0 +1,136 @@
+/* tilt.js — hover physics: 3D tilt (+ glare, holographic sheen, depth) and magnetic pull.
+   tilt.js writes --rx / --ry (deg), --mx / --my (0–1), --tilt (0–1) on the [data-tilt] element
+   while it is hovered or settling (.is-tilting); nothing here applies at rest, with effects off,
+   or without JS. */
+
+/* ── tilt ───────────────────────────────────────────────────────────────── */
+
+/* Injected layers need a positioning context; :where() keeps this overridable by the component. */
+:where([data-tilt-glare], [data-tilt-holo]) {
+  position: relative;
+}
+
+html.fx-on.pointer-fine [data-tilt].is-tilting {
+  --tilt-zoom: calc(1 + var(--tilt-lift, 0.02) * var(--tilt, 0));
+  transform:
+    perspective(var(--tilt-perspective, 900px))
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg))
+    scale3d(var(--tilt-zoom), var(--tilt-zoom), 1);
+  will-change: transform;
+}
+
+/* Depth: direct children float above the card. Scaled by --tilt so they lift off smoothly. */
+html.fx-on.pointer-fine [data-tilt].tilt-3d.is-tilting {
+  transform-style: preserve-3d;
+}
+html.fx-on.pointer-fine [data-tilt].is-tilting [data-tilt-depth] {
+  transform: translateZ(calc(var(--tilt-depth, 0px) * var(--tilt, 0)));
+}
+
+/* ── glare + holo layers ────────────────────────────────────────────────── */
+
+/* Not rendered at all at rest: a blended, masked layer must cost nothing until it is needed. */
+.tilt__glare,
+.tilt__holo {
+  display: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+html.fx-on.pointer-fine .is-tilting > :is(.tilt__glare, .tilt__holo) {
+  display: block;
+  opacity: var(--tilt, 0);
+}
+
+/* Both highlights are a large gradient sheet moved with a transform: painted once, composited after. */
+.tilt__glare::before,
+.tilt__holo::after {
+  content: '';
+  position: absolute;
+  left: -100%;
+  top: -100%;
+  width: 200%;
+  height: 200%;
+  transform: translate3d(calc(var(--mx, 0.5) * 50%), calc(var(--my, 0.5) * 50%), 0);
+  will-change: transform;
+}
+.tilt__glare::before {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c-ink) 15%, transparent), color-mix(in srgb, var(--c-ink) 4%, transparent) 34%, transparent 64%);
+}
+
+/* Holographic sheen. The layer is masked with the artwork itself (--holo-mask, set by tilt.js)
+   so transparent SVG patches never get a rectangle painted around them. Blended with `overlay`:
+   it tints the mid-tones and leaves the artwork's whites and darks alone, and — unlike
+   color-dodge, which Safari burns out to neon — every engine renders it the same. */
+.tilt__holo {
+  -webkit-mask: var(--holo-mask, none) center / var(--holo-fit, 100% 100%) no-repeat;
+  mask: var(--holo-mask, none) center / var(--holo-fit, 100% 100%) no-repeat;
+  mix-blend-mode: overlay;
+}
+.tilt__holo--hex {
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+}
+/* Iridescent foil in the aurora palette; the bands slide against the pointer. */
+.tilt__holo::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: repeating-linear-gradient(
+    112deg,
+    rgba(var(--rgb-sky), 0.75) 0%,
+    rgba(var(--rgb-aurora), 0.7) 8%,
+    rgba(var(--rgb-amber), 0.6) 16%,
+    rgba(var(--rgb-coral), 0.7) 24%,
+    rgba(var(--rgb-sky), 0.75) 32%
+  );
+  transform: translate3d(calc((0.5 - var(--mx, 0.5)) * 32%), calc((0.5 - var(--my, 0.5)) * 32%), 0);
+  will-change: transform;
+}
+.tilt__holo::after {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c-ink) 50%, transparent), transparent 62%);
+}
+
+/* A bare <img data-tilt data-tilt-holo> cannot host a layer: it gets a light that follows the pointer. */
+html.fx-on.pointer-fine img[data-tilt-holo].is-tilting {
+  filter:
+    brightness(calc(1 + 0.12 * var(--tilt, 0)))
+    drop-shadow(calc((0.5 - var(--mx, 0.5)) * 28px) calc((0.5 - var(--my, 0.5)) * 28px) 22px rgba(var(--rgb-sky), calc(0.45 * var(--tilt, 0))));
+}
+
+/* Touch screens have no hover: holo patches sway slowly by themselves while on screen. */
+html.fx-on.pointer-coarse [data-tilt-holo].is-floating {
+  animation: tilt-float 7s var(--ease-in-out) infinite alternate;
+}
+html.fx-on.pointer-coarse .is-floating > .tilt__holo {
+  display: block;
+  opacity: 0.6;
+}
+html.fx-on.pointer-coarse .is-floating > .tilt__holo::before {
+  animation: tilt-foil 7s var(--ease-in-out) infinite alternate;
+}
+html.fx-on.pointer-coarse .is-floating > .tilt__holo::after {
+  animation: tilt-shine 7s var(--ease-in-out) infinite alternate;
+}
+@keyframes tilt-float {
+  from { transform: perspective(900px) rotateX(5deg) rotateY(-8deg); }
+  to { transform: perspective(900px) rotateX(-4deg) rotateY(8deg); }
+}
+@keyframes tilt-foil {
+  from { transform: translate3d(-14%, -8%, 0); }
+  to { transform: translate3d(14%, 8%, 0); }
+}
+@keyframes tilt-shine {
+  from { transform: translate3d(8%, 12%, 0); }
+  to { transform: translate3d(42%, 34%, 0); }
+}
+
+/* ── magnetic ───────────────────────────────────────────────────────────── */
+
+/* The pull uses `translate`, which inline boxes ignore: tilt.js puts this class on a magnetic
+   element or label only when its computed display is `inline`. */
+.tilt-magnetic-inline {
+  display: inline-block;
+}

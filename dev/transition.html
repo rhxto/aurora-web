@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>transition harness · A</title>
+<!--
+  Standalone harness for src/js/fx/transition.js — page A of a pair (the other is transition-b.html)
+  so a real cross-document navigation can be tested.
+
+    node tools/shot.mjs --root .,public --path /dev/transition.html \
+      --steps '[{"clickSel":"#to-b"},{"wait":200},{"shot":".tmp/transition/mid.png"}]'
+
+  Query switches (both pages):
+    ?failsafe   start covered (html.is-entering) WITHOUT loading transition.js → the pure-CSS failsafe
+    ?boot=700   delay the module by N ms: holds the covered state (the "Slow arrival" button uses
+                it); with 1500 the pure-CSS failsafe has already started when the module boots
+  window.__clicks records { id, prevented } for every link click (after transition.js saw it);
+  set window.__probe = true to also cancel the native navigation of links it did not intercept.
+-->
+<!-- the layout's inline head snippet (ARCHITECTURE.md §3) + the ?failsafe switch of this harness -->
+<script>try{var n=sessionStorage.getItem('aurora:nav');sessionStorage.removeItem('aurora:nav');if(n||/[?&]failsafe/.test(location.search)){document.documentElement.classList.add('is-entering')}}catch(e){}</script>
+<link rel="stylesheet" href="/src/css/tokens.css">
+<link rel="stylesheet" href="/src/css/fonts.css">
+<link rel="stylesheet" href="/src/css/fx/transition.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--c-void); color: var(--c-ink); font-family: var(--font-body); font-size: var(--fs-body); line-height: var(--lh-body); }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; height: auto; }
+  .site-header { position: fixed; inset: 0 0 auto; z-index: var(--z-header); height: var(--header-h); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gutter); background: var(--c-panel); border-bottom: 1px solid var(--c-line); }
+  .site-header img { height: 38px; width: auto; }
+  .site-nav { display: flex; gap: var(--space-6); font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; }
+  .site-nav a { text-decoration: none; }
+  .site-nav a[aria-current] { color: var(--c-coral); }
+  .page { position: relative; z-index: var(--z-content); }
+  .hero { position: relative; min-height: 100vh; display: grid; place-content: center; padding: var(--header-h) var(--gutter) 0; overflow: hidden; }
+  .hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.55; }
+  .hero > * { position: relative; }
+  h1, h2 { font-family: var(--font-display); font-stretch: 125%; font-weight: 900; text-transform: uppercase; line-height: var(--lh-tight); margin: 0; }
+  h1 { font-size: var(--fs-hero); }
+  h1 span { display: block; color: var(--c-coral); }
+  h2 { font-size: var(--fs-h2); margin-bottom: var(--space-5); }
+  .kicker { font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--c-mute); margin-top: var(--space-5); }
+  section { width: min(100% - 2 * var(--gutter), var(--container)); margin-inline: auto; padding-top: var(--section-gap); }
+  p { color: var(--c-mute); max-width: 62ch; }
+  .btn { display: inline-block; margin: var(--space-4) var(--space-3) 0 0; padding: 0.8em 1.6em; border: 1px solid var(--c-coral); border-radius: var(--radius-pill); color: var(--c-coral); font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; text-decoration: none; }
+  .probes { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-5); padding-bottom: var(--space-9); font-family: var(--font-mono); font-size: var(--fs-small); }
+  #anchor { scroll-margin-top: var(--header-h); }
+</style>
+</head>
+<body data-page="home">
+<header class="site-header" data-header>
+  <a href="/dev/transition.html" id="logo" aria-label="Aurora Rocketry — home"><img src="/img/brand/logo-mark.svg" width="109" height="125" alt=""></a>
+  <nav class="site-nav">
+    <a class="site-nav__link" href="/dev/transition.html" aria-current="page">Home</a>
+    <a class="site-nav__link" href="/dev/transition-b.html" id="to-b">Nemesis</a>
+    <a class="site-nav__link" href="/dev/egg.html">Egg</a>
+  </nav>
+</header>
+<main id="main" class="page">
+  <div class="hero">
+    <img src="/img/hero/team-rocket-lift.webp" width="1600" height="900" alt="">
+    <h1>Aurora <span>Rocketry</span></h1>
+    <p class="kicker">Harness page A · click a link to fly to page B</p>
+    <p><a class="btn" href="/dev/transition-b.html" id="cta">Discover Nemesis</a><a class="btn" href="/dev/transition-b.html?boot=700" id="slow">Slow arrival</a></p>
+  </div>
+  <section>
+    <h2>The University of Bologna rocketry team</h2>
+    <p>Filler copy for the harness only. The real pages take every word from content/site.json.</p>
+    <p><img src="/img/photos/nemesis-carried-to-pad-800.webp" width="800" height="533" alt="" loading="lazy"></p>
+  </section>
+  <section>
+    <h2 id="anchor">Links that must stay native</h2>
+    <div class="probes">
+      <a href="#anchor" id="p-hash">#hash</a>
+      <a href="#" id="p-bare-hash">bare #</a>
+      <a href="/dev/transition.html#anchor" id="p-same-hash">same page + hash</a>
+      <a href="/dev/transition-b.html" target="_blank" rel="noopener" id="p-blank">target=_blank</a>
+      <a href="/dev/transition-b.html" download id="p-download">download</a>
+      <a href="/dev/transition-b.html" data-no-transition id="p-optout">data-no-transition</a>
+      <span data-no-transition><a href="/dev/transition-b.html" id="p-optout-parent">inside [data-no-transition]</a></span>
+      <a href="mailto:test@example.com" id="p-mailto">mailto:</a>
+      <a href="tel:+390000000" id="p-tel">tel:</a>
+      <a href="https://example.com/" id="p-external">external</a>
+      <a href="/img/brand/logo-mark.svg" id="p-file">a file, not a page</a>
+      <a href="/dev/transition-b.html" id="p-plain">eligible (control)</a>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { core } from '/src/js/core.js';
+
+  const params = new URLSearchParams(location.search);
+  window.__clicks = [];
+  window.__nav = null;
+  core.on('navigate:start', (detail) => { window.__nav = detail; });
+
+  if (!params.has('failsafe')) {
+    const boot = Number(params.get('boot') || 0);
+    if (boot) await new Promise((resolve) => setTimeout(resolve, boot));
+    const transition = await import('/src/js/fx/transition.js');
+    transition.default();
+    window.__go = transition.go;
+  }
+  // Registered after transition.js, on window: it sees the click after the module handled it.
+  window.addEventListener('click', (e) => {
+    const a = e.target.closest?.('a');
+    if (!a) return;
+    window.__clicks.push({ id: a.id, prevented: e.defaultPrevented });
+    if (window.__probe) e.preventDefault();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+/* comm.js — what exists only while the module runs on /contact/ (html.comm-ready): the live
+   scope canvas over the static dish, the waveform trace and the transmissions arriving word by
+   word. The static page is src/css/components/comm.css. */
+
+/* ── scope ──────────────────────────────────────────────────────────────── */
+
+/* The canvas overscans the dish box so the signal rings can travel past the rim before fading. */
+.comm-scope {
+  position: absolute;
+  inset: -22%;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(closest-side, black 78%, transparent);
+  mask-image: radial-gradient(closest-side, black 78%, transparent);
+}
+.comm-scope canvas { display: block; }
+html.fx-off .comm-scope,
+html.fx-off .comm-wave { display: none; }
+
+/* The canvas draws the beam: the resting one in the SVG steps aside. */
+html.fx-on.comm-ready .comm__rest { display: none; }
+
+.comm__blip.is-locked { color: var(--c-coral); }
+html.fx-on.comm-ready .comm__led { animation: comm-led 2.4s var(--ease-in-out) infinite; }
+@keyframes comm-led {
+  50% { opacity: 0.35; }
+}
+
+/* ── waveform ───────────────────────────────────────────────────────────── */
+.comm-wave {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+/* The flat carrier line gives way to the live trace; the ruler stays. */
+html.fx-on.comm-ready .comm__wave {
+  background: repeating-linear-gradient(to right, var(--c-line) 0 1px, transparent 1px 2.5rem) 0 50% / 100% 9px no-repeat;
+}
+
+/* ── transmissions ──────────────────────────────────────────────────────── */
+
+/* comm.js splits each paragraph into .word spans (reveal.js splitText) and moves a transmission
+   through: (waiting) → .is-receiving → .is-received. Words are only faded, never removed; once
+   a transmission is received none of these rules applies to it any more. */
+html.fx-on.comm-ready .comm__tx { --comm-step: 22ms; }
+html.fx-on.comm-ready .comm__tx .word { position: relative; }
+/* Inline-block words do not inherit a link's underline: restate it. */
+.comm__tx-body a .word {
+  text-decoration: inherit;
+  text-decoration-thickness: 1px;
+}
+
+html.fx-on.comm-ready .comm__tx:not(.is-received) .word { opacity: 0; }
+html.fx-on.comm-ready .comm__tx.is-receiving .word {
+  animation: comm-word 1ms linear calc(var(--i) * var(--comm-step)) forwards;
+}
+/* The print head: every word arrives as a solid block that fades off the text. */
+html.fx-on.comm-ready .comm__tx.is-receiving .word::after {
+  content: '';
+  position: absolute;
+  inset: 0.16em -0.14em 0.1em;
+  background: var(--c-coral);
+  opacity: 0;
+  animation: comm-flash 260ms ease-out calc(var(--i) * var(--comm-step)) forwards;
+}
+@keyframes comm-word {
+  to { opacity: 1; }
+}
+@keyframes comm-flash {
+  from { opacity: 0.95; }
+  to { opacity: 0; }
+}
+
+/* The rule in the header fills while the words arrive; the state appears when they all have. */
+html.fx-on.comm-ready .comm__tx:not(.is-received) .comm__tx-rule {
+  background: var(--c-coral);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+html.fx-on.comm-ready .comm__tx.is-receiving .comm__tx-rule {
+  transform: none;
+  transition: transform calc(var(--comm-words, 40) * var(--comm-step)) linear;
+}
+html.fx-on.comm-ready .comm__tx:not(.is-received) .comm__tx-state { opacity: 0; }
+html.fx-on.comm-ready .comm__tx:not(.is-received, .is-receiving) .comm__tx-idx { opacity: 0.4; }
+
+@media print {
+  html.fx-on.comm-ready .comm__tx .word,
+  html.fx-on.comm-ready .comm__tx-state { opacity: 1 !important; animation: none !important; }
+}

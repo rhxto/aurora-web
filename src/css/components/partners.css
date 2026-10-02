@@ -1,0 +1,263 @@
+/* Partner tiers as a launch stack (src/templates/partials/partners.mjs).
+   Each tier: a marker on the trajectory, the step title, then a grid of "decal plates" — the
+   main sponsor's is the largest, the tiers below get smaller ones. A logo sits on a plate that
+   suits its artwork: "light" (near-white, for logos drawn for paper) or "dark" (glass, for white
+   or transparent logos). This file is the complete static page; fx/partners.css adds what only
+   exists while fx/partners.js runs (spotlight, drawn trajectory, assembly). */
+
+.stack { padding-bottom: 0; }
+
+.tiers {
+  --tier-gap: clamp(4rem, 9vw, 7rem);
+  --title-gap: clamp(2.25rem, 5vw, 3.5rem);
+  display: grid;
+  gap: var(--tier-gap);
+}
+
+/* ── tier: marker · title · plates, with the trajectory running behind the plates ───────── */
+.tier {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  scroll-margin-top: calc(var(--header-h) + var(--space-5));
+}
+.tier .step-title { margin-bottom: var(--title-gap); }
+
+.tier__marker {
+  display: grid;
+  justify-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1.1rem;
+}
+.tier__node {
+  position: relative;
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid var(--c-coral);
+  background: var(--c-coral);
+  box-shadow: 0 0 0 4px rgba(var(--rgb-coral), 0.16), 0 0 18px rgba(var(--rgb-coral), 0.55);
+  rotate: 45deg;
+}
+.tier__tag {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: var(--track-label);
+  text-indent: var(--track-label); /* optically re-centre text that ends with a tracking gap */
+  white-space: nowrap;
+  color: var(--c-coral);
+}
+.tier__of { color: var(--c-dim); }
+
+/* The trajectory segment of a tier: from under its title to the next tier's node. It shares
+   the plate grid's cell, so it needs no measured offsets. */
+.tier__path {
+  position: relative;
+  grid-area: 3 / 1;
+  z-index: -1;
+  justify-self: center;
+  width: 1px;
+  margin-block: calc(0.9rem - var(--title-gap)) calc(var(--tier-gap) * -1);
+  background: linear-gradient(to bottom, rgba(var(--rgb-coral), 0.75), rgba(var(--rgb-coral), 0.4));
+}
+.tier__list { grid-area: 3 / 1; }
+
+/* Lead-in above the first node, and the terminal marker under the last tier. */
+.tier:first-child .tier__marker::before {
+  content: '';
+  width: 1px;
+  height: clamp(2rem, 5vw, 3.5rem);
+  margin-top: calc(clamp(2rem, 5vw, 3.5rem) * -0.5);
+  background: linear-gradient(to bottom, transparent, rgba(var(--rgb-coral), 0.75));
+}
+.tiers__end { display: grid; justify-items: center; }
+.tiers__end .tier__marker { margin-bottom: 0; }
+.tiers__end .tier__node { border-radius: 50%; }
+
+/* ── plate grid ────────────────────────────────────────────────────────── */
+.tier__list {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr));
+  gap: clamp(1.6rem, 3vw, 2.5rem) clamp(1rem, 2.4vw, 2rem);
+  max-width: var(--max, none);
+  list-style: none;
+}
+/* Plate size steps down tier by tier; on very wide screens the steps grow with the column. */
+.tier--main { --cols: 1; --max: max(50rem, var(--wrap) * 0.645); --decal-ar: 3; }
+.tier--strategic { --max: max(54rem, var(--wrap) * 0.7); }
+.tier--institutional { --max: max(46rem, var(--wrap) * 0.59); }
+.tier--technical { --cols: 4; }
+
+.partner {
+  display: grid;
+  gap: 0.8rem;
+  border-radius: var(--radius-s);
+  text-decoration: none;
+}
+.partner:focus-visible { outline-offset: 7px; }
+
+/* ── plate ─────────────────────────────────────────────────────────────── */
+.decal {
+  --corner-size: 9px;
+  --corner-weight: 1px;
+  position: relative;
+  display: block;
+  border-radius: var(--radius-s);
+  transition: box-shadow var(--dur-3) var(--ease-out);
+}
+.decal__face {
+  position: relative;
+  isolation: isolate;
+  container-type: size;
+  display: grid;
+  place-items: center;
+  aspect-ratio: var(--decal-ar, 1.72);
+  overflow: hidden;
+  border-radius: inherit;
+}
+.decal--light { --corner-color: color-mix(in srgb, var(--c-navy) 34%, transparent); }
+.decal--light .decal__face {
+  background:
+    radial-gradient(130% 160% at 18% 0%, color-mix(in srgb, var(--c-ink) 35%, white), var(--c-ink) 52%, color-mix(in srgb, var(--c-ink) 86%, var(--c-sky)));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c-navy) 16%, transparent);
+}
+.decal--dark { --corner-color: var(--c-line-strong); }
+.decal--dark .decal__face {
+  background:
+    radial-gradient(120% 150% at 18% 0%, color-mix(in srgb, var(--c-navy) 82%, var(--c-void)), color-mix(in srgb, var(--c-navy-deep) 82%, var(--c-void)) 55%, var(--c-night));
+  box-shadow: inset 0 0 0 1px var(--c-line-strong);
+}
+
+/* Registration marks just inside the plate's edge. */
+.decal > .corners {
+  inset: 7px;
+  transition: transform var(--dur-3) var(--ease-out);
+}
+
+/* Logos: faithful artwork, never cropped or stretched. The template hands each one its size
+   (--w, capped by --h) and the offset that centres the artwork inside files with margins. */
+.decal__logo {
+  width: 62%;
+  max-height: 60%;
+  object-fit: contain;
+}
+@supports (width: 1cqw) {
+  .decal__logo {
+    width: min(calc(var(--w) * 1cqw), calc(var(--h) * 1cqh * var(--ar)));
+    max-width: none;
+    max-height: none;
+    translate: var(--tx, 0) var(--ty, 0);
+  }
+}
+/* White boxes around opaque logos melt into the near-white plate. */
+.decal--light .decal__logo { mix-blend-mode: multiply; }
+
+/* ── caption: index · name · open ──────────────────────────────────────── */
+.partner__meta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.8em;
+  padding-inline: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-ink);
+}
+.partner__idx { color: var(--c-coral); }
+.partner__desc { color: var(--c-mute); }
+.partner__open {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  color: var(--c-coral);
+}
+.partner__open .icon {
+  width: 9px;
+  height: 9px;
+  transition: transform var(--dur-2) var(--ease-out);
+}
+.partner__open-text {
+  opacity: 0;
+  transform: translateX(0.5em);
+  transition: opacity var(--dur-2), transform var(--dur-2) var(--ease-out);
+}
+
+/* ── hover / focus ─────────────────────────────────────────────────────── */
+.partner:hover .decal,
+.partner:focus-visible .decal {
+  --corner-color: var(--c-coral);
+  box-shadow: 0 0 0 1.5px var(--partner-ring, rgba(var(--rgb-coral), 0.8)), 0 1.2rem 3.2rem -1rem rgba(var(--rgb-coral), 0.55);
+}
+.partner:hover .decal > .corners,
+.partner:focus-visible .decal > .corners { transform: scale(0.975, 0.95); }
+.partner:hover .partner__open-text,
+.partner:focus-visible .partner__open-text { opacity: 1; transform: none; }
+.partner:hover .partner__open .icon,
+.partner:focus-visible .partner__open .icon { transform: translate(2px, -2px); }
+
+/* Touch screens have no hover: the affordance is always on, as an arrow only. */
+@media (hover: none) {
+  .partner__open-text { display: none; }
+}
+
+/* ── closing band: partner names as a slow ticker in outlined type ─────── */
+.pband {
+  --marquee-gap: clamp(1.5rem, 4vw, 3.5rem);
+  display: flex;
+  align-items: center;
+  gap: var(--marquee-gap);
+  margin-top: clamp(3rem, 7vw, 5.5rem);
+  padding-block: clamp(1.25rem, 3vw, 2.25rem);
+  overflow: hidden;
+  border-block: 1px solid var(--c-line);
+  white-space: nowrap;
+  user-select: none;
+}
+/* The band closes the page: it sits right on the footer's top rule. */
+.stack { margin-bottom: calc(var(--section-gap) / -2); }
+.pband { border-bottom: 0; }
+.pband__name {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--marquee-gap);
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: clamp(1.9rem, 5.4vw, 4.6rem);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--c-ink) 46%, transparent);
+}
+.pband__name:nth-child(3n + 1) { -webkit-text-stroke-color: rgba(var(--rgb-coral), 0.8); }
+.pband__name::after {
+  content: '';
+  flex: none;
+  width: 0.2em;
+  height: 0.2em;
+  background: var(--c-coral);
+  rotate: 45deg;
+}
+
+/* ── responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 999px) {
+  .tier--technical { --cols: 2; --max: 40rem; }
+}
+@media (max-width: 640px) {
+  .tier--main { --decal-ar: 2.1; }
+  .tier--strategic { --decal-ar: 1.36; }
+  .tier--institutional { --decal-ar: 1.5; }
+  .partner { gap: 0.65rem; }
+  /* Names and descriptors are content: never below 11 px, with tighter tracking and leading. */
+  .partner__meta { gap: 0.6em; font-size: 0.6875rem; line-height: 1.45; letter-spacing: 0.04em; }
+  .decal > .corners { inset: 5px; }
+}

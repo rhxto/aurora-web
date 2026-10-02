@@ -1,0 +1,147 @@
+/* fx/departments — what fx/departments.js adds to the department pages: the section rail in
+   the left margin and the "instrument" read-out over plots and CAD renders. */
+
+/* ── section rail ──────────────────────────────────────────────────────── */
+/* Fixed in the free left margin, vertically centred: clear of the HUD (status bar at the
+   bottom, altimeter on the right). Only when the margin can hold it. A sibling of <main>
+   (fx/departments.js), stacked above the page content and below the header. */
+.dept-rail {
+  position: fixed;
+  left: calc((100vw - var(--wrap)) / 4);
+  top: 50%;
+  z-index: 5;
+  display: none;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--dur-2), visibility 0s linear var(--dur-2);
+}
+.dept-rail.is-shown {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+@media (min-width: 1360px) and (min-height: 560px) {
+  .dept-rail { display: block; }
+}
+
+.dept-rail__list { list-style: none; }
+.dept-rail__track,
+.dept-rail__fill {
+  position: absolute;
+  left: 0;
+  top: 1.375rem;
+  bottom: 1.375rem;
+  width: 1px;
+}
+.dept-rail__track { background: var(--c-line-strong); }
+.dept-rail__fill {
+  top: 0;
+  bottom: 0;
+  background: var(--c-coral);
+  box-shadow: 0 0 0.5rem var(--c-glow-coral);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+}
+html.fx-on .dept-rail__fill { transition: transform 140ms linear; }
+
+.dept-rail__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 2.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  color: var(--c-mute);
+  transition: color var(--dur-2);
+}
+.dept-rail__link::before {
+  content: '';
+  width: 0.5rem;
+  height: 1px;
+  background: currentColor;
+  transition: width var(--dur-2) var(--ease-out);
+}
+.dept-rail__link:hover,
+.dept-rail__link:focus-visible { color: var(--c-ink); }
+.dept-rail__link[aria-current] { color: var(--c-coral); }
+.dept-rail__link[aria-current]::before { width: 1.1rem; }
+
+/* The section title flies out beside its tick (all of them while the rail is in use). At rest
+   it is transparent, never visibility: hidden — it is the accessible name of its link. */
+.dept-rail__label {
+  position: absolute;
+  left: calc(100% + 0.75rem);
+  top: 50%;
+  max-width: 24rem;
+  padding: 0.5em 0.9em;
+  overflow: hidden;
+  border: 1px solid var(--c-line);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--c-night) 92%, transparent);
+  color: var(--c-ink);
+  letter-spacing: 0.1em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-0.4rem, -50%);
+  transition: opacity var(--dur-2), transform var(--dur-2) var(--ease-out);
+}
+.dept-rail:hover .dept-rail__label,
+.dept-rail:focus-within .dept-rail__label {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+.dept-rail__link[aria-current] .dept-rail__label { border-color: var(--c-coral); }
+
+/* ── plot scope ────────────────────────────────────────────────────────── */
+.dept-scope {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-1);
+}
+.dept-scope.is-on { opacity: 1; }
+.dept-scope__line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: var(--c-coral);
+  opacity: 0;
+  will-change: transform;
+}
+.dept-scope__line--v { bottom: 0; width: 1px; }
+.dept-scope__line--h { right: 0; height: 1px; }
+.dept-scope__read {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0.3em 0.7em;
+  border: 1px solid var(--c-coral);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--c-void) 88%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  white-space: pre;
+  color: var(--c-ink);
+  opacity: 0;
+  will-change: transform;
+}
+.dept-scope.is-tracking .dept-scope__line { opacity: 0.9; }
+.dept-scope.is-tracking .dept-scope__read { opacity: 1; }
+/* brackets just outside the image: they start wide and tighten */
+.dept-scope__corners {
+  --corner-gap: 5px;
+  --corner-size: 12px;
+  transform: scale(1.045);
+  transition: transform var(--dur-3) var(--ease-out);
+}
+.dept-scope.is-on .dept-scope__corners { transform: none; }

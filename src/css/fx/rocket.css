@@ -1,0 +1,100 @@
+/* fx/rocket — cursor rocket overlay: canvas, native-cursor replacement and the exact aiming reticle.
+   The rocket, its exhaust and the lock-on brackets are drawn on the canvas by src/js/fx/rocket.js. */
+
+#fx-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  pointer-events: none;
+}
+
+.rocket-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+/* The native cursor is hidden only while rocket.js is steering with a real mouse and effects are
+   on (it adds/removes html.rocket-cursor); the extra class guards keep it visible in every other
+   case even if the class were to linger. */
+html.fx-on.pointer-fine.rocket-cursor,
+html.fx-on.pointer-fine.rocket-cursor * {
+  cursor: none !important;
+}
+
+/* Text fields keep the I-beam so the caret can be placed precisely (the reticle hides over them). */
+html.fx-on.pointer-fine.rocket-cursor :is(
+  textarea,
+  [contenteditable]:not([contenteditable='false']),
+  input:not([type='button'], [type='submit'], [type='reset'], [type='checkbox'], [type='radio'], [type='range'], [type='color'], [type='file'], [type='image'])
+) {
+  cursor: text !important;
+}
+
+/* Reticle: a zero-size anchor translated to the pointer; dot and ring are centred on it. */
+.rocket-reticle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  transition: opacity var(--dur-1) linear;
+  will-change: transform;
+}
+
+.rocket-reticle.is-visible {
+  opacity: 1;
+}
+
+html.fx-off .rocket-reticle {
+  display: none;
+}
+
+.rocket-reticle__dot,
+.rocket-reticle__ring {
+  position: absolute;
+  border-radius: 50%;
+}
+
+/* light dot with a dark keyline: readable on the night sky and on bright photos alike */
+.rocket-reticle__dot {
+  top: -2.5px;
+  left: -2.5px;
+  width: 5px;
+  height: 5px;
+  background: var(--c-ink);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--c-void) 60%, transparent),
+    0 0 10px var(--c-glow-coral);
+}
+
+.rocket-reticle__ring {
+  top: -11px;
+  left: -11px;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(var(--rgb-coral), 0.85);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-void) 25%, transparent);
+  transition:
+    transform var(--dur-2) var(--ease-out),
+    opacity var(--dur-2) var(--ease-out),
+    border-color var(--dur-1) linear;
+}
+
+.rocket-reticle.is-down .rocket-reticle__ring {
+  transform: scale(0.5);
+  border-color: var(--c-amber);
+}
+
+/* locked on: the canvas brackets take over from the ring, the exact dot stays */
+.rocket-reticle.is-locked .rocket-reticle__ring {
+  transform: scale(0.3);
+  opacity: 0;
+}
+
+@media print {
+  #fx-overlay {
+    display: none;
+  }
+}

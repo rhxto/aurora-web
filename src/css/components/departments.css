@@ -1,0 +1,198 @@
+/* Departments (src/templates/departments.mjs): the index rows and the department pages.
+   Loaded after base.css and pages.css; everything here is scoped to the department markup.
+   Behaviour (section rail, plot read-outs): src/css/fx/departments.css. */
+
+/* ── index: the map sits right under the hero ──────────────────────────── */
+.orbit-section { padding-block: clamp(1.5rem, 4vw, 3rem) clamp(2rem, 5vw, 4rem); }
+/* On large screens the map outgrows the text column, still clear of the HUD altimeter. */
+.orbit-section > .container { width: max(var(--wrap), min(100% - 14.5rem, 100rem)); }
+
+/* "01 / 09 — AERO" + the department's position on the orbital map */
+.dept-address {
+  display: flex;
+  align-items: center;
+}
+.dept-address .orbit-glyph { margin-left: 1.5em; }
+
+/* ── department page: opening ──────────────────────────────────────────── */
+.dept-lead {
+  display: grid;
+  gap: var(--space-7) clamp(2.5rem, 7vw, 6rem);
+  margin-bottom: clamp(4.5rem, 10vw, 8.5rem);
+}
+.dept-lead__aside,
+.dept-lead__body { min-width: 0; }
+
+/* The short code as a drawing-board glyph: outlined, hatched, as wide as its column. */
+.dept-lead__code {
+  container-type: inline-size;
+  margin-top: var(--space-3);
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 900;
+  line-height: 0.86;
+  letter-spacing: 0;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.dept-lead__code span {
+  display: inline-block;
+  font-size: clamp(3.5rem, 10vw, 8rem); /* without container units */
+  font-size: min(100cqw / (var(--n) * 1.06), 11.5rem);
+  padding-block: 0.06em;
+  background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--c-ink) 20%, transparent) 0 1px, transparent 1px 7px);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--c-ink) 78%, transparent);
+}
+.dept-lead .toc { margin-top: var(--space-6); }
+
+.dept-lead__body {
+  position: relative;
+  isolation: isolate;
+}
+/* same soft scrim as the feature rows: the lead stays readable over a bright aurora */
+.dept-lead__body::before {
+  content: '';
+  position: absolute;
+  inset: -2rem max(-2.5rem, var(--gutter) * -1);
+  z-index: -1;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c-void) 74%, transparent) 55%, transparent);
+  pointer-events: none;
+}
+.dept-lead__body .overview__title {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  color: var(--c-coral);
+  font-family: var(--font-mono);
+  font-stretch: 100%;
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+}
+.dept-lead__body .overview__title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--c-line);
+}
+.dept-lead__body .prose {
+  max-width: 62ch;
+  margin-top: var(--space-5);
+  font-size: clamp(1.1rem, 1.75vw, 1.5rem);
+  line-height: 1.5;
+}
+
+@media (min-width: 860px) {
+  .dept-lead { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  .dept-lead__body { padding-top: 0.2rem; }
+}
+/* One column: the overview comes straight after the glyph, the section list last. */
+@media (max-width: 859px) {
+  .dept-lead { gap: 0; }
+  .dept-lead__aside { display: contents; }
+  .dept-lead__body { order: 1; margin-top: var(--space-6); }
+  .dept-lead .toc { order: 2; margin-top: var(--space-7); }
+}
+
+/* ── department page: sections ─────────────────────────────────────────── */
+/* Bullet list: a numbered column instead of loose chips. */
+.dept-section .ticks {
+  counter-reset: tick;
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--c-line);
+}
+.dept-section .ticks li {
+  counter-increment: tick;
+  display: flex;
+  gap: 1.2em;
+  padding: 0.85em 0;
+  border: 0;
+  border-bottom: 1px solid var(--c-line);
+  border-radius: 0;
+  background: none;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.dept-section .ticks li::before {
+  content: counter(tick, decimal-leading-zero);
+  width: auto;
+  height: auto;
+  background: none;
+  color: var(--c-coral);
+}
+
+/* A section with a title and a figure only: a centred plate. */
+.dept-section--plate {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: var(--space-6);
+  text-align: center;
+}
+/* centred items shrink-wrap their content: the cap lets a long word wrap instead of running
+   off both edges of the column */
+.dept-section--plate .feature__text { order: 0; max-width: 100%; }
+.dept-section--plate .feature__index { margin-bottom: var(--space-3); }
+.dept-section--plate .feature__title { font-size: clamp(1.5rem, 3.2vw, 2.6rem); }
+/* small phones: the longest word of these titles (16 letters) stays in one piece down to 320px */
+@media (max-width: 400px) {
+  .dept-section--plate .feature__title { font-size: clamp(1.15rem, 6vw, 1.5rem); }
+}
+.dept-section--plate .feature__media { width: min(100%, 46rem); }
+.dept-section--plate .frame__caption { justify-content: center; }
+
+/* ── figures ───────────────────────────────────────────────────────────── */
+/* Plots and CAD renders (uncropped, in a panel): the shared rule sizes the image from the file
+   itself (width: auto), and a lazy image has no size until it arrives — the figure would grow
+   by the image's height then and move everything below it. The same box is known beforehand:
+   as wide as the panel allows, never wider than the file (--fig-w, from the template), never
+   taller than 27rem (--ar is the file's proportion, set on .frame__media); the height follows
+   from the width / height attributes. */
+.dept-fig .frame--panel img {
+  width: min(100%, var(--fig-w), 27rem * var(--ar));
+  max-height: none;
+}
+
+/* Photos: a slow, slight push-in under the pointer and one pass of a scan line. */
+.dept-fig--photo .frame__media img { transition: transform 900ms var(--ease-out); }
+.dept-fig--photo .frame__media::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  height: 34%;
+  border-bottom: 1px solid rgba(var(--rgb-coral), 0.9);
+  background: linear-gradient(to top, rgba(var(--rgb-coral), 0.2), transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .dept-fig--photo .frame__box:hover img { transform: scale(1.045); }
+  html.fx-on .dept-fig--photo .frame__box:hover .frame__media::after { animation: dept-scan 1100ms var(--ease-in-out) both; }
+}
+@keyframes dept-scan {
+  0% { opacity: 0; transform: translateY(-100%); }
+  15%, 80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(295%); }
+}
+
+/* ── pager ─────────────────────────────────────────────────────────────── */
+[data-page='department'] .pager__link { position: relative; isolation: isolate; }
+[data-page='department'] .pager__link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to right, rgba(var(--rgb-coral), 0.1), transparent 70%);
+  opacity: 0;
+  transition: opacity var(--dur-2);
+}
+[data-page='department'] .pager__link--next::before { background: linear-gradient(to left, rgba(var(--rgb-coral), 0.1), transparent 70%); }
+[data-page='department'] .pager__link:hover::before,
+[data-page='department'] .pager__link:focus-visible::before { opacity: 1; }
+[data-page='department'] .pager__link--prev { padding-left: var(--space-4); }
+[data-page='department'] .pager__link--next { padding-right: var(--space-4); }

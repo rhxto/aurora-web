@@ -1,0 +1,107 @@
+/* Sub-page hero (src/templates/partials/subhero.mjs). */
+
+.subhero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(23rem, 66vh, 42rem);
+  /* the top padding keeps the title clear of the fixed header however short the window is */
+  padding-block: calc(var(--header-h) + var(--space-8)) clamp(2.25rem, 7vh, 4.5rem);
+  overflow-x: clip; /* the scrim below runs past the bottom edge, into the page */
+}
+
+/* Team photo: drained of most of its colour and let through at half strength, so the aurora
+   behind it reads as part of the picture (a double exposure); it dissolves into the sky towards
+   the page. */
+.subhero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, black 38%, transparent 96%);
+  mask-image: linear-gradient(to bottom, black 38%, transparent 96%);
+}
+.subhero__media img {
+  position: absolute;
+  top: -14%; /* headroom above and below for the parallax travel (data-parallax="0.12") */
+  left: 0;
+  width: 100%;
+  height: 128%;
+  object-fit: cover;
+  object-position: 50% 26%;
+  opacity: 0.56;
+  filter: grayscale(0.7) contrast(1.12);
+}
+/* The picture settles from a slight zoom (`scale` composes with the parallax, which owns
+   `translate`). Pure CSS, running from the first paint — html.fx-boot is set before it, html.fx-on
+   takes over without restarting the animation — and never hidden: the photo is the largest paint
+   of the page. Behind the page-transition curtain it waits for the wall to start lifting. */
+html:is(.fx-boot, .fx-on) .subhero__media img {
+  animation: subhero-settle 1800ms var(--ease-out) backwards;
+}
+html.is-entering:not(.transition-live) .subhero__media img { animation-play-state: paused; }
+@keyframes subhero-settle {
+  from { scale: 1.07; }
+}
+
+/* Scrim under the breadcrumb and the title: the corner they sit in is always dark enough for the
+   coral half of the title, whatever the photo and the aurora are doing behind it. It is feathered
+   on every side (and runs on below the hero), so it never shows an edge. */
+.subhero::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 -7rem;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--c-void) 80%, transparent), color-mix(in srgb, var(--c-void) 62%, transparent) 40%, transparent 78%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 12%, black 52%, black 76%, transparent);
+  mask-image: linear-gradient(to bottom, transparent 12%, black 52%, black 76%, transparent);
+}
+
+.crumbs { margin-bottom: var(--space-3); }
+.crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--c-ink) 78%, transparent);
+}
+.crumbs li { display: inline-flex; align-items: center; min-height: 44px; }
+.crumbs li + li::before {
+  content: '/';
+  content: '/' / ''; /* a separator to look at, not one to be read out */
+  margin-inline: 0.9em;
+  color: var(--c-coral-soft);
+}
+.crumbs a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: none;
+  transition: color var(--dur-1);
+}
+.crumbs a:hover { color: var(--c-ink); }
+.crumbs [aria-current] { color: var(--c-ink); }
+
+.subhero__title {
+  display: grid;
+  font-size: clamp(1.85rem, 8.4vw, 6.75rem); /* "DISCOVER OUR" still fits one line at 360px */
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+.subhero__pre,
+.subhero__accent { display: block; }
+.subhero__accent { color: var(--c-coral); }
+
+.subhero > .corners {
+  --corner-size: 18px;
+  --corner-color: var(--c-line-strong);
+  inset: calc(var(--header-h) + 0.5rem) calc(var(--gutter) / 2) 0.9rem;
+}

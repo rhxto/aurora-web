@@ -1,0 +1,313 @@
+/* Contact block (src/templates/partials/comm.mjs) — a comm link with mission control.
+   This file is the complete static page: the console with the three transmissions, the signal
+   scope at rest, the e-mail address as the hero and the action row. fx/comm.css adds what only
+   exists while fx/comm.js runs (live scope, waveform, arriving transmissions). */
+
+/* The action row is the end of the page: no second helping of section padding under it. */
+.contact { padding-bottom: clamp(1rem, 3vw, 2.5rem); }
+
+.comm {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+/* small status light used in the kicker and the console bar */
+.comm__led {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.9em;
+  border-radius: 50%;
+  background: var(--c-aurora);
+  box-shadow: 0 0 10px rgba(var(--rgb-aurora), 0.8);
+  vertical-align: 0.08em;
+}
+
+/* ── head ──────────────────────────────────────────────────────────────── */
+.comm__kicker { margin-bottom: var(--space-4); color: var(--c-ink); }
+.comm__title {
+  font-size: clamp(3.1rem, 14vw, 11rem);
+  line-height: 0.84;
+  letter-spacing: -0.025em;
+}
+.comm__subtitle {
+  margin-top: var(--space-5);
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: clamp(0.95rem, 2vw, 1.55rem);
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  color: var(--c-coral);
+}
+
+/* ── deck: console + scope ─────────────────────────────────────────────── */
+.comm__deck {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4rem);
+}
+.comm__console {
+  --corner-gap: 7px;
+  position: relative;
+  min-width: 0;
+  padding: 0 clamp(1.25rem, 3.2vw, 2.75rem) clamp(1.5rem, 3.2vw, 2.75rem);
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--radius-s);
+  background: linear-gradient(165deg, color-mix(in srgb, var(--c-navy-deep) 82%, transparent), color-mix(in srgb, var(--c-night) 88%, transparent));
+}
+.comm__bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.4em 2em;
+  margin-inline: calc(clamp(1.25rem, 3.2vw, 2.75rem) * -1);
+  padding: 0.95em clamp(1.25rem, 3.2vw, 2.75rem);
+  border-bottom: 1px solid var(--c-line);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  color: var(--c-mute);
+}
+.comm__lead {
+  max-width: 24ch;
+  margin-top: clamp(1.5rem, 3.4vw, 2.5rem);
+  font-size: clamp(1.4rem, 2.7vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1.14;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.comm__log {
+  display: grid;
+  gap: clamp(1.25rem, 2.4vw, 1.75rem);
+  max-width: none;
+  margin-top: clamp(1.75rem, 3.6vw, 2.75rem);
+}
+.comm__log > * + * { margin-top: 0; }
+.comm__tx-head {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 0.7em;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: var(--track-label);
+  color: var(--c-dim);
+}
+.comm__tx-idx { color: var(--c-coral); font-size: var(--fs-label); }
+.comm__tx-rule { flex: 1 1 auto; height: 1px; background: var(--c-line); }
+.comm__tx-state::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 0.8em;
+  background: var(--c-aurora);
+  vertical-align: 0.1em;
+}
+.comm__tx-body { max-width: 62ch; }
+
+/* ── scope ─────────────────────────────────────────────────────────────── */
+.comm__scope {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.comm__screen {
+  position: relative;
+  width: min(100%, 31rem);
+  aspect-ratio: 1;
+}
+/* The glass of the instrument: a faint glow inside the rim. */
+.comm__screen::before {
+  content: '';
+  position: absolute;
+  inset: 5%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(var(--rgb-sky), 0.14), rgba(var(--rgb-navy), 0.22) 62%, color-mix(in srgb, var(--c-void) 35%, transparent));
+}
+.comm__dish {
+  position: absolute;
+  inset: 5%;          /* the dish spans 90% of the box: room for the bearing ticks and labels */
+  width: 90%;
+  height: 90%;
+  overflow: visible;
+}
+.comm__ring,
+.comm__cross,
+.comm__ticks,
+.comm__edge {
+  fill: none;
+  stroke: var(--c-line-strong);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.comm__ring { stroke: var(--c-line); }
+.comm__ring:last-of-type { stroke: rgba(var(--rgb-sky), 0.55); }
+.comm__cross { stroke: var(--c-line); stroke-dasharray: 2 5; }
+.comm__beam { fill: var(--c-sky); }
+.comm__edge { stroke: var(--c-sky); stroke-width: 1.5; }
+.comm__core { fill: var(--c-coral); }
+
+.comm__blip,
+.comm__deg {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;   /* 10 px: the floor for these labels, phones included */
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+.comm__blip {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  color: var(--c-ink);
+  transform: translate(-3.5px, -50%);   /* the dot, not the label, sits on the bearing */
+  transition: color var(--dur-2);
+}
+.comm__blip i {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-coral);
+  box-shadow: 0 0 0 3px rgba(var(--rgb-coral), 0.18);
+}
+.comm__deg { color: var(--c-dim); }
+.comm__deg--n { top: 0; left: 50%; transform: translate(-50%, -85%); }
+.comm__deg--s { bottom: 0; left: 50%; transform: translate(-50%, 85%); }
+.comm__deg--e { left: 100%; top: 50%; transform: translate(0.2em, -50%); }
+.comm__deg--w { right: 100%; top: 50%; transform: translate(-0.2em, -50%); }
+
+.comm__readout {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4em 2.2em;
+  margin-top: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: var(--track-label);
+  color: var(--c-dim);
+}
+.comm__readout b {
+  display: inline-block;
+  min-width: 3ch;
+  margin-left: 0.6em;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-ink);
+}
+
+@media (min-width: 1000px) {
+  .comm__deck { grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr); align-items: start; }
+  /* The scope keeps the console company while its transmissions scroll by. */
+  .comm__scope {
+    position: sticky;
+    top: calc(var(--header-h) + var(--space-6));
+    padding-top: var(--space-5);
+  }
+}
+@media (max-width: 999px) {
+  .comm__scope { order: -1; }
+  .comm__screen { width: min(78%, 22rem); }
+}
+
+/* ── channel: the address is the hero ──────────────────────────────────── */
+.comm__channel {
+  container-type: inline-size;
+  position: relative;
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 2rem);
+  padding-block: clamp(1.5rem, 3.5vw, 2.5rem) clamp(0.5rem, 1.5vw, 1rem);
+  border-top: 1px solid var(--c-line-strong);
+}
+.comm__mail { display: grid; justify-items: start; gap: var(--space-2); min-width: 0; }
+.comm__mail-label { color: var(--c-coral); }
+.comm__email {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.02em 0 0.08em;
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: clamp(1.4rem, 7.6vw, 3.2rem);
+  line-height: 1;
+  letter-spacing: -0.015em;
+  text-decoration: none;
+  text-transform: uppercase;
+  background: linear-gradient(var(--c-coral), var(--c-coral)) 0 100% / 100% 0.045em no-repeat;
+  transition: color var(--dur-2), background-size var(--dur-3) var(--ease-out);
+}
+/* Two lines at every width — "INFO@" over the domain, which spans the whole column. */
+@supports (width: 1cqw) {
+  .comm__email { font-size: min(6.45cqw, 7rem); }
+}
+.comm__email:hover,
+.comm__email:focus-visible { background-size: 100% 100%; color: var(--c-void); }
+.comm__email:focus-visible { outline-offset: 8px; }
+
+/* The waveform strip: a flat carrier line at rest, a live trace while fx/comm.js runs. */
+.comm__wave {
+  position: relative;
+  height: clamp(3.5rem, 8vw, 5.5rem);
+  background:
+    linear-gradient(rgba(var(--rgb-coral), 0.7), rgba(var(--rgb-coral), 0.7)) 0 50% / 100% 1px no-repeat,
+    repeating-linear-gradient(to right, var(--c-line) 0 1px, transparent 1px 2.5rem) 0 50% / 100% 9px no-repeat;
+}
+
+.comm__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+.comm__social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  list-style: none;
+}
+.comm__copy { background: none; }
+.comm__copy[hidden] { display: none; }
+.comm__copy .icon--copy { width: 13px; height: 13px; }
+/* "COPY ADDRESS" ↔ "COPIED" never resize the button; the decode noise stays legible on coral. */
+.comm__copy [data-comm-copy-label] { display: inline-block; min-width: calc(12ch + 12 * var(--track-label)); text-align: left; }
+.comm__copy .reveal-noise { color: inherit; }
+/* Filled, like the hover state, for the moment the confirmation is shown. */
+.comm__copy.is-done { color: var(--c-void); box-shadow: 0 0 2.2rem rgba(var(--rgb-coral), 0.35); }
+.comm__copy.is-done::before { transform: none; }
+.comm__status {
+  flex: 1 1 12rem;
+  min-height: 1.4em;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  line-height: 1.4;
+  letter-spacing: var(--track-label);
+  text-align: right;
+  text-transform: uppercase;
+  color: var(--c-aurora);
+}
+
+@media (max-width: 640px) {
+  .comm__actions > .btn { flex: 1 1 100%; }
+  .comm__social {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    flex: 1 1 100%;
+  }
+  .comm__social .btn { width: 100%; padding-inline: 1em; }
+  .comm__status { text-align: left; }
+  /* The scope is small here: the labels keep their size and give up some tracking instead. */
+  .comm__blip,
+  .comm__deg { letter-spacing: 0.08em; }
+}

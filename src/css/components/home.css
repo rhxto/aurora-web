@@ -1,0 +1,415 @@
+/* Home page sections below the hero (src/templates/home.mjs): the figures as instruments, the
+   "about" photographs as mission plates, the projects as waypoints on a flight path.
+   Static state only — fx/home.css adds the motion. */
+
+/* ── Figures: three dials ──────────────────────────────────────────────── */
+.gauges { padding-top: clamp(1rem, 3vw, 2.5rem); /* the hero already ends on a generous margin */ }
+.gauges__list {
+  --reveal-step: 170ms; /* the dials come up, and count, one after the other */
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.5rem, 4vw, 4rem);
+  list-style: none;
+}
+.gauge {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: var(--space-5);
+  text-align: center;
+}
+.gauge__dial {
+  position: relative;
+  container-type: inline-size;
+  display: grid;
+  place-items: center;
+  width: min(100%, clamp(13rem, 23vw, 19.5rem));
+  aspect-ratio: 1;
+}
+/* dark glass inside the ring: the number stays calm over the moving aurora */
+.gauge__dial::before {
+  content: '';
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c-void) 74%, transparent) 55%, color-mix(in srgb, var(--c-night) 46%, transparent));
+}
+.gauge__ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+}
+/* 120 minor ticks and 12 major ones, cut out of two circles with a dash pattern (r = 95 / 93.5) */
+.gauge__ticks {
+  stroke: var(--c-line-strong);
+  stroke-width: 4;
+  stroke-dasharray: 0.5 4.474;
+  stroke-dashoffset: 0.25;
+}
+.gauge__majors {
+  stroke: color-mix(in srgb, var(--c-ink) 62%, transparent);
+  stroke-width: 7;
+  stroke-dasharray: 0.9 48.056;
+  stroke-dashoffset: 0.45;
+}
+.gauge__track {
+  stroke: var(--c-line);
+  stroke-width: 1;
+}
+/* the sweep starts at 12 o'clock and closes the circle (one dash as long as the circumference, r = 84) */
+.gauge__sweep {
+  stroke: var(--c-coral);
+  stroke-width: 1.6;
+  stroke-dasharray: 527.8;
+  transform: rotate(-90deg);
+  transform-origin: 100px 100px;
+}
+.gauge__needle {
+  stroke: var(--c-ink);
+  stroke-width: 1;
+  fill: var(--c-ink);
+}
+.gauge__needle,
+.gauge__bezel { transform-origin: 100px 100px; }
+.gauge__index {
+  position: absolute;
+  top: 17%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  margin-right: -0.2em;
+  color: var(--c-coral);
+}
+.gauge__value {
+  position: relative;
+  display: block;
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: 31cqw;
+  font-variant-numeric: tabular-nums;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-align: center;
+  white-space: nowrap;
+}
+.gauge__suffix {
+  margin-left: 0.06em;
+  font-size: 0.58em;
+  vertical-align: 0.42em;
+  color: var(--c-coral);
+}
+.gauge__label {
+  max-width: 23em;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  line-height: 2.05;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-ink);
+}
+/* The original highlights this part with a coral marker. */
+.gauge__label strong {
+  padding: 0.24em 0.55em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background: var(--c-coral);
+  color: var(--c-void);
+  font-weight: 700;
+}
+
+/* Narrow screens: one instrument per row, dial left, caption right. */
+@media (max-width: 760px) {
+  .gauges__list { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+  .gauge {
+    grid-template-columns: clamp(7.75rem, 37vw, 10.5rem) minmax(0, 1fr);
+    align-items: center;
+    justify-items: start;
+    gap: clamp(1rem, 5vw, 2rem);
+    text-align: left;
+  }
+  .gauge__dial { width: 100%; }
+  .gauge__index { font-size: 0.56rem; }
+  .gauge__label { font-size: 0.7rem; line-height: 2.1; }
+}
+
+/* ── About: mission plates ─────────────────────────────────────────────── */
+/* "Plate" is a word other pages use too (the partners' decal plates): these rules only reach the
+   photographs of the home page. */
+[data-page="home"] .plate {
+  --plate-offset: clamp(0.75rem, 1.6vw, 1.25rem);
+  --corner-size: 16px;
+  position: relative;
+  margin-inline: var(--plate-offset);
+  /* Its layers drift with the scroll ([data-parallax]): never the reference the browser anchors
+     the scroll position to, or restores it from — after a reload they are not where they were. */
+  overflow-anchor: none;
+}
+/* a coral outline set back behind the print, towards the outer edge of the page */
+[data-page="home"] .plate__ghost {
+  position: absolute;
+  inset: var(--plate-offset) calc(var(--plate-offset) * -1) calc(var(--plate-offset) * -1) var(--plate-offset);
+  border: 1px solid rgba(var(--rgb-coral), 0.42);
+  border-radius: var(--radius-s);
+}
+[data-page="home"] .feature--flip .plate__ghost {
+  inset: var(--plate-offset) var(--plate-offset) calc(var(--plate-offset) * -1) calc(var(--plate-offset) * -1);
+}
+[data-page="home"] .plate__print { position: relative; }
+[data-page="home"] .plate__tilt {
+  position: relative;
+  padding: clamp(0.45rem, 0.9vw, 0.7rem);
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--radius-s);
+  background: color-mix(in srgb, var(--c-panel-solid) 90%, transparent);
+}
+[data-page="home"] .plate__photo {
+  position: relative;
+  aspect-ratio: var(--ar, 1.333);
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--c-night);
+}
+[data-page="home"] .plate__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* a hairline inside the picture edge and a soft vignette, as on a mounted print */
+[data-page="home"] .plate__photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c-ink) 14%, transparent);
+  background: radial-gradient(120% 100% at 50% 40%, transparent 55%, color-mix(in srgb, var(--c-void) 42%, transparent));
+}
+[data-page="home"] .plate__strip {
+  display: flex;
+  align-items: baseline;
+  gap: 1.1em;
+  padding: 0.85em 0.25em 0.3em;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-mute);
+}
+[data-page="home"] .plate__tag { flex: none; color: var(--c-coral); }
+[data-page="home"] .plate__text { flex: 1 1 auto; min-width: 0; }
+[data-page="home"] .plate__count { flex: none; color: var(--c-dim); }
+/* HUD brackets floating in front of the print */
+[data-page="home"] .plate__hud {
+  position: absolute;
+  inset: calc(var(--plate-offset) * -0.7);
+  pointer-events: none;
+}
+
+/* ── Projects: waypoints on a flight path ──────────────────────────────── */
+.flight__field {
+  --medal: clamp(11rem, 19vw, 17.5rem);   /* medallion size */
+  --step: clamp(2.75rem, 7.5vw, 7rem);    /* how much lower each earlier mission sits */
+  --rail: 0.5rem;                         /* narrow screens: the path runs down the left side */
+  --indent: 2.5rem;
+  position: relative;
+}
+.flight__list {
+  --reveal-step: 150ms;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(var(--count, 3), minmax(0, 1fr));
+  list-style: none;
+}
+.waypoint {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: calc(var(--step) * var(--lift, 0)) clamp(0.5rem, 1.6vw, 1.5rem) 0;
+  text-align: center;
+}
+
+/* The trajectory. Without JS the curve below is stretched over a box laid out from the same
+   two lengths as the waypoints (see ascent() in home.mjs): its top edge is 0.75 step above the
+   highest medallion centre, a step is 100 units. */
+.flight__path {
+  position: absolute;
+  top: calc(var(--medal) / 2 - var(--step) * 0.75);
+  left: 0;
+  width: 100%;
+  height: calc(var(--step) * (var(--rise, 2) + 2));
+  overflow: visible;
+  fill: none;
+  pointer-events: none;
+  /* the path fades in at lift-off and out where it leaves the page */
+  -webkit-mask-image: linear-gradient(to right, transparent, var(--c-void) 7%, var(--c-void) 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, var(--c-void) 7%, var(--c-void) 94%, transparent);
+}
+.flight__path path { vector-effect: non-scaling-stroke; }
+/* fx/home.js lays the drawing out again and moves the marker along it: neither is a reference the
+   browser may anchor the scroll position to (a reload would land a few dozen pixels off). */
+.flight__path,
+.flight__marker { overflow-anchor: none; }
+.flight__plan {
+  stroke: var(--c-line-strong);
+  stroke-width: 1;
+}
+.flight__burn {
+  stroke: var(--c-coral);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.flight__marker { display: none; }
+
+/* Medallion: the patch floats inside a thin instrument ring, over a soft glow. */
+.waypoint__medal {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: var(--medal);
+  max-width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+/* The glow is soft by construction — a gradient, never a blur filter: the flight path redraws
+   across it on every frame of a scroll, and a filter would be computed again each time. */
+.waypoint__medal::before {
+  content: '';
+  position: absolute;
+  inset: -12%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(var(--rgb-sky), 0.34), rgba(var(--rgb-sky), 0.2) 30%, rgba(var(--rgb-coral), 0.09) 56%, rgba(var(--rgb-coral), 0.025) 80%, transparent);
+}
+.waypoint__halo {
+  position: absolute;
+  inset: -5%;
+  border: 1px solid var(--c-line-strong);
+  border-radius: 50%;
+  transition: border-color var(--dur-3) var(--ease-out);
+}
+/* four ticks across the ring, at the cardinal points */
+.waypoint__halo::before,
+.waypoint__halo::after {
+  --tick: var(--c-coral);
+  content: '';
+  position: absolute;
+}
+.waypoint__halo::before {
+  inset: 50% -5px auto;
+  height: 1px;
+  background: linear-gradient(to right, var(--tick) 0 10px, transparent 10px calc(100% - 10px), var(--tick) calc(100% - 10px));
+}
+.waypoint__halo::after {
+  inset: -5px auto -5px 50%;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--tick) 0 10px, transparent 10px calc(100% - 10px), var(--tick) calc(100% - 10px));
+}
+/* a ring that expands off the halo when the waypoint is reached (fx/home.css) */
+.waypoint__ping {
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--c-coral);
+  border-radius: 50%;
+  opacity: 0;
+}
+.waypoint__medal:hover .waypoint__halo { border-color: var(--c-coral); }
+.waypoint__float,
+.waypoint__tilt {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* The pointer-only link laid over the patch (inside the tilting layer, so it tilts along). */
+.waypoint__tilt { position: relative; }
+.waypoint__link {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.waypoint__tilt img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.waypoint__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-4);
+}
+.waypoint__index { color: var(--c-coral); }
+.waypoint__name { font-size: clamp(1.4rem, 2.5vw, 2.1rem); }
+.waypoint .btn {
+  margin-top: var(--space-2);
+  padding-inline: 1.3em;
+  background: color-mix(in srgb, var(--c-void) 55%, transparent); /* legible over the aurora */
+}
+
+/* Narrow screens: the path runs vertically down the left side, the waypoints hang off it. */
+@media (max-width: 979px) {
+  .flight__field { --medal: min(58vw, 15rem); }
+  .flight__list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+    padding-left: var(--indent);
+  }
+  .waypoint {
+    align-items: flex-start;
+    padding: 0;
+    text-align: left;
+  }
+  .waypoint__meta { justify-content: flex-start; }
+  .flight__path {
+    display: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, var(--c-void) 3.5rem, var(--c-void) calc(100% - 3.5rem), transparent);
+    mask-image: linear-gradient(to bottom, transparent, var(--c-void) 3.5rem, var(--c-void) calc(100% - 3.5rem), transparent);
+  }
+  /* without JS: a straight rail, a node at each medallion and a tether between them */
+  .flight__field::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--rail);
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--c-coral) 3rem, var(--c-coral) calc(100% - 3rem), transparent);
+  }
+  .waypoint::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--medal) / 2);
+    left: calc(var(--rail) - var(--indent));
+    width: calc(var(--indent) - var(--rail) - var(--medal) * 0.05);
+    height: 1px;
+    background: var(--c-coral);
+  }
+}
+/* In between: there is room to set each mission's details beside its medallion. */
+@media (min-width: 600px) and (max-width: 979px) {
+  .waypoint {
+    display: grid;
+    grid-template-columns: var(--medal) minmax(0, 1fr);
+    grid-template-rows: 1fr auto auto auto 1fr;
+    column-gap: clamp(1.75rem, 6vw, 3.5rem);
+    justify-items: start;
+  }
+  .waypoint > * { grid-column: 2; }
+  .waypoint__medal { grid-column: 1; grid-row: 1 / -1; }
+  .waypoint__meta { grid-row: 2; margin-top: 0; }
+  .waypoint__name { grid-row: 3; }
+  .waypoint .btn { grid-row: 4; }
+}

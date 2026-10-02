@@ -1,0 +1,1353 @@
+{
+  "site": {
+    "name": "Aurora Rocketry",
+    "description": "Aurora Rocketry is an Italian non-profit organisation of the University of Bologna based in Forlì. Our team brings together passionate minds from diverse academic backgrounds, creating a truly multidisciplinary environment.",
+    "url": "https://aurorarocketry.eu",
+    "lang": "en",
+    "email": "info@aurorarocketry.eu",
+    "social": {
+      "instagram": "https://www.instagram.com/aurorarocketry/",
+      "linkedin": "https://www.linkedin.com/company/aurora-rocketry/posts/?feedView=all"
+    },
+    "copyright": "© 2024 Aurora Rocketry, All Rights Reserved",
+    "nav": [
+      {
+        "label": "PROJECTS",
+        "href": "/projects/"
+      },
+      {
+        "label": "DEPARTMENTS",
+        "href": "/departments/"
+      },
+      {
+        "label": "PARTNERS",
+        "href": "/partners/"
+      },
+      {
+        "label": "CONTACT",
+        "href": "/contact/"
+      }
+    ],
+    "subpageHero": {
+      "key": "hero/team-rocket-lift",
+      "alt": "Aurora Rocketry team members cheering while one of them lifts a rocket above his head",
+      "src": "/img/hero/team-rocket-lift.webp",
+      "w": 1600,
+      "h": 1067,
+      "src800": "/img/hero/team-rocket-lift-800.webp"
+    },
+    "ogImage": "/img/brand/og.jpg"
+  },
+  "home": {
+    "hero": {
+      "titleA": "AURORA",
+      "titleB": "ROCKETRY",
+      "kicker": "THE UNIVERSITY OF BOLOGNA ROCKETRY TEAM",
+      "slogan": "WHERE THE SKY IS THE LIMIT",
+      "video": "/video/hero.mp4",
+      "poster": "/video/hero-poster.webp",
+      "videoAlt": "Drone footage of the team carrying the Nemesis rocket to the launch pad"
+    },
+    "stats": [
+      {
+        "value": 90,
+        "suffix": "+",
+        "strong": "PASSIONATE STUDENTS",
+        "rest": "BUILDING SOUNDING ROCKETS."
+      },
+      {
+        "value": 3,
+        "suffix": "",
+        "strong": "INVOLVED CAMPUSES",
+        "rest": "OF THE UNIVERSITY OF BOLOGNA"
+      },
+      {
+        "value": 8,
+        "suffix": "+",
+        "strong": "PRIVATE SPONSORS",
+        "rest": "SUPPORTING THE TEAM."
+      }
+    ],
+    "aboutTitle": "ABOUT THE TEAM",
+    "about": [
+      {
+        "id": "who-we-are",
+        "title": "WHO WE ARE",
+        "text": [
+          "Aurora Rocketry is an Italian non-profit organisation of the University of Bologna based in Forlì. Our team brings together passionate minds from diverse academic backgrounds, creating a truly multidisciplinary environment. This diversity pushes us to think beyond limits, combining knowledge and approaches to achieve ambitious goals and shape future careers in engineering, aerospace and more."
+        ],
+        "cta": {
+          "label": "DISCOVER THE TEAM",
+          "href": "/departments/"
+        },
+        "image": {
+          "key": "photos/team-laptops-outdoor",
+          "alt": "Three team members outdoors checking data on their laptops",
+          "src": "/img/photos/team-laptops-outdoor.webp",
+          "w": 1600,
+          "h": 1200,
+          "src800": "/img/photos/team-laptops-outdoor-800.webp"
+        }
+      },
+      {
+        "id": "what-we-do",
+        "title": "WHAT WE DO",
+        "text": [
+          "We offer students an exciting, hands-on journey into the world of aerospace engineering by designing, building and testing rockets from the ground up. To operate efficiently, our association is structured into departments, each covering a specific area of expertise."
+        ],
+        "cta": {
+          "label": "DISCOVER THE PROJECTS",
+          "href": "/projects/"
+        },
+        "image": {
+          "key": "photos/breadboard-prototype",
+          "alt": "Avionics prototype wired on a breadboard",
+          "src": "/img/photos/breadboard-prototype.webp",
+          "w": 1600,
+          "h": 1067,
+          "src800": "/img/photos/breadboard-prototype-800.webp"
+        }
+      }
+    ],
+    "projectsTitle": "PROJECTS"
+  },
+  "projects": {
+    "hero": {
+      "pre": "DISCOVER OUR",
+      "accent": "PROJECTS"
+    },
+    "items": [
+      {
+        "slug": "borealis",
+        "name": "BOREALIS",
+        "year": "2024",
+        "badge": "2024",
+        "cta": "DISCOVER BOREALIS",
+        "href": "/projects/borealis/",
+        "patch": {
+          "src": "/img/patches/borealis.svg",
+          "w": 811,
+          "h": 719,
+          "alt": "Borealis mission patch: a rocket lifting off under an aurora, dated 2024"
+        },
+        "rocket": {
+          "src": "/img/rockets/borealis-render.png",
+          "w": 2048,
+          "h": 281,
+          "alt": "Side render of the Borealis rocket",
+          "orientation": "horizontal",
+          "nose": "right"
+        },
+        "overview": [
+          "Borealis is Aurora Rocketry’s first ever rocket, designed to test core subsystems. It features a commercial solid motor and a CO₂‑based dual‑deployment recovery system. Its aluminum airframe, optimized nosecone, and fin geometry ensure low drag and stable flight. Borealis also integrates a simple, first‑generation avionics board."
+        ],
+        "specs": [
+          {
+            "label": "ROLE",
+            "value": "Subsystem test vehicle"
+          },
+          {
+            "label": "MOTOR",
+            "value": "Commercial solid"
+          },
+          {
+            "label": "RECOVERY",
+            "value": "CO₂ dual‑deployment"
+          },
+          {
+            "label": "AIRFRAME",
+            "value": "Aluminum"
+          }
+        ],
+        "sections": [
+          {
+            "id": "propulsion",
+            "title": "PROPULSION",
+            "text": [
+              "Borealis is powered by a commercial solid rocket motor, selected for its reliable thrust and stable ascent profile, ensuring safe liftoff and controlled flight. The Propulsion team is reverse-engineering this motor to develop and test an in-house solid engine."
+            ],
+            "image": {
+              "key": "photos/solid-motor-closeup",
+              "alt": "Close-up of a solid rocket motor nozzle after firing",
+              "src": "/img/photos/solid-motor-closeup.webp",
+              "w": 946,
+              "h": 2048,
+              "src800": "/img/photos/solid-motor-closeup-800.webp"
+            },
+            "zone": [
+              0.661,
+              1.0
+            ]
+          },
+          {
+            "id": "recovery",
+            "title": "RECOVERY",
+            "text": [
+              "Borealis uses a dual‑deployment system with CO₂‑powered nosecone separation, releasing a drogue at apogee and a main parachute later for a stable, low‑impact landing."
+            ],
+            "image": {
+              "key": "photos/recovery-hardware-table",
+              "alt": "Recovery bay hardware and shock cord laid out on a table",
+              "src": "/img/photos/recovery-hardware-table.webp",
+              "w": 1600,
+              "h": 1066,
+              "src800": "/img/photos/recovery-hardware-table-800.webp"
+            },
+            "zone": [
+              0.2,
+              0.45
+            ]
+          },
+          {
+            "id": "electronics",
+            "title": "ELECTRONICS",
+            "text": [
+              "Borealis features a single, integrated avionics board with essential sensors, basic telemetry, and automated parachute deployment. Compared to Nemesis, Borealis adopts a simpler first‑generation design focused on core flight functions only."
+            ],
+            "image": {
+              "key": "photos/borealis-ground-station-team",
+              "alt": "Three team members operating the ground station antenna and a laptop outdoors",
+              "src": "/img/photos/borealis-ground-station-team.webp",
+              "w": 1600,
+              "h": 1200,
+              "src800": "/img/photos/borealis-ground-station-team-800.webp"
+            },
+            "zone": [
+              0.548,
+              0.661
+            ]
+          },
+          {
+            "id": "aerostructure",
+            "title": "AERODYNAMICS and STRUCTURE",
+            "text": [
+              "The rocket’s airframe is designed to be lightweight yet robust, built primarily from aluminum. The nosecone, fins and geometry minimise drag and maintain a stable centre of pressure/center of mass relationship throughout the flight, providing consistent stability."
+            ],
+            "image": {
+              "key": "rockets/borealis-render",
+              "alt": "Side render of the Borealis rocket",
+              "src": "/img/rockets/borealis-render.png",
+              "w": 2048,
+              "h": 281
+            },
+            "zone": [
+              0.0,
+              1.0
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "nemesis",
+        "name": "NEMESIS",
+        "year": "2025",
+        "badge": "EUROC 2025",
+        "cta": "DISCOVER NEMESIS",
+        "href": "/projects/nemesis/",
+        "patch": {
+          "src": "/img/patches/nemesis.svg",
+          "w": 1881,
+          "h": 1631,
+          "alt": "Nemesis mission patch: a rocket and a satellite, EUROC 2025"
+        },
+        "rocket": {
+          "src": "/img/rockets/nemesis.svg",
+          "w": 778,
+          "h": 6236,
+          "alt": "Vector drawing of the Nemesis rocket in its navy and red livery",
+          "orientation": "vertical",
+          "nose": "top"
+        },
+        "overview": [
+          "Aurora’s first competition rocket, Nemesis, is a single-stage vehicle, powered by a commercial solid motor, designed to carry a 1 kg payload up to an apogee of 3000 m and to return safely to the ground thanks to a recovery system. The rocket is designed with reliability, ease of maintenance and assembly in mind. The aerostructure ensures stability and integrity, housing the propulsion system, electronics bay, recovery system, and our payload, Aether."
+        ],
+        "specs": [
+          {
+            "label": "TARGET APOGEE",
+            "value": "3000 m"
+          },
+          {
+            "label": "PAYLOAD",
+            "value": "1 kg"
+          },
+          {
+            "label": "TOTAL IMPULSE",
+            "value": "8187 Ns"
+          },
+          {
+            "label": "BURN TIME",
+            "value": "5.3 s"
+          },
+          {
+            "label": "TELEMETRY",
+            "value": "868 MHz"
+          }
+        ],
+        "sections": [
+          {
+            "id": "propulsion",
+            "title": "PROPULSION",
+            "text": [
+              "The propulsion system uses a solid motor with a non-toxic APCP-based propellant (Green3), delivering 8187 Ns of impulse in 5.3 seconds. The motor is secured and centered inside the rocket using a phenolic tube, aluminum centering rings, and an Aeropack retainer, ensuring structural integrity and thrust transfer. Additional thermal isolation and redundant retention mechanisms enhance reliability."
+            ],
+            "image": {
+              "key": "photos/motor-assembly-table",
+              "alt": "Team members assembling the solid motor casing on a table",
+              "src": "/img/photos/motor-assembly-table.webp",
+              "w": 1600,
+              "h": 1205,
+              "src800": "/img/photos/motor-assembly-table-800.webp"
+            },
+            "zone": [
+              0.62,
+              1.0
+            ]
+          },
+          {
+            "id": "recovery",
+            "title": "RECOVERY",
+            "text": [
+              "Nemesis features a conventional dual-deployment recovery system with two hemispherical nylon parachutes with reinforced stitching and integrated suspension lines. At apogee, the CO₂ ejection system is designed to separate the nose cone and deploy the drogue chute. The main parachute has to be later deployed via a three-ring release system, which frees the drogue to extract the main chute."
+            ],
+            "image": {
+              "key": "photos/nemesis-recovery-bay",
+              "alt": "Nemesis body tube with the parachute and shock cord packed inside",
+              "src": "/img/photos/nemesis-recovery-bay.webp",
+              "w": 1600,
+              "h": 1280,
+              "src800": "/img/photos/nemesis-recovery-bay-800.webp"
+            },
+            "zone": [
+              0.2,
+              0.45
+            ]
+          },
+          {
+            "id": "electronics",
+            "title": "ELECTRONICS",
+            "text": [
+              "The avionics system is composed of two independent units: a custom SRAD (Student Researched and Developed) system and a COTS (Commercial Off-The-Shelf) solution based on the Cats Vega platform. The SRAD architecture features two custom PCBs: a Sensor Board hosting the flight computer and apogee detection sensors (IMU, accelerometer, dual barometers), and an Antenna Board managing parachute deployment, analog circuits, GPS, and a 868 MHz radio transmitter."
+            ],
+            "image": {
+              "key": "photos/pcb-soldering",
+              "alt": "Soldering a round avionics PCB held in a helping-hands clamp",
+              "src": "/img/photos/pcb-soldering.webp",
+              "w": 1600,
+              "h": 1066,
+              "src800": "/img/photos/pcb-soldering-800.webp"
+            },
+            "zone": [
+              0.45,
+              0.6
+            ]
+          },
+          {
+            "id": "aerostructure",
+            "title": "AERODYNAMICS and STRUCTURE",
+            "text": [
+              "The rocket’s aerostructure primarily relies on aluminum components, designed to maximize apogee while ensuring stability and structural integrity. It includes a nose cone optimised for aerodynamic efficiency and radio transparency, a set of three carbon-fiber/Nomex composite fins sized to meet flutter and static margin constraints, and a fiberglass boat tail to reduce base drag and disturbed flow."
+            ],
+            "image": {
+              "key": "photos/nemesis-carried-to-pad",
+              "alt": "Three team members in hard hats carrying Nemesis towards the launch pad",
+              "src": "/img/photos/nemesis-carried-to-pad.webp",
+              "w": 1600,
+              "h": 1202,
+              "src800": "/img/photos/nemesis-carried-to-pad-800.webp"
+            },
+            "zone": [
+              0.0,
+              1.0
+            ]
+          },
+          {
+            "id": "payload",
+            "title": "PAYLOAD",
+            "text": [
+              "Aether is a proof-of-concept CubeSat. Its purpose is to receive and save data during the rocket’s ascent phase employing a Software-Defined Radio, using signals from the Inmarsat constellation of geostationary satellites, responsible for aeronautical and maritime distress and safety services, located more than 35000 km above Earth’s surface. We aim to study the later received signals to develop a Matlab algorithm to calculate the rocket heading in real-time for next generations."
+            ],
+            "image": {
+              "key": "photos/payload-cubesat-assembly",
+              "alt": "Hands assembling the Aether CubeSat payload electronics stack",
+              "src": "/img/photos/payload-cubesat-assembly.webp",
+              "w": 1600,
+              "h": 1280,
+              "src800": "/img/photos/payload-cubesat-assembly-800.webp"
+            },
+            "zone": [
+              0.05,
+              0.2
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "atlas",
+        "name": "ATLAS",
+        "year": "2026",
+        "badge": "EUROC 2026",
+        "cta": "DISCOVER ATLAS",
+        "href": "/projects/atlas/",
+        "patch": {
+          "src": "/img/patches/atlas.svg",
+          "w": 2017,
+          "h": 2017,
+          "alt": "Atlas mission patch: Atlas holding the Earth with a rocket orbiting, EUROC 2026"
+        },
+        "rocket": {
+          "src": "/img/rockets/atlas-render.png",
+          "w": 1727,
+          "h": 280,
+          "alt": "Side CAD render of the Atlas rocket",
+          "orientation": "horizontal",
+          "nose": "left"
+        },
+        "overview": [
+          "Atlas is the result of everything we’ve learnt from previous projects, by addressing past data, limitations and operational challenges. The airframe now features lightweight glass-fiber composite, reducing mass while enhancing structural performance. A newly developed active airbrake system improves apogee accuracy, and both the recovery and the electronics bays have been redesigned for greater modularity, reliability and accessibility. At its core, Atlas is powered by a solid motor and equipped with our in-house developed avionics."
+        ],
+        "specs": [
+          {
+            "label": "MOTOR",
+            "value": "M-class solid"
+          },
+          {
+            "label": "AIRFRAME",
+            "value": "Glass-fiber composite"
+          },
+          {
+            "label": "CONTROL",
+            "value": "Active airbrakes"
+          },
+          {
+            "label": "FLIGHT COMPUTER",
+            "value": "ESP32-S3"
+          },
+          {
+            "label": "PAYLOAD LOADS",
+            "value": "up to 10 g"
+          }
+        ],
+        "sections": [
+          {
+            "id": "propulsion",
+            "title": "PROPULSION",
+            "text": [
+              "The propulsion system features a high-performance M-class solid rocket motor. With its short burn time, high thrust output and reliable Imax propellant, it delivers rapid acceleration and predictable performance. Its plugged configuration makes it ideal for rockets using fully independent avionics-based deployment systems."
+            ],
+            "image": {
+              "key": "photos/motor-assembly-table",
+              "alt": "Team members assembling the solid motor casing on a table",
+              "src": "/img/photos/motor-assembly-table.webp",
+              "w": 1600,
+              "h": 1205,
+              "src800": "/img/photos/motor-assembly-table-800.webp"
+            },
+            "zone": [
+              0.62,
+              1.0
+            ]
+          },
+          {
+            "id": "recovery",
+            "title": "RECOVERY",
+            "text": [
+              "The recovery system has undergone a substantial redesign, introducing a refined pressure-chamber based system with improved reliability, cleaner mechanical interfaces, and better separation sequencing compared to Nemesis. The upgraded routing of harnesses and load paths, along with a more predictable deployment envelope, will contribute to a more robust and functional recovery subsystem."
+            ],
+            "image": {
+              "key": "photos/recovery-3d-printed-parts",
+              "alt": "Two red 3D-printed recovery system parts held in hand",
+              "src": "/img/photos/recovery-3d-printed-parts.webp",
+              "w": 1152,
+              "h": 2048,
+              "src800": "/img/photos/recovery-3d-printed-parts-800.webp"
+            },
+            "zone": [
+              0.2,
+              0.45
+            ]
+          },
+          {
+            "id": "electronics",
+            "title": "ELECTRONICS",
+            "text": [
+              "Atlas avionics undergoes a major upgrade with a modular four-board architecture connected through a central backplane: microcontroller (an ESP32-S3), integrated sensing suite, radio telemetry and GPS reception, and the power-management stage. A custom battery pack powers the system, while activation uses high-current MOSFETs for pyrotechnics and air-brake control. Ground support reuses Nemesis’ station to provide real-time telemetry via its high-gain antenna and dedicated receiver."
+            ],
+            "image": {
+              "key": "photos/atlas-avionics-board",
+              "alt": "Atlas avionics board with an ESP32-S3 module and wiring harness",
+              "src": "/img/photos/atlas-avionics-board.webp",
+              "w": 720,
+              "h": 1280
+            },
+            "zone": [
+              0.45,
+              0.6
+            ]
+          },
+          {
+            "id": "aerostructure",
+            "title": "AERODYNAMICS and STRUCTURE",
+            "text": [
+              "The airframe design transitions to a hybrid structure: a combination of fiberglass, Kevlar-reinforced sections, and composite-integrated modules to improve structural strength, manufacturability, and mass efficiency while ensuring electromagnetic transparency for antenna transmission. Key upgrades include a redesigned monocoque assembly for easier component replacement and improved integration access, plus a more ergonomic ABS internal layout featuring dedicated removable hatches, internal aluminum skeletons for mounting electronics, and cleaner routing of cables and avionics."
+            ],
+            "image": {
+              "key": "rockets/atlas-render",
+              "alt": "Side CAD render of the Atlas rocket showing its internal modules",
+              "src": "/img/rockets/atlas-render.png",
+              "w": 1727,
+              "h": 280
+            },
+            "zone": [
+              0.0,
+              1.0
+            ]
+          },
+          {
+            "id": "payload",
+            "title": "PAYLOAD",
+            "text": [
+              "Developed in collaboration with IRST (Istituto Romagnolo per lo Studio dei Tumori), a well-acclaimed cancer research institute, our biomedical payload investigates the behaviour of tumour cells during launch conditions and under high acceleration loads up to 10 g, providing insights into the way extreme mechanical stress influences cellular structures and biological responses."
+            ],
+            "image": {
+              "key": "renders/payload-box-cad",
+              "alt": "CAD model of the biomedical payload enclosure",
+              "src": "/img/renders/payload-box-cad.webp",
+              "w": 863,
+              "h": 758
+            },
+            "zone": [
+              0.05,
+              0.2
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "departments": {
+    "hero": {
+      "pre": "MEET THE",
+      "accent": "TEAM"
+    },
+    "items": [
+      {
+        "slug": "aerodinamica",
+        "name": "AERODYNAMICS",
+        "short": "AERO",
+        "title": "AERODYNAMICS",
+        "cta": "DISCOVER AERODYNAMICS",
+        "href": "/departments/aerodinamica/",
+        "overview": [
+          "The Aerodynamics Department has a team of 30 people. The operations focus primarily on the study, modeling and analysis of aerodynamic forces acting on vehicles in flight."
+        ],
+        "indexImage": {
+          "key": "plots/cfd-mach-field",
+          "alt": "CFD simulation showing the Mach field around the rocket",
+          "src": "/img/plots/cfd-mach-field.webp",
+          "w": 1411,
+          "h": 575,
+          "src800": "/img/plots/cfd-mach-field-800.webp"
+        },
+        "sections": [
+          {
+            "id": "external-aerodynamics",
+            "title": "EXTERNAL AERODYNAMICS and SIMULATIONS",
+            "text": [
+              "The main research area is external aerodynamics. The team uses fluid dynamics tools computational (CFD) for conducting external simulations. These simulations are implemented in two-dimensional (2D) and three-dimensional (3D) models, with a selection that varies as a function of case of specific study and of the geometric complex of the system. The studies also cover various regimes of flight to ensure an exhaustive analysis of aerodynamic performance."
+            ],
+            "image": {
+              "key": "plots/drag-coefficient-comparison",
+              "alt": "Plot comparing drag coefficient from RASAero and CFD against Mach number",
+              "src": "/img/plots/drag-coefficient-comparison.webp",
+              "w": 1600,
+              "h": 848,
+              "src800": "/img/plots/drag-coefficient-comparison-800.webp"
+            }
+          },
+          {
+            "id": "surface-optimization",
+            "title": "OPTIMIZATION OF AERODYNAMIC SURFACES",
+            "text": [
+              "One division of the activity is dedicated to the optimization of external aerodynamic surfaces. This research and development process is carried out working in synergy with thesis and trainees. The optimization activities focus specifically on the following structural and control components:"
+            ],
+            "image": {
+              "key": "plots/cfd-mach-field",
+              "alt": "CFD simulation showing the Mach field around the rocket",
+              "src": "/img/plots/cfd-mach-field.webp",
+              "w": 1411,
+              "h": 575,
+              "src800": "/img/plots/cfd-mach-field-800.webp"
+            },
+            "list": [
+              "Flaps",
+              "Boattail",
+              "Nosecone",
+              "Airbrakes"
+            ]
+          },
+          {
+            "id": "airbrakes",
+            "title": "AIRBRAKES PROJECT and DATA ANALYSIS",
+            "text": [
+              "A central initiative of the department is the airbrakes project. The processing of data and the post-processing procedures related to this and other projects are geared to determining precision of aerodynamic coefficients. A fundamental metric extracted from the simulations is the curve of the drag coefficient (CD) as a function of Mach number (CD–Mach curve)."
+            ],
+            "image": {
+              "key": "renders/airbrakes-cad",
+              "alt": "CAD model of the airbrake module with its deployable flaps",
+              "src": "/img/renders/airbrakes-cad.webp",
+              "w": 1343,
+              "h": 953,
+              "src800": "/img/renders/airbrakes-cad-800.webp"
+            }
+          },
+          {
+            "id": "validation",
+            "title": "VALIDATION METHODOLOGY",
+            "text": [
+              "To ensure the scientific rigor and accuracy of predictive models, all the results obtained by the computational simulations are subject to verification procedures. Data validation is based on the direct comparison with accredited “validation cases” and on the use of semi-empirical data."
+            ],
+            "image": {
+              "key": "plots/cfd-pressure-tail",
+              "alt": "CFD static pressure contour around the fins and boat tail",
+              "src": "/img/plots/cfd-pressure-tail.webp",
+              "w": 1411,
+              "h": 575,
+              "src800": "/img/plots/cfd-pressure-tail-800.webp"
+            }
+          }
+        ]
+      },
+      {
+        "slug": "propulsione",
+        "name": "PROPULSION",
+        "short": "PROP",
+        "title": "PROPULSION",
+        "cta": "DISCOVER PROPULSION",
+        "href": "/departments/propulsione/",
+        "overview": [
+          "The Propulsion Department is responsible for the design, manufacturing, and testing of solid and hybrid SRAD rocket motors, with the goal of participating in the EUROC competitions using in-house developed propulsion systems. The team is composed of members from the Bachelor’s programs in Mechanical and Aerospace Engineering, as well as the Master’s programs in Aerospace Engineering and Chemical Engineering.",
+          "The department’s activities cover the entire engine development cycle: from theoretical and numerical modeling (simulations, CFD, ballistic models), to parametric CAD design, all the way to practical manufacturing of components, development of test infrastructures, and experimental testing on a test bench."
+        ],
+        "indexImage": {
+          "key": "renders/solid-motor-section",
+          "alt": "Cutaway render of a solid rocket motor",
+          "src": "/img/renders/solid-motor-section.webp",
+          "w": 695,
+          "h": 1197
+        },
+        "sections": [
+          {
+            "id": "solid",
+            "title": "SOLID ROCKET ENGINE",
+            "text": [
+              "In the field of solid rocket motors, the department is engaged in the development of the motor that will be launched on a reduced-scale prototype - FRED - and in its future evolutions. The project includes the design of the nozzle, combustion chamber, and solid grain, manufactured using potassium nitrate- and sorbitol-based mixtures, with additives to enhance performance.",
+              "In parallel, a dedicated test chamber is being developed for grain characterization, enabling pressure data acquisition and validation of predictive models, thus laying the groundwork for larger and higher-performance motors."
+            ],
+            "image": {
+              "key": "renders/solid-motor-exploded",
+              "alt": "Exploded view of the solid rocket motor components",
+              "src": "/img/renders/solid-motor-exploded.webp",
+              "w": 1375,
+              "h": 533,
+              "src800": "/img/renders/solid-motor-exploded-800.webp"
+            }
+          },
+          {
+            "id": "redas",
+            "title": "REDAS & TEST BENCH",
+            "text": [
+              "A key role is played by the REDAS project, an in-house designed hardware and software system used during motor testing phases to acquire data from the load cell and pressure sensor, as well as to activate the ignition system, which is also designed by the department.",
+              "In support of these activities, the department is also developing a static test bench for solid rocket motors."
+            ],
+            "image": {
+              "key": "renders/test-bench-cad",
+              "alt": "CAD model of the static test bench holding a motor",
+              "src": "/img/renders/test-bench-cad.webp",
+              "w": 820,
+              "h": 588
+            }
+          },
+          {
+            "id": "hybrid",
+            "title": "HYBRID ROCKET ENGINE",
+            "text": [
+              "The department’s main long-term project is the development of a hybrid rocket motor, initially conceived as a prototype for ground testing. The motor uses a liquid oxidizer (N₂O) and a solid fuel (paraffin or HTPB), with a pressurizing gas (N₂), and includes tanks, injector, combustion chamber, grain, nozzle, thermal protection systems, and control and safety valves.",
+              "Each component is tested individually before integration, and the engine is designed to be reusable, allowing successive design iterations (more complex injectors, optimized nozzles, new grains, changes in pressurizing gas). In parallel, the department is responsible for designing the ground facilities required for motor operation, including the external feed line for safe fluid transfer. Sensor data acquisition will later be integrated into REDAS.",
+              "The goal is to perform a first static firing of the prototype by October 2026, progressively building the expertise needed to develop a hybrid motor suitable for flight."
+            ],
+            "image": {
+              "key": "renders/hybrid-motor-assembly",
+              "alt": "Render of the hybrid rocket motor assembly",
+              "src": "/img/renders/hybrid-motor-assembly.webp",
+              "w": 1600,
+              "h": 917,
+              "src800": "/img/renders/hybrid-motor-assembly-800.webp"
+            }
+          },
+          {
+            "id": "launch-rail",
+            "title": "LAUNCH RAIL",
+            "text": [
+              "In collaboration with the Structures Department, the Propulsion team proposes the development of a modular launch rail capable of also functioning as a test bench (rail-bench) for both solid and hybrid motors. This innovative solution aims to reduce costs and development time, while enabling the integration of measurement systems such as load cells, thermocouples, pressure sensors, and imaging systems."
+            ],
+            "image": {
+              "key": "renders/launch-rail",
+              "alt": "CAD model of the modular launch rail",
+              "src": "/img/renders/launch-rail.webp",
+              "w": 701,
+              "h": 1098
+            }
+          }
+        ]
+      },
+      {
+        "slug": "gnc",
+        "name": "GNC",
+        "short": "GNC",
+        "title": "GUIDANCE NAVIGATION and CONTROL",
+        "cta": "DISCOVER GNC",
+        "href": "/departments/gnc/",
+        "overview": [
+          "The GNC (Guidance, Navigation and Control) Department is responsible for the development of the rocket guidance and control systems, with the objective of ensuring the correct flight trajectory and the accurate achievement of the target apogee. The department activities mainly focus on the development of a high-fidelity simulator and on the design of active control algorithms for movable aerodynamic systems, particularly airbrakes, which are responsible for the dynamic regulation of the rocket during ascent."
+        ],
+        "indexImage": {
+          "key": "plots/gnc-angular-velocity",
+          "alt": "Plot of the simulated angular velocity history during flight",
+          "src": "/img/plots/gnc-angular-velocity.webp",
+          "w": 1600,
+          "h": 887,
+          "src800": "/img/plots/gnc-angular-velocity-800.webp"
+        },
+        "sections": [
+          {
+            "id": "simulation",
+            "title": "FLIGHT DYNAMICS SIMULATION and MODELING",
+            "text": [
+              "The department develops a simulator to study rocket dynamics, implemented in MATLAB and Simulink environments. These tools allow the complete reproduction of the flight trajectory and the modeling of the interaction between longitudinal dynamics, propulsion, aerodynamics, and control systems.",
+              "The simulations include effects related to mass variation during motor burn, Mach-dependent aerodynamic drag, atmospheric perturbations, and nonlinearities introduced by mechanical actuators. These models are used both for the preliminary validation of control architectures and for the generation of realistic hardware-in-the-loop and software-in-the-loop test scenarios, which are essential to ensure the correct operation of the control system once implemented on the physical platform."
+            ],
+            "image": {
+              "key": "plots/atlas-simulator-simulink",
+              "alt": "Simulink block diagram of the Atlas flight simulator",
+              "src": "/img/plots/atlas-simulator-simulink.webp",
+              "w": 1551,
+              "h": 728,
+              "src800": "/img/plots/atlas-simulator-simulink-800.webp"
+            }
+          },
+          {
+            "id": "airbrake-control",
+            "title": "GUIDANCE and ACTIVE AIRBRAKE CONTROL",
+            "text": [
+              "The main activity of the department concerns the development of active control systems for airbrakes, used to modulate the aerodynamic drag of the vehicle and accurately control the apogee. By dynamically adjusting the deployment of movable aerodynamic surfaces, the system can dissipate kinetic energy during ascent, compensating for variations caused by wind, motor dispersion, or non-nominal atmospheric conditions.",
+              "Different control approaches are studied and implemented, with particular focus on well-established and validated aerospace techniques, including PID controllers and model-based predictive strategies (simplified MPC). The algorithms are designed to operate in real time on embedded hardware, while satisfying computational constraints and reliability requirements imposed by the flight environment."
+            ],
+            "image": {
+              "key": "renders/airbrakes-cad",
+              "alt": "CAD model of the airbrake module with its deployable flaps",
+              "src": "/img/renders/airbrakes-cad.webp",
+              "w": 1343,
+              "h": 953,
+              "src800": "/img/renders/airbrakes-cad-800.webp"
+            }
+          },
+          {
+            "id": "robustness",
+            "title": "ROBUSTNESS, DISTURBANCE REJECTION and UNCERTAINTY ANALYSIS",
+            "text": [
+              "A fundamental part of the development process concerns the robustness analysis of the controllers in the presence of parametric uncertainties and external disturbances. Dedicated simulation campaigns are carried out to evaluate control stability and performance under non-ideal operating conditions.",
+              "The analyzed scenarios include wind gusts, atmospheric density variations, errors in aerodynamic coefficients, sensor measurement noise, computational delays, and actuator performance degradation. Through Monte Carlo simulations and statistical analyses, the department verifies the capability of the system to maintain accuracy and stability even in the presence of significant operational dispersions.",
+              "The final objective is the development of an autonomous, reliable, and robust guidance and control system capable of ensuring accurate mission achievement even in highly dynamic and strongly perturbed flight scenarios."
+            ],
+            "image": {
+              "key": "plots/gnc-airbrake-controller",
+              "alt": "Plot of the airbrake controller output against the reference",
+              "src": "/img/plots/gnc-airbrake-controller.webp",
+              "w": 1600,
+              "h": 874,
+              "src800": "/img/plots/gnc-airbrake-controller-800.webp"
+            }
+          }
+        ]
+      },
+      {
+        "slug": "software",
+        "name": "SOFTWARE",
+        "short": "SW",
+        "title": "SOFTWARE",
+        "cta": "DISCOVER SOFTWARE",
+        "href": "/departments/software/",
+        "overview": [
+          "The Software Department manages the complete computing architecture and code infrastructure of the experimental launch vehicles. Core activities focus on the development of the flight computer software, ensuring maximum reliability in data acquisition, processing, and the real-time execution of flight algorithms. The workflow integrates embedded systems programming, the development of telemetry communication interfaces, and the implementation of simulation architectures to validate flight logic and electronics prior to launch."
+        ],
+        "indexImage": {
+          "key": "photos/ground-station-sunset",
+          "alt": "Ground station laptop and radio set up on a rooftop at sunset",
+          "src": "/img/photos/ground-station-sunset.webp",
+          "w": 1600,
+          "h": 900,
+          "src800": "/img/photos/ground-station-sunset-800.webp"
+        },
+        "sections": [
+          {
+            "id": "flight-computer",
+            "title": "FLIGHT COMPUTER and EMBEDDED SYSTEMS",
+            "text": [
+              "The department handles high-frequency data acquisition and filtering from onboard sensors. Critical flight algorithms are designed and implemented to identify the rocket's attitude and flight states, which are necessary to safely command the actuation of recovery systems (parachutes) and active trajectory control (airbrakes). Furthermore, the team ensures the persistent and structured logging of flight data to the rocket's internal memory for comprehensive post-mission analysis."
+            ],
+            "image": {
+              "key": "photos/software-coding",
+              "alt": "A team member writing flight software on a laptop",
+              "src": "/img/photos/software-coding.webp",
+              "w": 960,
+              "h": 1280,
+              "src800": "/img/photos/software-coding-800.webp"
+            }
+          },
+          {
+            "id": "groundstation",
+            "title": "GROUNDSTATION INFRASTRUCTURE",
+            "text": [
+              "The software infrastructure for the ground station is developed and maintained by the department. The system is engineered to communicate with the rocket via telemetry protocols, enabling the continuous reception of data packets. This information is decoded, visualized in real-time on a graphical dashboard dedicated to mission control, and saved locally to guarantee total redundancy of critical mission data."
+            ],
+            "image": {
+              "key": "photos/ground-station-sunset",
+              "alt": "Ground station laptop and radio set up on a rooftop at sunset",
+              "src": "/img/photos/ground-station-sunset.webp",
+              "w": 1600,
+              "h": 900,
+              "src800": "/img/photos/ground-station-sunset-800.webp"
+            }
+          },
+          {
+            "id": "real-time-simulation",
+            "title": "REAL-TIME SIMULATION",
+            "text": [
+              "In close synergy with the Mission Analysis department, the division integrates mathematical and simulation models with the actual hardware and software of the rocket. A Hardware-in-the-Loop testing environment is configured to inject simulated flight data directly into the onboard computer in real-time. This process allows for rigorous testing of the entire acquisition, processing, and algorithm actuation chain in a safe environment, effectively validating the system's behavior on the ground."
+            ],
+            "image": {
+              "key": "photos/software-lab",
+              "alt": "Team members testing hardware and software in the lab",
+              "src": "/img/photos/software-lab.webp",
+              "w": 960,
+              "h": 1280,
+              "src800": "/img/photos/software-lab-800.webp"
+            }
+          }
+        ]
+      },
+      {
+        "slug": "structure",
+        "name": "STRUCTURE",
+        "short": "STR",
+        "title": "STRUCTURE",
+        "cta": "DISCOVER STRUCTURE",
+        "href": "/departments/structure/",
+        "overview": [
+          "The Structures Department is responsible for the design and CAD software development of nearly all components of the experimental sounding rockets developed by Aurora Rocketry.",
+          "The process involves close collaboration with each of the individual departments involved in the active development of the rocket. The departments provide the general guidelines and requirements that we have to follow and based on which we entirely develop a lightweight structural design accurately optimized through meticulous simulation work aimed to obtain the best performance balance."
+        ],
+        "indexImage": {
+          "key": "photos/fin-can-integration",
+          "alt": "Team members integrating the fin can of the rocket",
+          "src": "/img/photos/fin-can-integration.webp",
+          "w": 1600,
+          "h": 1202,
+          "src800": "/img/photos/fin-can-integration-800.webp"
+        },
+        "sections": [
+          {
+            "id": "cad",
+            "title": "CAD DESIGN and DRAWING",
+            "text": [
+              "The department engages in a phase of close collaboration with all of the team's departments to define all of the preliminary requirements needed for the final design. The work is then subdivided in subprojects, each dedicated to the respective department: the subprojects will work to develop original and innovative designs and solutions to best address the challenges posed by the project's technical requirements. The members will design and engineer the entire rocket structure that supports and surrounds all of its subsystems. In-depth research is conducted on materials sciences (metals, composite fibers, or 3D printing) and manufacturing techniques."
+            ],
+            "image": {
+              "key": "renders/rocket-cad-section",
+              "alt": "SolidWorks section view of the full rocket",
+              "src": "/img/renders/rocket-cad-section.png",
+              "w": 142,
+              "h": 746
+            }
+          },
+          {
+            "id": "fem",
+            "title": "LOAD SIMULATION and OPTIMIZATION USING FEM ANALYSIS",
+            "text": [
+              "Once preliminary CAD models are obtained, approximated flight load data provided by the Aerodynamics, GNC, Propulsion and Mission Analysis departments is used. The members perform a series of simulations using the finite element method. Such simulations are aimed to obtain precise information on maximum deformations and structural strength of the components. The simulation phase is crucial for maximizing the aircraft's mass, tracking the loads to properly distribute the structural reinforcements, achieving maximum performance."
+            ],
+            "image": {
+              "key": "photos/rocket-carried-desert",
+              "alt": "Team carrying the rocket across the launch site",
+              "src": "/img/photos/rocket-carried-desert.webp",
+              "w": 1600,
+              "h": 1066,
+              "src800": "/img/photos/rocket-carried-desert-800.webp"
+            }
+          },
+          {
+            "id": "prototype",
+            "title": "PROTOTYPE CONSTRUCTION",
+            "text": [
+              "Once a final CAD model of the various subprojects has been obtained, we proceed to the production of test components, where necessary, to test the prototype's most important systems in collaboration with the other departments. If the testing campaigns are successful, the sounding rocket is built utilising cutting-edge production methods, such as composite materials and CNC machines."
+            ],
+            "image": {
+              "key": "photos/prototype-construction",
+              "alt": "Team members wearing masks while laminating composite parts outdoors",
+              "src": "/img/photos/prototype-construction.webp",
+              "w": 1600,
+              "h": 1066,
+              "src800": "/img/photos/prototype-construction-800.webp"
+            }
+          },
+          {
+            "id": "integration",
+            "title": "FINAL INTEGRATION",
+            "text": [
+              "The prototype is assembled and finished by department members making use of our technical facilities: they will finish the components manufacturing by manually refining them and then proceed with their final assembly and integration. The final rocket integration process has to be carefully executed by following special checklist pre-made by the department to ensure that the protocols required by the competitions in which the association participates are satisfied."
+            ],
+            "image": {
+              "key": "photos/fin-can-integration",
+              "alt": "Team members integrating the fin can of the rocket",
+              "src": "/img/photos/fin-can-integration.webp",
+              "w": 1600,
+              "h": 1202,
+              "src800": "/img/photos/fin-can-integration-800.webp"
+            }
+          }
+        ]
+      },
+      {
+        "slug": "msa",
+        "name": "MISSION ANALYSIS",
+        "short": "MSA",
+        "title": "MISSION ANALYSIS",
+        "cta": "DISCOVER MISSION ANALYSIS",
+        "href": "/departments/msa/",
+        "overview": [
+          "The Mission Analysis department offers its support at every iteration of the project through validation via numerical flight simulations. The main activity is the use of flight simulations to ensure the achievement of the desired performance and compliance with the imposed safety margins. In addition to design validation, another commitment is to continuously improve the simulator used in terms of usability, versatility, and breadth of information provided."
+        ],
+        "indexImage": {
+          "key": "plots/dispersion-ellipses",
+          "alt": "Map with 1σ, 2σ and 3σ dispersion ellipses for apogee and landing points",
+          "src": "/img/plots/dispersion-ellipses.webp",
+          "w": 1180,
+          "h": 929,
+          "src800": "/img/plots/dispersion-ellipses-800.webp"
+        },
+        "sections": [
+          {
+            "id": "performance",
+            "title": "PERFORMANCE and SAFETY MARGINS",
+            "text": [
+              "In collaboration with the other departments, the simulated model is constantly updated; through stochastic simulations, all mission-critical parameters are tracked, including trajectory, velocities, and apogee. With the aid of an accurate atmospheric model, the department ensures mission safety."
+            ],
+            "image": {
+              "key": "plots/speed-vs-time",
+              "alt": "Plot of simulated rocket speed against time",
+              "src": "/img/plots/speed-vs-time.webp",
+              "w": 1341,
+              "h": 692,
+              "src800": "/img/plots/speed-vs-time-800.webp"
+            }
+          },
+          {
+            "id": "simulator",
+            "title": "SIMULATOR DEVELOPMENT",
+            "text": [
+              "The simulation is based on RocketPy, a Python library well-suited for our purposes. The year-over-year goal is to increase the quality of the simulation by expanding the types of analyses it can perform, while also continuously improving it from a usability standpoint."
+            ],
+            "image": {
+              "key": "plots/flight-trajectories",
+              "alt": "3D comparison of simulated flight trajectories",
+              "src": "/img/plots/flight-trajectories.webp",
+              "w": 1344,
+              "h": 1344,
+              "src800": "/img/plots/flight-trajectories-800.webp"
+            }
+          }
+        ]
+      },
+      {
+        "slug": "elettronica",
+        "name": "ELECTRONICS",
+        "short": "ELE",
+        "title": "ELECTRONICS",
+        "cta": "DISCOVER ELECTRONICS",
+        "href": "/departments/elettronica/",
+        "overview": [
+          "The electronics department work is focused on developing all of the on-board and ground systems. Their objective is to acquire ambient data, and make decisions on actuating subsystems, such as the recovery subsystem or the airbrakes."
+        ],
+        "indexImage": {
+          "key": "photos/electronics-workbench",
+          "alt": "Electronics team working at a bench with a power supply and the rocket body",
+          "src": "/img/photos/electronics-workbench.webp",
+          "w": 1600,
+          "h": 1280,
+          "src800": "/img/photos/electronics-workbench-800.webp"
+        },
+        "sections": [
+          {
+            "id": "pcb",
+            "title": "PCB DEVELOPMENT",
+            "text": [
+              "The department develops its own PCBs for every subsystem on board, such as the payload, recovery subsystem and airbrakes. We cover the entire process, from defining the system requirements, drawing the PCB schematics, layout of the components to fully integrated tests."
+            ],
+            "image": {
+              "key": "photos/atlas-avionics-board",
+              "alt": "Custom avionics board with an ESP32-S3 module and wiring harness",
+              "src": "/img/photos/atlas-avionics-board.webp",
+              "w": 720,
+              "h": 1280
+            }
+          },
+          {
+            "id": "gnss",
+            "title": "GNSS and TELEMETRY SYSTEM",
+            "text": [
+              "Communication to ground systems is essential in order to validate simulations, recover the rocket, and getting live feedback on what’s going on. In order to do that, we implement from scratch telemetry and GNSS systems, from the schematics and components selection, to testing the range and transmission capability."
+            ],
+            "image": {
+              "key": "photos/avionics-boards-in-hand",
+              "alt": "Two custom avionics PCBs held in hand",
+              "src": "/img/photos/avionics-boards-in-hand.webp",
+              "w": 1280,
+              "h": 960,
+              "src800": "/img/photos/avionics-boards-in-hand-800.webp"
+            }
+          },
+          {
+            "id": "sensors",
+            "title": "SENSORS and MICROCONTROLLERS",
+            "text": [],
+            "image": {
+              "key": "photos/electronics-workbench",
+              "alt": "Electronics team working at a bench with a power supply and the rocket body",
+              "src": "/img/photos/electronics-workbench.webp",
+              "w": 1600,
+              "h": 1280,
+              "src800": "/img/photos/electronics-workbench-800.webp"
+            }
+          }
+        ]
+      },
+      {
+        "slug": "recovery",
+        "name": "RECOVERY",
+        "short": "REC",
+        "title": "RECOVERY",
+        "cta": "DISCOVER RECOVERY",
+        "href": "/departments/recovery/",
+        "overview": [
+          "The Recovery System team is responsible for the design, development, and validation of the systems that enable the safe recovery of the rocket after flight. This includes the development of a double parachute-based descent system (first and second deployment) used to control and stabilize the rocket during landing operations, while protecting it from damage upon touchdown. Achieving this requires careful engineering, system integration, and extensive testing to guarantee success through all phases of recovery."
+        ],
+        "indexImage": {
+          "key": "photos/parachute-packing",
+          "alt": "A team member packing a parachute into the recovery bay",
+          "src": "/img/photos/parachute-packing.webp",
+          "w": 1600,
+          "h": 1066,
+          "src800": "/img/photos/parachute-packing-800.webp"
+        },
+        "sections": [
+          {
+            "id": "design",
+            "title": "RECOVERY SYSTEM DESIGN and INTEGRATION",
+            "text": [
+              "The department designs the complete recovery architecture of the launch vehicle, including drogue and main parachute systems, deployment mechanisms, shock cords, anchoring interfaces, and payload protection solutions. The design process focuses on achieving a balance between structural reliability, descent stability, mass optimization, and safe landing conditions. Particular attention is dedicated to the integration between avionics, pyrotechnic deployment systems, and the rocket structure to ensure synchronized and fault-tolerant operations during flight recovery phases."
+            ],
+            "image": {
+              "key": "photos/recovery-bay-parachute",
+              "alt": "Recovery bay with the parachute and harness laid out next to the rocket",
+              "src": "/img/photos/recovery-bay-parachute.webp",
+              "w": 1600,
+              "h": 1280,
+              "src800": "/img/photos/recovery-bay-parachute-800.webp"
+            }
+          },
+          {
+            "id": "simulation",
+            "title": "DESCENT DYNAMICS and RECOVERY SIMULATION",
+            "text": [
+              "The team performs analytical and numerical simulations to model the rocket behavior during descent. These analyses include the study of aerodynamic drag, opening loads, descent velocities, wind influence, drift prediction, and landing dispersion. Simulations are used to validate parachute sizing, deployment timing, and overall recovery stability under different mission conditions."
+            ],
+            "image": {
+              "key": "photos/recovery-3d-printed-parts",
+              "alt": "Two red 3D-printed recovery system parts held in hand",
+              "src": "/img/photos/recovery-3d-printed-parts.webp",
+              "w": 1152,
+              "h": 2048,
+              "src800": "/img/photos/recovery-3d-printed-parts-800.webp"
+            }
+          },
+          {
+            "id": "testing",
+            "title": "GROUND TESTING and VALIDATION CAMPAIGNS",
+            "text": [
+              "Extensive experimental activities are conducted to validate all recovery subsystems before flight operations. These tests include parachute deployment verification, ejection system characterization, tensile and load resistance testing, sensor integration checks, and full-scale recovery rehearsals. Continuous testing and iterative validation are essential to ensure mission safety and successful vehicle recovery after launch."
+            ],
+            "image": {
+              "key": "photos/parachute-packing",
+              "alt": "A team member packing a parachute into the recovery bay",
+              "src": "/img/photos/parachute-packing.webp",
+              "w": 1600,
+              "h": 1066,
+              "src800": "/img/photos/parachute-packing-800.webp"
+            }
+          }
+        ]
+      },
+      {
+        "slug": "pr",
+        "name": "PUBLIC RELATIONS",
+        "short": "PR",
+        "title": "PUBLIC RELATIONS",
+        "cta": "DISCOVER PUBLIC RELATIONS",
+        "href": "/departments/pr/",
+        "overview": [
+          "The Public Relations Department is committed to providing strategic media coverage across multiple channels to ensure visibility and engagement. We manage a dynamic online presence through our official website and social media platforms to convey our message effectively. We also make sure that our team participates in industry events, collaborates with press outlets for authoritative coverage and explores creative branding opportunities, such as custom rocket stickers and merchandising."
+        ],
+        "indexImage": {
+          "key": "photos/camera-on-workbench",
+          "alt": "Video camera resting on a workbench next to tools",
+          "src": "/img/photos/camera-on-workbench.webp",
+          "w": 1600,
+          "h": 1200,
+          "src800": "/img/photos/camera-on-workbench-800.webp"
+        },
+        "sections": [
+          {
+            "id": "social",
+            "title": "SOCIAL MEDIA",
+            "text": [
+              "Aurora Rocketry is currently on Instagram and LinkedIn with dedicated accounts. Through our posts, we provide insights into our activities and projects - an opportunity to both highlight the relentless efforts behind a final product and to track the progress made. Moreover, our collaboration with sponsors is showcased by dedicated posts. Additionally, we are open to create any other type of content if requested. The aim is to show what the brand offered, whether it was funds, products or materials for instance, and how it helped to reach Aurora’s goals."
+            ],
+            "image": {
+              "key": "photos/camera-on-workbench",
+              "alt": "Video camera resting on a workbench next to tools",
+              "src": "/img/photos/camera-on-workbench.webp",
+              "w": 1600,
+              "h": 1200,
+              "src800": "/img/photos/camera-on-workbench-800.webp"
+            }
+          },
+          {
+            "id": "events",
+            "title": "EVENTS",
+            "text": [
+              "Actively engaging in events and conferences is key for Aurora. These occasions provide valuable opportunities to present our projects, share technical knowledge, and engage directly with a wider audience, including companies, professionals and fellow students. At the same time, events serve as an important platform to promote and give visibility to our partners, by integrating them into displays and promotional materials."
+            ],
+            "image": {
+              "key": "photos/event-presentation",
+              "alt": "A team member presenting Aurora Rocketry on stage at an event",
+              "src": "/img/photos/event-presentation.webp",
+              "w": 1600,
+              "h": 2000,
+              "src800": "/img/photos/event-presentation-800.webp"
+            }
+          },
+          {
+            "id": "press",
+            "title": "PRESS",
+            "text": [
+              "We actively engage with the press, amplifying our visibility and building trust and credibility, to ensure that our projects inspire and reach a broader audience."
+            ],
+            "image": {
+              "key": "photos/expo-stand",
+              "alt": "Visitors at the Aurora Rocketry stand during an exhibition",
+              "src": "/img/photos/expo-stand.webp",
+              "w": 1600,
+              "h": 1066,
+              "src800": "/img/photos/expo-stand-800.webp"
+            }
+          },
+          {
+            "id": "merch",
+            "title": "STICKERS and MERCHANDISING",
+            "text": [
+              "Our department also designs merchandising items, both for clothing - t-shirts, hoodies, polo shirts - and accessories like keychains, stickers, etc. We also create and attach on the rocket stickers that feature the names and logos of our sponsors, turning each event into a showcase of collaboration and support. Beyond promotional purposes, merchandising helps strengthen team identity, increase brand recognition, and create a tangible connection between Aurora Rocketry and its community."
+            ],
+            "image": {
+              "key": "photos/merch-tshirt",
+              "alt": "Aurora Rocketry team t-shirt with sponsor logos",
+              "src": "/img/photos/merch-tshirt.webp",
+              "w": 1024,
+              "h": 1024,
+              "src800": "/img/photos/merch-tshirt-800.webp"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "partners": {
+    "hero": {
+      "pre": "EXPLORE OUR",
+      "accent": "PARTNERS"
+    },
+    "tiers": [
+      {
+        "id": "main",
+        "title": "MAIN SPONSORS",
+        "items": [
+          {
+            "name": "Europlast",
+            "href": "https://www.europlastsucci.com/",
+            "plate": "dark",
+            "src": "/img/partners/europlast.png",
+            "w": 2048,
+            "h": 363,
+            "alt": "Europlast logo"
+          }
+        ]
+      },
+      {
+        "id": "strategic",
+        "title": "STRATEGIC PARTNERS",
+        "items": [
+          {
+            "name": "FOR – Fabbrica Raccordi Oleodinamici",
+            "href": "https://www.forfittings.it/it-IT/",
+            "plate": "light",
+            "src": "/img/partners/for-fittings.jpg",
+            "w": 449,
+            "h": 275,
+            "alt": "FOR – Fabbrica Raccordi Oleodinamici logo"
+          },
+          {
+            "name": "Neri S.r.l. – Trasporti e Depositi",
+            "href": "https://corriereneri.it/",
+            "plate": "light",
+            "src": "/img/partners/neri.png",
+            "w": 325,
+            "h": 227,
+            "alt": "Neri S.r.l. – Trasporti e Depositi logo"
+          }
+        ]
+      },
+      {
+        "id": "institutional",
+        "title": "INSTITUTIONAL PARTNERS",
+        "items": [
+          {
+            "name": "Regione Emilia-Romagna",
+            "href": "https://www.regione.emilia-romagna.it/",
+            "plate": "light",
+            "src": "/img/partners/regione-emilia-romagna.png",
+            "w": 816,
+            "h": 258,
+            "alt": "Regione Emilia-Romagna logo"
+          },
+          {
+            "name": "LA BCC Ravennate, Forlivese e Imolese",
+            "href": "https://www.labcc.it/",
+            "plate": "light",
+            "src": "/img/partners/la-bcc.jpg",
+            "w": 370,
+            "h": 274,
+            "alt": "LA BCC Ravennate, Forlivese e Imolese logo"
+          }
+        ]
+      },
+      {
+        "id": "technical",
+        "title": "TECHNICAL PARTNERS",
+        "items": [
+          {
+            "name": "Ansys",
+            "href": "https://www.ansys.com/",
+            "plate": "dark",
+            "src": "/img/partners/ansys.png",
+            "w": 690,
+            "h": 222,
+            "alt": "Ansys logo"
+          },
+          {
+            "name": "SOLIDWORKS",
+            "href": "https://www.solidworks.com/",
+            "plate": "dark",
+            "src": "/img/partners/solidworks.png",
+            "w": 770,
+            "h": 288,
+            "alt": "SOLIDWORKS logo"
+          },
+          {
+            "name": "Cofert S.r.l.",
+            "href": "https://cofert.it/",
+            "plate": "light",
+            "src": "/img/partners/cofert.png",
+            "w": 382,
+            "h": 93,
+            "alt": "Cofert S.r.l. logo"
+          },
+          {
+            "name": "Emmetre – Torneria automatica e artigianale",
+            "href": "https://www.torneriaemmetre.com/en/",
+            "plate": "light",
+            "src": "/img/partners/emmetre.png",
+            "w": 1659,
+            "h": 303,
+            "alt": "Emmetre – Torneria automatica e artigianale logo"
+          },
+          {
+            "name": "Nuova Andrea – Macchine per cucire industriali",
+            "href": "https://andreamacchineindustriali.it/",
+            "plate": "light",
+            "src": "/img/partners/nuova-andrea.png",
+            "w": 516,
+            "h": 380,
+            "alt": "Nuova Andrea – Macchine per cucire industriali logo"
+          },
+          {
+            "name": "Bandini Cuscinetti",
+            "href": "https://bandinicuscinetti.com/",
+            "plate": "light",
+            "src": "/img/partners/bandini-cuscinetti.png",
+            "w": 727,
+            "h": 188,
+            "alt": "Bandini Cuscinetti logo"
+          },
+          {
+            "name": "WD-40",
+            "href": "https://wd40.it/",
+            "plate": "light",
+            "src": "/img/partners/wd40.png",
+            "w": 1428,
+            "h": 1027,
+            "alt": "WD-40 logo"
+          },
+          {
+            "name": "Basso PB",
+            "href": "https://www.bassopb.it/",
+            "plate": "light",
+            "src": "/img/partners/basso-pb.png",
+            "w": 545,
+            "h": 201,
+            "alt": "Basso PB logo"
+          }
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "hero": {
+      "pre": "CONTACT",
+      "accent": "US"
+    },
+    "title": "JOIN US",
+    "subtitle": "IN ADVANCING AND SHAPING THE TOMORROW’S MISSION",
+    "lead": "Do you want to know more about who we are and what we do?",
+    "paragraphs": [
+      {
+        "html": "You can follow us on our social media accounts on <a href=\"https://www.instagram.com/aurorarocketry/\" target=\"_blank\" rel=\"noopener\">Instagram</a> and <a href=\"https://www.linkedin.com/company/aurora-rocketry/posts/?feedView=all\" target=\"_blank\" rel=\"noopener\">LinkedIn</a>! Take a look at the posts and stories in our feed and stay tuned to always be updated with the latest news and activities!"
+      },
+      {
+        "html": "For information of any kind, regarding the team’s origin, its departments or its goals and upcoming projects, you can write us an email at the address you’ll find below. We usually do not take more than three days to answer!"
+      },
+      {
+        "html": "If you’re interested in our project, believe in our mission and you want to support us and be a part of this journey, please consider the idea of a <strong>sponsorship</strong>! To discuss this possibility and the mutual benefits it could bring to both of us, don’t hesitate to contact our team!"
+      }
+    ],
+    "emailLabel": "email:"
+  }
+}

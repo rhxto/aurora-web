@@ -1,0 +1,93 @@
+/* Motion of the home sections below the hero.
+   Dials: pure CSS, driven by the .is-inview class of reveal.js (hidden states only under
+   html.reveal-ready.fx-on, like every reveal). Flight path: fx/home.js sets
+     .flight__field.is-plotted   the path has been measured from the layout (viewBox in px)
+     .flight__field.is-flying    effects on: the burn follows the scroll, the marker is shown
+     .flight__field.is-live      the section is on screen (ambient motion may run)
+     .waypoint.is-reached        the marker has passed this waypoint */
+
+/* ── dials ──────────────────────────────────────────────────────────────── */
+
+/* Same clock as the count-up of reveal.js: 1.6 s, ease-out cubic, after the dial's own stagger. */
+html.reveal-ready.fx-on .gauge.is-inview :is(.gauge__sweep, .gauge__needle, .gauge__bezel) {
+  transition: stroke-dashoffset 1600ms cubic-bezier(0.215, 0.61, 0.355, 1), transform 1600ms cubic-bezier(0.215, 0.61, 0.355, 1);
+  transition-delay: calc(var(--reveal-delay, 0ms) + var(--reveal-i, 0) * var(--reveal-step, 70ms));
+}
+html.reveal-ready.fx-on .gauge:not(.is-inview) .gauge__sweep { stroke-dashoffset: 527.8; }
+html.reveal-ready.fx-on .gauge:not(.is-inview) .gauge__needle { transform: rotate(-360deg); }
+html.reveal-ready.fx-on .gauge:not(.is-inview) .gauge__bezel { transform: rotate(-75deg); }
+
+/* ── flight path ────────────────────────────────────────────────────────── */
+
+/* Measured path: one unit = one pixel; home.js sizes and places the SVG around the path (inline),
+   stroke margin included — a few pixels past the field's edges on wide screens. */
+.flight__field.is-plotted .flight__path {
+  display: block;
+  max-width: none;
+}
+.flight__field.is-plotted .flight__plan { stroke-dasharray: 2 7; }
+/* While the burn follows the scroll the drawing is a layer of its own: redrawing it leaves the
+   medallions, their glows and the text around it alone. */
+.flight__field.is-flying.is-live .flight__path { will-change: transform; }
+@media (max-width: 979px) {
+  .flight__field.is-plotted::before,
+  .flight__field.is-plotted .waypoint::before { display: none; }
+}
+
+.flight__field.is-flying .flight__marker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: block;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  pointer-events: none;
+  will-change: transform;
+}
+/* its glow: a gradient disc under the arrowhead (round, so the marker can turn freely) */
+.flight__marker::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(var(--rgb-coral), 0.85), rgba(var(--rgb-coral), 0.38) 34%, rgba(var(--rgb-coral), 0.1) 68%, transparent);
+}
+.flight__marker svg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: var(--c-ink);
+}
+
+/* A waypoint lights up when the marker gets there. */
+html.fx-on .flight__field.is-flying .waypoint__halo::before,
+html.fx-on .flight__field.is-flying .waypoint__halo::after {
+  transition: opacity var(--dur-3) var(--ease-out);
+}
+html.fx-on .flight__field.is-flying .waypoint:not(.is-reached) .waypoint__halo::before,
+html.fx-on .flight__field.is-flying .waypoint:not(.is-reached) .waypoint__halo::after {
+  opacity: 0;
+}
+html.fx-on .flight__field.is-flying .waypoint.is-reached .waypoint__halo { border-color: rgba(var(--rgb-coral), 0.6); }
+html.fx-on .flight__field.is-flying .waypoint.is-reached .waypoint__ping { animation: home-ping 900ms var(--ease-out); }
+@keyframes home-ping {
+  from { opacity: 0.9; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.16); }
+}
+
+/* The medallions hover, out of step with each other, while the section is on screen. */
+html.fx-on .flight__field.is-live .waypoint__float {
+  animation: home-float 6.5s var(--ease-in-out) infinite alternate;
+  animation-delay: calc(var(--i, 0) * -2.3s);
+}
+@keyframes home-float {
+  from { transform: translateY(-5px); }
+  to { transform: translateY(6px); }
+}
+
+/* Touch screens: tilt.js keeps a holographic sheen on the patches all the time. Safari blends it
+   much more strongly than other engines; held this low, the artwork keeps its true colours. */
+html.fx-on.pointer-coarse .waypoint__tilt.is-floating > .tilt__holo { opacity: 0.3; }

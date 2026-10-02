@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>egg harness</title>
+<!--
+  Standalone harness for src/js/fx/egg.js — the launch-sequence easter egg.
+
+    node tools/shot.mjs --root .,public --path /dev/egg.html \
+      --steps '[{"eval":"window.__aurora.emit(\"launch\"), 1"},{"wait":1700},{"shot":".tmp/egg/count.png"}]'
+
+  Triggers: the "Launch" button (emits 'launch' on the bus, like the HUD), typing l-a-u-n-c-h, or
+  the Konami code. The real fireworks and the climbing rocket are drawn by fx/rocket.js; here a
+  minimal stand-in canvas answers 'burst' so the salvo is visible (without the rocket module the
+  exhaust column simply fades). window.__egg logs every 'burst' and every 'launch:*' cue received.
+-->
+<link rel="stylesheet" href="/src/css/tokens.css">
+<link rel="stylesheet" href="/src/css/fonts.css">
+<link rel="stylesheet" href="/src/css/fx/egg.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--c-void); color: var(--c-ink); font-family: var(--font-body); font-size: var(--fs-body); line-height: var(--lh-body); }
+  body::before { /* stand-in for the sky layer */
+    content: ''; position: fixed; inset: 0; z-index: var(--z-sky); pointer-events: none;
+    background:
+      radial-gradient(60% 40% at 70% 0%, rgba(var(--rgb-aurora), 0.14), transparent 70%),
+      radial-gradient(50% 45% at 15% 20%, rgba(var(--rgb-sky), 0.16), transparent 70%),
+      linear-gradient(var(--c-night), var(--c-void));
+  }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; height: auto; }
+  .site-header { position: fixed; inset: 0 0 auto; z-index: var(--z-header); height: var(--header-h); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gutter); background: var(--c-panel); border-bottom: 1px solid var(--c-line); }
+  .site-header img { height: 38px; width: auto; }
+  .site-nav { display: flex; gap: var(--space-6); font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; }
+  .site-nav a { text-decoration: none; }
+  .page { position: relative; z-index: var(--z-content); }
+  .hero { min-height: 100vh; display: grid; place-content: center; padding: var(--header-h) var(--gutter) 0; }
+  h1, h2 { font-family: var(--font-display); font-stretch: 125%; font-weight: 900; text-transform: uppercase; line-height: var(--lh-tight); margin: 0; }
+  h1 { font-size: var(--fs-hero); }
+  h1 span { display: block; color: var(--c-coral); }
+  h2 { font-size: var(--fs-h2); margin-bottom: var(--space-5); }
+  .kicker { font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--c-mute); margin-top: var(--space-5); }
+  section { width: min(100% - 2 * var(--gutter), var(--container)); margin-inline: auto; padding: var(--section-gap) 0; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-7); align-items: center; }
+  p { color: var(--c-mute); max-width: 62ch; }
+  .controls { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-top: var(--space-5); }
+  .btn, input { padding: 0.8em 1.6em; border: 1px solid var(--c-coral); border-radius: var(--radius-pill); background: none; color: var(--c-coral); font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; cursor: pointer; }
+  input { border-color: var(--c-line-strong); color: var(--c-ink); cursor: text; }
+  #fx-overlay { position: fixed; inset: 0; z-index: var(--z-overlay); pointer-events: none; }
+  @media (max-width: 760px) { .split { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body data-page="home">
+<header class="site-header" data-header>
+  <a href="/dev/transition.html" aria-label="Aurora Rocketry — home"><img src="/img/brand/logo-mark.svg" width="109" height="125" alt=""></a>
+  <nav class="site-nav"><a href="/dev/transition.html">Home</a><a href="/dev/transition-b.html">Nemesis</a><a href="/dev/egg.html" aria-current="page">Egg</a></nav>
+</header>
+<main id="main" class="page">
+  <div class="hero">
+    <h1>Aurora <span>Rocketry</span></h1>
+    <p class="kicker">Type “launch”, enter the Konami code, or press the button</p>
+    <div class="controls">
+      <button class="btn" type="button" id="go">Launch</button>
+      <button class="btn" type="button" id="fx">Toggle FX</button>
+      <input id="field" type="text" placeholder="typing here must not launch" aria-label="Text field (typing here must not launch)">
+    </div>
+  </div>
+  <section class="split">
+    <div>
+      <h2>Page content</h2>
+      <p>Filler copy for the harness only: this is the .page element that shakes at liftoff and must come back to rest exactly where it was.</p>
+    </div>
+    <img src="/img/photos/nemesis-carried-to-pad-800.webp" width="800" height="533" alt="" loading="lazy">
+  </section>
+</main>
+<div id="fx-overlay" aria-hidden="true"></div>
+<script type="module">
+  import { core } from '/src/js/core.js';
+  import initEgg from '/src/js/fx/egg.js';
+
+  initEgg();
+  document.getElementById('go').addEventListener('click', () => core.emit('launch'));
+  document.getElementById('fx').addEventListener('click', () => core.toggleFx());
+
+  // ── minimal stand-in for the rocket module's reaction to 'burst' ─────────
+  const { createCanvas, cssVar, rand, TAU } = core.utils;
+  const stage = createCanvas(core.layers.overlay);
+  core.on('resize', stage.resize);
+  const sparks = [];
+  window.__egg = { bursts: [], cues: [] };
+  for (const cue of ['launch:pad', 'launch:liftoff', 'launch:end']) core.on(cue, () => window.__egg.cues.push(cue));
+  core.on('burst', (d) => {
+    window.__egg.bursts.push(d);
+    const color = d.color?.startsWith('--') ? cssVar(d.color) : d.color || cssVar('--c-coral');
+    const n = Math.round(34 * (d.power ?? 1));
+    for (let i = 0; i < n; i++) {
+      const a = rand(TAU), v = rand(120, 520) * Math.sqrt(d.power ?? 1);
+      sparks.push({ x: d.x, y: d.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.5, 1.1), age: 0, color });
+    }
+  });
+  core.tick((dt) => {
+    const { ctx, w, h } = stage;
+    ctx.clearRect(0, 0, w, h);
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.lineWidth = 1.6;
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i];
+      s.age += dt;
+      if (s.age >= s.life) { sparks.splice(i, 1); continue; }
+      s.vx *= 1 - 2.4 * dt; s.vy = s.vy * (1 - 2.4 * dt) + 260 * dt;
+      s.x += s.vx * dt; s.y += s.vy * dt;
+      ctx.globalAlpha = 1 - s.age / s.life;
+      ctx.strokeStyle = s.color;
+      ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x - s.vx * 0.035, s.y - s.vy * 0.035); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  });
+</script>
+</body>
+</html>

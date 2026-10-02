@@ -1,0 +1,269 @@
+/* Page-transition curtain — "ignition". Owned by src/js/fx/transition.js.
+
+   EXIT   a dark wall rises from the bottom behind a blazing plume front (bloom, white-hot line,
+          sparks); a mono read-out names the destination, then the browser navigates.
+   ENTER  the next page starts fully covered by the same wall (pure CSS, before any JS runs),
+          then the wall ignites and lifts off the top, trailing its exhaust.
+
+   Everything moves with transform/opacity keyframes only, so the curtain keeps running on the
+   compositor while the main thread is busy tearing down / booting a page. */
+
+html {
+  /* Inlined so the cover is complete at first paint (no request) and independent of the site base
+     path. They are images, so they cannot reference the colour tokens: the logo mark is
+     public/img/brand/logo-mark.svg, the tile is a 480px square of white 1px vertical streaks. */
+  --transition-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 109 125' fill='none'%3E%3Cpath d='M64.2881 12.3901C89.5613 17.0587 108.705 39.2111 108.705 65.8354L108.7 66.5376C108.557 77.858 104.951 88.3437 98.8955 96.9868L93.6484 84.1596C96.2487 78.5931 97.705 72.3848 97.7051 65.8354C97.705 47.235 85.9897 31.3729 69.5361 25.2192L64.2881 12.3901ZM37.5029 25.8794C21.9298 32.4547 11 47.8687 11 65.8354C11 71.7497 12.1856 77.387 14.3301 82.5239L8.9375 95.7055C3.40857 87.3161 0.14124 77.3042 0.00488281 66.5376L0 65.8354C5.31086e-05 39.7473 18.3804 17.9524 42.8975 12.6928L37.5029 25.8794Z' fill='white'/%3E%3Cpath d='M62.9999 77.9838L42.9999 124.905L38.9999 96.5903L54.9999 52.9047L62.9999 77.9838ZM69.9999 97.2505L64.5556 123.905L55.9999 105.328L65.3329 81.9047L69.9999 97.2505Z' fill='white'/%3E%3Cpath d='M52.7199 35.6758L23.3478 114.002C17.2495 114.991 12.6565 116.244 10.2492 117.606L47.2795 18.8564L52.7199 35.6758ZM59.5012 13.7324L98.4533 117.605C96.0451 116.243 91.4515 114.989 85.3527 114.001L55.1935 33.5762L48.9719 14.3428L49.2014 13.7324L54.3517 0L59.5012 13.7324Z' fill='%23FF5151'/%3E%3C/svg%3E");
+  --transition-streaks: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='480'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop stop-color='%23fff' stop-opacity='0'/%3E%3Cstop offset='.7' stop-color='%23fff'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='14' y='30' width='1' height='150' fill='url(%23g)' opacity='0.45'/%3E%3Crect x='47' y='250' width='1' height='190' fill='url(%23g)' opacity='0.32'/%3E%3Crect x='83' y='96' width='1' height='90' fill='url(%23g)' opacity='0.7'/%3E%3Crect x='118' y='300' width='1' height='140' fill='url(%23g)' opacity='0.28'/%3E%3Crect x='141' y='12' width='1' height='230' fill='url(%23g)' opacity='0.36'/%3E%3Crect x='176' y='210' width='1' height='110' fill='url(%23g)' opacity='0.62'/%3E%3Crect x='203' y='60' width='1' height='60' fill='url(%23g)' opacity='0.9'/%3E%3Crect x='236' y='330' width='1' height='130' fill='url(%23g)' opacity='0.32'/%3E%3Crect x='262' y='130' width='1' height='210' fill='url(%23g)' opacity='0.4'/%3E%3Crect x='291' y='20' width='1' height='80' fill='url(%23g)' opacity='0.58'/%3E%3Crect x='318' y='270' width='1' height='180' fill='url(%23g)' opacity='0.28'/%3E%3Crect x='347' y='150' width='1' height='70' fill='url(%23g)' opacity='0.8'/%3E%3Crect x='371' y='40' width='1' height='250' fill='url(%23g)' opacity='0.32'/%3E%3Crect x='402' y='340' width='1' height='120' fill='url(%23g)' opacity='0.5'/%3E%3Crect x='428' y='190' width='1' height='100' fill='url(%23g)' opacity='0.36'/%3E%3Crect x='459' y='70' width='1' height='170' fill='url(%23g)' opacity='0.54'/%3E%3C/svg%3E");
+}
+
+/* ── the covered state, shared by the CSS-only cover and the scripted wall ───────────────── */
+html.is-entering::before,
+.transition__wall {
+  background:
+    var(--transition-mark) 50% calc(50% - 1.5rem) / auto 4rem no-repeat,
+    radial-gradient(ellipse 55% 45% at 50% 46%, rgba(var(--rgb-sky), 0.16), rgba(var(--rgb-sky), 0) 70%),
+    linear-gradient(to bottom, var(--c-navy-deep), var(--c-night) 46%, var(--c-void));
+}
+html.is-entering::after,
+.transition__lines {
+  background: var(--transition-streaks) 50% 50% / 480px 480px;
+  opacity: 0.22;
+}
+
+/* CSS-only cover: html.is-entering is set by the inline head snippet before first paint.
+   FAILSAFE — if transition.js never runs, the cover slides away by itself after 1.2 s
+   (transition.js mirrors the 1.2 s / 520 ms below as CSS_FAILSAFE_MS / CSS_FAILSAFE_SLIDE_MS). */
+html.is-entering::before,
+html.is-entering::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-transition);
+  pointer-events: none;
+  animation: transition-failsafe 520ms var(--ease-in-out) 1.2s forwards;
+}
+/* transition.js has taken over with the real layer, or effects are off: no cover. */
+html.is-entering.transition-live::before,
+html.is-entering.transition-live::after,
+html.is-entering.fx-off::before,
+html.is-entering.fx-off::after {
+  content: none;
+}
+@keyframes transition-failsafe {
+  to { transform: translate3d(0, -100%, 0); visibility: hidden; }
+}
+
+/* ── scripted layer ─────────────────────────────────────────────────────────────────────── */
+.transition {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-transition);
+  overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
+  contain: strict;
+}
+.transition[data-state='exit'],
+.transition[data-state='enter'] {
+  visibility: visible;
+}
+/* The rig is the one thing that travels: the wall, the plume front riding on its top edge (exit)
+   and the exhaust hanging from its bottom edge (enter). */
+.transition__rig,
+.transition__wall,
+.transition__lines,
+.transition__streaks,
+.transition__heat {
+  position: absolute;
+  inset: 0;
+}
+.transition__wall {
+  overflow: hidden;
+}
+
+/* plume front: bloom thrown ahead of the wall, over the page that is being covered */
+.transition__front {
+  position: absolute;
+  inset: auto 0 100% 0;
+  height: 28vh;
+  background: linear-gradient(to top, rgba(var(--rgb-amber), 0.5), rgba(var(--rgb-coral), 0.2) 30%, rgba(var(--rgb-coral), 0.06) 62%, rgba(var(--rgb-coral), 0));
+}
+/* white-hot line on the edge that is currently leading (front) or trailing (exhaust) */
+.transition__front::after,
+.transition__exhaust::before {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  background: linear-gradient(to right, var(--c-coral), var(--c-amber) 16%, var(--c-ink) 50%, var(--c-amber) 84%, var(--c-coral));
+  box-shadow: 0 0 18px 3px rgba(var(--rgb-amber), 0.85), 0 0 64px 10px rgba(var(--rgb-coral), 0.6);
+}
+.transition__exhaust::before {
+  inset: 0 0 auto 0;
+}
+
+/* sparks thrown up from the front; geometry and timing are randomised per element by transition.js */
+.transition__sparks {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 0;
+}
+.transition__sparks i {
+  position: absolute;
+  bottom: 0;
+  left: var(--x);
+  width: var(--w);
+  height: var(--h);
+  background: linear-gradient(to top, var(--c-amber), rgba(var(--rgb-amber), 0));
+  box-shadow: 0 0 8px rgba(var(--rgb-amber), 0.5);
+  transform-origin: 50% 100%;
+  opacity: 0;
+}
+
+/* exhaust: hangs below the wall while it lifts off, hottest at the nozzle line, laced with filaments */
+.transition__exhaust {
+  position: absolute;
+  inset: 100% 0 auto 0;
+  height: 42vh;
+  background:
+    var(--transition-streaks) 50% 0 / 240px 34vh repeat-x,
+    linear-gradient(to bottom, var(--c-amber), var(--c-coral) 3vh, rgba(var(--rgb-coral), 0.62) 10vh, rgba(var(--rgb-coral), 0.2) 24vh, rgba(var(--rgb-coral), 0));
+  transform-origin: 50% 0;
+  opacity: 0;
+}
+
+/* speed-lines that only exist while the wall is moving (tinted by masking a gradient with the tile) */
+.transition__streaks {
+  inset: -60vh 0 -60vh 0;
+  opacity: 0;
+}
+@supports (mask-image: none) or (-webkit-mask-image: none) {
+  .transition__streaks {
+    background: linear-gradient(to bottom, var(--c-sky), var(--c-ink) 40%, var(--c-amber) 75%, var(--c-coral));
+    -webkit-mask: var(--transition-streaks) 50% 0 / 480px 480px;
+    mask: var(--transition-streaks) 50% 0 / 480px 480px;
+  }
+}
+
+/* heat soaking into the wall behind the glowing edge */
+.transition__heat {
+  opacity: 0;
+}
+.transition[data-state='exit'] .transition__heat {
+  background: linear-gradient(to bottom, var(--c-amber), var(--c-coral) 2.5vh, rgba(var(--rgb-coral), 0.6) 8vh, rgba(var(--rgb-coral), 0.2) 19vh, rgba(var(--rgb-coral), 0) 34vh);
+}
+.transition[data-state='enter'] .transition__heat {
+  background: linear-gradient(to top, rgba(var(--rgb-coral), 0.7), rgba(var(--rgb-coral), 0.24) 9vh, rgba(var(--rgb-coral), 0) 26vh);
+}
+
+/* read-out under the logo mark */
+.transition__readout {
+  position: absolute;
+  inset: calc(50% + 1.9rem) 0 auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35em 0.9em;
+  max-width: none;
+  margin: 0;
+  padding-inline: var(--gutter);
+  font: 500 var(--fs-label) / 1.2 var(--font-mono);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--c-mute);
+  opacity: 0;
+}
+.transition__arrow {
+  color: var(--c-coral);
+}
+.transition__dest {
+  color: var(--c-ink);
+}
+/* hairline "carrier" under the read-out: shows life while a slow page is still loading */
+.transition__readout::after {
+  content: '';
+  position: absolute;
+  top: calc(100% + 1.1rem);
+  left: calc(50% - 3.5rem);
+  width: 7rem;
+  height: 1px;
+  background: linear-gradient(to right, rgba(var(--rgb-coral), 0), var(--c-coral), rgba(var(--rgb-coral), 0)) 0 0 / 40% 100% no-repeat, var(--c-line);
+}
+
+/* ── EXIT: 460 ms (transition.js navigates on the rig's animationend) ────────────────────── */
+.transition[data-state='exit'] .transition__rig {
+  animation: transition-rise 460ms cubic-bezier(0.3, 0.2, 0.1, 1) both;
+}
+.transition[data-state='exit'] .transition__streaks {
+  animation: transition-streaks-exit 460ms linear both;
+}
+.transition[data-state='exit'] .transition__heat {
+  animation: transition-cool 460ms var(--ease-in-out) both;
+}
+.transition[data-state='exit'] .transition__sparks i {
+  animation: transition-spark var(--d) cubic-bezier(0.2, 0.6, 0.3, 1) var(--delay) both;
+}
+.transition[data-state='exit'] .transition__readout {
+  animation: transition-readout 200ms var(--ease-out) 170ms both;
+}
+.transition[data-state='exit'] .transition__readout::after {
+  animation: transition-carrier 1100ms var(--ease-in-out) 460ms infinite;
+}
+
+/* ── ENTER: 620 ms — ignition, then the wall accelerates away ───────────────────────────── */
+.transition[data-state='enter'] .transition__rig {
+  animation: transition-leave 620ms cubic-bezier(0.5, 0, 0.6, 0.75) both;
+}
+.transition[data-state='enter'] .transition__streaks {
+  animation: transition-streaks-enter 620ms linear both;
+}
+.transition[data-state='enter'] .transition__heat {
+  animation: transition-ignite 220ms var(--ease-out) both;
+}
+.transition[data-state='enter'] .transition__exhaust {
+  animation: transition-exhaust 620ms var(--ease-out) both;
+}
+
+@keyframes transition-rise {
+  from { transform: translate3d(0, 128%, 0); } /* the 28vh front starts below the fold too */
+  to { transform: translate3d(0, 0, 0); }
+}
+@keyframes transition-leave {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -145%, 0); }  /* far enough for the exhaust to clear the top */
+}
+@keyframes transition-streaks-exit {
+  0% { opacity: 0; transform: translate3d(0, -40vh, 0) scaleY(1.8); }
+  35% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(0, 0, 0) scaleY(1); }
+}
+@keyframes transition-streaks-enter {
+  0% { opacity: 0; transform: translate3d(0, 0, 0) scaleY(1); }
+  45% { opacity: 1; }
+  100% { opacity: 1; transform: translate3d(0, 40vh, 0) scaleY(1.8); }
+}
+@keyframes transition-cool {
+  0%, 55% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes transition-ignite {
+  to { opacity: 1; }
+}
+@keyframes transition-exhaust {
+  0% { opacity: 0; transform: scaleY(0.04); }
+  30% { opacity: 1; transform: scaleY(0.5); }
+  100% { opacity: 1; transform: scaleY(1); }
+}
+@keyframes transition-spark {
+  0% { opacity: 0; transform: translate3d(0, 12px, 0) scaleY(0.3); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(0, calc(var(--rise) * -1), 0) scaleY(1); }
+}
+@keyframes transition-readout {
+  from { opacity: 0; transform: translate3d(0, 0.6rem, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes transition-carrier {
+  from { background-position: -70% 0, 0 0; }
+  to { background-position: 170% 0, 0 0; }
+}

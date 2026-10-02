@@ -1,0 +1,350 @@
+{
+ "photos/borealis-ground-station-team": {
+  "src": "/img/photos/borealis-ground-station-team.webp",
+  "w": 1600,
+  "h": 1200,
+  "src800": "/img/photos/borealis-ground-station-team-800.webp"
+ },
+ "photos/recovery-3d-printed-parts": {
+  "src": "/img/photos/recovery-3d-printed-parts.webp",
+  "w": 1152,
+  "h": 2048,
+  "src800": "/img/photos/recovery-3d-printed-parts-800.webp"
+ },
+ "plots/cfd-pressure-tail": {
+  "src": "/img/plots/cfd-pressure-tail.webp",
+  "w": 1411,
+  "h": 575,
+  "src800": "/img/plots/cfd-pressure-tail-800.webp"
+ },
+ "photos/recovery-hardware-table": {
+  "src": "/img/photos/recovery-hardware-table.webp",
+  "w": 1600,
+  "h": 1066,
+  "src800": "/img/photos/recovery-hardware-table-800.webp"
+ },
+ "renders/hybrid-motor-assembly": {
+  "src": "/img/renders/hybrid-motor-assembly.webp",
+  "w": 1600,
+  "h": 917,
+  "src800": "/img/renders/hybrid-motor-assembly-800.webp"
+ },
+ "photos/parachute-packing": {
+  "src": "/img/photos/parachute-packing.webp",
+  "w": 1600,
+  "h": 1066,
+  "src800": "/img/photos/parachute-packing-800.webp"
+ },
+ "plots/flight-trajectories": {
+  "src": "/img/plots/flight-trajectories.webp",
+  "w": 1344,
+  "h": 1344,
+  "src800": "/img/plots/flight-trajectories-800.webp"
+ },
+ "renders/solid-motor-section": {
+  "src": "/img/renders/solid-motor-section.webp",
+  "w": 695,
+  "h": 1197
+ },
+ "photos/solid-motor-closeup": {
+  "src": "/img/photos/solid-motor-closeup.webp",
+  "w": 946,
+  "h": 2048,
+  "src800": "/img/photos/solid-motor-closeup-800.webp"
+ },
+ "photos/payload-cubesat-assembly": {
+  "src": "/img/photos/payload-cubesat-assembly.webp",
+  "w": 1600,
+  "h": 1280,
+  "src800": "/img/photos/payload-cubesat-assembly-800.webp"
+ },
+ "photos/nemesis-recovery-bay": {
+  "src": "/img/photos/nemesis-recovery-bay.webp",
+  "w": 1600,
+  "h": 1280,
+  "src800": "/img/photos/nemesis-recovery-bay-800.webp"
+ },
+ "photos/pcb-soldering": {
+  "src": "/img/photos/pcb-soldering.webp",
+  "w": 1600,
+  "h": 1066,
+  "src800": "/img/photos/pcb-soldering-800.webp"
+ },
+ "photos/nemesis-carried-to-pad": {
+  "src": "/img/photos/nemesis-carried-to-pad.webp",
+  "w": 1600,
+  "h": 1202,
+  "src800": "/img/photos/nemesis-carried-to-pad-800.webp"
+ },
+ "photos/recovery-bay-parachute": {
+  "src": "/img/photos/recovery-bay-parachute.webp",
+  "w": 1600,
+  "h": 1280,
+  "src800": "/img/photos/recovery-bay-parachute-800.webp"
+ },
+ "photos/team-laptops-outdoor": {
+  "src": "/img/photos/team-laptops-outdoor.webp",
+  "w": 1600,
+  "h": 1200,
+  "src800": "/img/photos/team-laptops-outdoor-800.webp"
+ },
+ "renders/test-bench-cad": {
+  "src": "/img/renders/test-bench-cad.webp",
+  "w": 820,
+  "h": 588
+ },
+ "plots/gnc-angular-velocity": {
+  "src": "/img/plots/gnc-angular-velocity.webp",
+  "w": 1600,
+  "h": 887,
+  "src800": "/img/plots/gnc-angular-velocity-800.webp"
+ },
+ "plots/dispersion-ellipses": {
+  "src": "/img/plots/dispersion-ellipses.webp",
+  "w": 1180,
+  "h": 929,
+  "src800": "/img/plots/dispersion-ellipses-800.webp"
+ },
+ "photos/software-coding": {
+  "src": "/img/photos/software-coding.webp",
+  "w": 960,
+  "h": 1280,
+  "src800": "/img/photos/software-coding-800.webp"
+ },
+ "plots/speed-vs-time": {
+  "src": "/img/plots/speed-vs-time.webp",
+  "w": 1341,
+  "h": 692,
+  "src800": "/img/plots/speed-vs-time-800.webp"
+ },
+ "photos/breadboard-prototype": {
+  "src": "/img/photos/breadboard-prototype.webp",
+  "w": 1600,
+  "h": 1067,
+  "src800": "/img/photos/breadboard-prototype-800.webp"
+ },
+ "plots/gnc-airbrake-controller": {
+  "src": "/img/plots/gnc-airbrake-controller.webp",
+  "w": 1600,
+  "h": 874,
+  "src800": "/img/plots/gnc-airbrake-controller-800.webp"
+ },
+ "renders/launch-rail": {
+  "src": "/img/renders/launch-rail.webp",
+  "w": 701,
+  "h": 1098
+ },
+ "photos/merch-tshirt": {
+  "src": "/img/photos/merch-tshirt.webp",
+  "w": 1024,
+  "h": 1024,
+  "src800": "/img/photos/merch-tshirt-800.webp"
+ },
+ "hero/team-rocket-lift": {
+  "src": "/img/hero/team-rocket-lift.webp",
+  "w": 1600,
+  "h": 1067,
+  "src800": "/img/hero/team-rocket-lift-800.webp"
+ },
+ "photos/software-lab": {
+  "src": "/img/photos/software-lab.webp",
+  "w": 960,
+  "h": 1280,
+  "src800": "/img/photos/software-lab-800.webp"
+ },
+ "renders/solid-motor-exploded": {
+  "src": "/img/renders/solid-motor-exploded.webp",
+  "w": 1375,
+  "h": 533,
+  "src800": "/img/renders/solid-motor-exploded-800.webp"
+ },
+ "renders/airbrakes-cad": {
+  "src": "/img/renders/airbrakes-cad.webp",
+  "w": 1343,
+  "h": 953,
+  "src800": "/img/renders/airbrakes-cad-800.webp"
+ },
+ "photos/prototype-construction": {
+  "src": "/img/photos/prototype-construction.webp",
+  "w": 1600,
+  "h": 1066,
+  "src800": "/img/photos/prototype-construction-800.webp"
+ },
+ "photos/motor-assembly-table": {
+  "src": "/img/photos/motor-assembly-table.webp",
+  "w": 1600,
+  "h": 1205,
+  "src800": "/img/photos/motor-assembly-table-800.webp"
+ },
+ "photos/avionics-boards-in-hand": {
+  "src": "/img/photos/avionics-boards-in-hand.webp",
+  "w": 1280,
+  "h": 960,
+  "src800": "/img/photos/avionics-boards-in-hand-800.webp"
+ },
+ "photos/camera-on-workbench": {
+  "src": "/img/photos/camera-on-workbench.webp",
+  "w": 1600,
+  "h": 1200,
+  "src800": "/img/photos/camera-on-workbench-800.webp"
+ },
+ "plots/drag-coefficient-comparison": {
+  "src": "/img/plots/drag-coefficient-comparison.webp",
+  "w": 1600,
+  "h": 848,
+  "src800": "/img/plots/drag-coefficient-comparison-800.webp"
+ },
+ "plots/atlas-simulator-simulink": {
+  "src": "/img/plots/atlas-simulator-simulink.webp",
+  "w": 1551,
+  "h": 728,
+  "src800": "/img/plots/atlas-simulator-simulink-800.webp"
+ },
+ "photos/fin-can-integration": {
+  "src": "/img/photos/fin-can-integration.webp",
+  "w": 1600,
+  "h": 1202,
+  "src800": "/img/photos/fin-can-integration-800.webp"
+ },
+ "photos/ground-station-sunset": {
+  "src": "/img/photos/ground-station-sunset.webp",
+  "w": 1600,
+  "h": 900,
+  "src800": "/img/photos/ground-station-sunset-800.webp"
+ },
+ "plots/cfd-mach-field": {
+  "src": "/img/plots/cfd-mach-field.webp",
+  "w": 1411,
+  "h": 575,
+  "src800": "/img/plots/cfd-mach-field-800.webp"
+ },
+ "photos/electronics-workbench": {
+  "src": "/img/photos/electronics-workbench.webp",
+  "w": 1600,
+  "h": 1280,
+  "src800": "/img/photos/electronics-workbench-800.webp"
+ },
+ "photos/event-presentation": {
+  "src": "/img/photos/event-presentation.webp",
+  "w": 1600,
+  "h": 2000,
+  "src800": "/img/photos/event-presentation-800.webp"
+ },
+ "photos/atlas-avionics-board": {
+  "src": "/img/photos/atlas-avionics-board.webp",
+  "w": 720,
+  "h": 1280
+ },
+ "photos/expo-stand": {
+  "src": "/img/photos/expo-stand.webp",
+  "w": 1600,
+  "h": 1066,
+  "src800": "/img/photos/expo-stand-800.webp"
+ },
+ "photos/rocket-carried-desert": {
+  "src": "/img/photos/rocket-carried-desert.webp",
+  "w": 1600,
+  "h": 1066,
+  "src800": "/img/photos/rocket-carried-desert-800.webp"
+ },
+ "renders/payload-box-cad": {
+  "src": "/img/renders/payload-box-cad.webp",
+  "w": 863,
+  "h": 758
+ },
+ "rockets/atlas-render": {
+  "src": "/img/rockets/atlas-render.png",
+  "w": 1727,
+  "h": 280
+ },
+ "rockets/borealis-render": {
+  "src": "/img/rockets/borealis-render.png",
+  "w": 2048,
+  "h": 281
+ },
+ "renders/rocket-cad-section": {
+  "src": "/img/renders/rocket-cad-section.png",
+  "w": 142,
+  "h": 746
+ },
+ "partners/europlast": {
+  "src": "/img/partners/europlast.png",
+  "w": 2048,
+  "h": 363
+ },
+ "partners/for-fittings": {
+  "src": "/img/partners/for-fittings.jpg",
+  "w": 449,
+  "h": 275
+ },
+ "partners/neri": {
+  "src": "/img/partners/neri.png",
+  "w": 325,
+  "h": 227
+ },
+ "partners/regione-emilia-romagna": {
+  "src": "/img/partners/regione-emilia-romagna.png",
+  "w": 816,
+  "h": 258
+ },
+ "partners/la-bcc": {
+  "src": "/img/partners/la-bcc.jpg",
+  "w": 370,
+  "h": 274
+ },
+ "partners/ansys": {
+  "src": "/img/partners/ansys.png",
+  "w": 690,
+  "h": 222
+ },
+ "partners/solidworks": {
+  "src": "/img/partners/solidworks.png",
+  "w": 770,
+  "h": 288
+ },
+ "partners/cofert": {
+  "src": "/img/partners/cofert.png",
+  "w": 382,
+  "h": 93
+ },
+ "partners/emmetre": {
+  "src": "/img/partners/emmetre.png",
+  "w": 1659,
+  "h": 303
+ },
+ "partners/nuova-andrea": {
+  "src": "/img/partners/nuova-andrea.png",
+  "w": 516,
+  "h": 380
+ },
+ "partners/bandini-cuscinetti": {
+  "src": "/img/partners/bandini-cuscinetti.png",
+  "w": 727,
+  "h": 188
+ },
+ "partners/wd40": {
+  "src": "/img/partners/wd40.png",
+  "w": 1428,
+  "h": 1027
+ },
+ "partners/basso-pb": {
+  "src": "/img/partners/basso-pb.png",
+  "w": 545,
+  "h": 201
+ },
+ "patches/atlas": {
+  "src": "/img/patches/atlas.svg",
+  "w": 2017,
+  "h": 2017
+ },
+ "patches/nemesis": {
+  "src": "/img/patches/nemesis.svg",
+  "w": 1881,
+  "h": 1631
+ },
+ "rockets/nemesis": {
+  "src": "/img/rockets/nemesis.svg",
+  "w": 778,
+  "h": 6236
+ }
+}

@@ -1,0 +1,93 @@
+/* Design tokens — the single source of truth for colour, type, spacing, motion and layering.
+   Every other stylesheet (base, pages, fx/*) must use these variables instead of raw values. */
+
+:root {
+  /* ── Brand palette (from aurorarocketry.eu) ───────────────────────────── */
+  --c-coral: #ff5151;            /* primary accent: logo red */
+  --c-coral-hot: #ff2f3d;
+  --c-coral-soft: #ff8a7a;
+  --c-navy: #1d2c60;             /* brand navy (mission patches, Nemesis livery) */
+  --c-navy-deep: #0e1738;
+  --c-sky: #6b96ed;              /* brand blue */
+  --c-aurora: #2ee6a6;           /* aurora green (Borealis patch) — sparing use: "nominal" states, aurora */
+  --c-amber: #ffb257;            /* exhaust / warning */
+
+  /* ── Surfaces & text ──────────────────────────────────────────────────── */
+  --c-void: #03040a;             /* page background */
+  --c-night: #070b1c;
+  --c-panel: rgba(13, 19, 44, 0.62);
+  --c-panel-solid: #0b1026;
+  --c-ink: #eef1fa;              /* primary text */
+  --c-mute: #a3abc2;             /* secondary text (AA on --c-void) */
+  --c-dim: #6a728c;              /* tertiary / labels */
+  --c-line: rgba(255, 255, 255, 0.12);
+  --c-line-strong: rgba(255, 255, 255, 0.24);
+  --c-glow-coral: rgba(255, 81, 81, 0.45);
+  --c-glow-sky: rgba(107, 150, 237, 0.4);
+
+  /* numeric RGB triplets for canvas/shader code and rgba() mixing */
+  --rgb-coral: 255, 81, 81;
+  --rgb-navy: 29, 44, 96;
+  --rgb-sky: 107, 150, 237;
+  --rgb-aurora: 46, 230, 166;
+  --rgb-amber: 255, 178, 87;
+
+  /* ── Typography ───────────────────────────────────────────────────────── */
+  --font-display: 'Archivo', 'Arial Black', 'Helvetica Neue', Arial, sans-serif;   /* use wdth 125 + wght 800–900, uppercase */
+  --font-body: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace; /* HUD, labels, telemetry */
+  --display-settings: 'wdth' 125, 'wght' 900;
+
+  --fs-hero: clamp(3.2rem, 11.5vw, 11rem);
+  --fs-h1: clamp(2.2rem, 6vw, 5.2rem);
+  --fs-h2: clamp(1.6rem, 3.4vw, 2.8rem);
+  --fs-h3: clamp(1.2rem, 2vw, 1.6rem);
+  --fs-lead: clamp(1.05rem, 1.5vw, 1.3rem);
+  --fs-body: clamp(1rem, 1.1vw, 1.0625rem);
+  --fs-small: 0.875rem;
+  --fs-label: 0.72rem;           /* mono uppercase labels */
+  --lh-tight: 0.92;
+  --lh-snug: 1.2;
+  --lh-body: 1.65;
+  --track-label: 0.18em;
+  --track-display: -0.01em;
+
+  /* ── Layout ───────────────────────────────────────────────────────────── */
+  --container: 1240px;
+  --container-narrow: 820px;
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --header-h: 68px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 7rem;
+  --space-10: 10rem;
+  --section-gap: clamp(5rem, 12vw, 10rem);
+  --radius-s: 4px;
+  --radius-m: 10px;
+  --radius-l: 20px;
+  --radius-pill: 999px;
+
+  /* ── Motion ───────────────────────────────────────────────────────────── */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-1: 160ms;
+  --dur-2: 320ms;
+  --dur-3: 640ms;
+  --dur-4: 1100ms;
+
+  /* ── Layers (keep in sync with docs/ARCHITECTURE.md) ──────────────────── */
+  --z-sky: 0;          /* #fx-sky: fixed aurora/starfield canvas, behind everything */
+  --z-content: 1;      /* .page wrapper */
+  --z-header: 50;
+  --z-hud: 60;         /* telemetry HUD, scroll altimeter */
+  --z-overlay: 80;     /* #fx-overlay: rocket cursor canvas, reticle (pointer-events: none) */
+  --z-transition: 90;  /* page-transition curtain */
+  --z-modal: 100;      /* countdown / easter egg */
+}

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tilt harness</title>
+<link rel="stylesheet" href="/src/css/fonts.css">
+<link rel="stylesheet" href="/src/css/tokens.css">
+<link rel="stylesheet" href="/src/css/fx/tilt.css">
+<style>
+  /* Harness-only layout (the real site gets this from base.css / pages.css). */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--c-void); color: var(--c-ink); font-family: var(--font-body); font-size: var(--fs-body); line-height: var(--lh-body); }
+  body { background: radial-gradient(120% 50% at 30% 0%, var(--c-navy-deep), var(--c-void) 60%) no-repeat, var(--c-void); }
+  img { display: block; max-width: 100%; height: auto; }
+  a { color: inherit; text-decoration: none; }
+  h1, h2, h3, p { margin: 0; }
+  .wrap { width: min(var(--container), 100% - 2 * var(--gutter)); margin-inline: auto; }
+  section { padding-block: var(--space-8); }
+  .display { font-family: var(--font-display); font-stretch: 125%; font-weight: 900; text-transform: uppercase; line-height: var(--lh-tight); }
+  .label { font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--c-mute); }
+  .head { margin-bottom: var(--space-6); }
+
+  .bar { position: fixed; inset: 0 0 auto 0; z-index: var(--z-header); display: flex; align-items: center; justify-content: space-between; height: var(--header-h); padding-inline: var(--gutter); background: var(--c-panel); backdrop-filter: blur(12px); border-bottom: 1px solid var(--c-line); }
+  .bar nav { display: flex; gap: var(--space-2); }
+  .bar nav a { padding: 0.6rem 0.9rem; color: var(--c-ink); }
+  .bar button { font: inherit; background: none; border: 1px solid var(--c-line-strong); border-radius: var(--radius-s); padding: 0.45rem 0.75rem; cursor: pointer; }
+  main { padding-top: var(--header-h); }
+
+  .btn { display: inline-flex; align-items: center; gap: var(--space-3); padding: 1rem 1.6rem; border: 1px solid var(--c-coral); border-radius: var(--radius-pill); color: var(--c-coral); background: none; cursor: pointer; font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; transition: background-color var(--dur-2), color var(--dur-2); }
+  .btn:hover { background: var(--c-coral); color: var(--c-void); }
+  .btn--solid { background: var(--c-coral); color: var(--c-void); }
+  .btns { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-7); padding-block: var(--space-6); }
+
+  /* project cards: tilt + glare + depth children */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+  .card { display: grid; justify-items: center; gap: var(--space-4); padding: var(--space-7) var(--space-5) var(--space-6); border: 1px solid var(--c-line); border-radius: var(--radius-l); background: linear-gradient(160deg, var(--c-panel-solid), var(--c-night)); text-align: center; }
+  .card img { width: 58%; }
+  .card h3 { font-size: var(--fs-h3); }
+  .card p { color: var(--c-mute); font-size: var(--fs-small); max-width: 30ch; }
+
+  /* mission patches: tilt + holo, no box at all around the artwork */
+  .patches { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-7); align-items: center; }
+  .patch { display: block; }
+  .patch img { width: 100%; }
+  .patch--padded { padding: var(--space-5) var(--space-6); border: 1px dashed var(--c-line); }
+  .hexagon { aspect-ratio: 1.1547; display: grid; place-items: center; background: linear-gradient(140deg, var(--c-navy), var(--c-navy-deep)); clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); }
+
+  /* photo cards: glare only, different max angles */
+  .photos { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: var(--space-6); }
+  .photo { margin: 0; border-radius: var(--radius-m); overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--c-line); }
+  .photo img { width: 100%; height: 100%; object-fit: cover; }
+  .photo figcaption { position: absolute; left: var(--space-4); bottom: var(--space-4); }
+
+  #out { font-family: var(--font-mono); font-size: 12px; color: var(--c-dim); white-space: pre-wrap; min-height: 3em; }
+
+  @media (max-width: 760px) {
+    .cards, .photos { grid-template-columns: 1fr; }
+    .patches { grid-template-columns: 1fr 1fr; }
+    .bar nav { display: none; }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <span class="label">TILT + MAGNETIC HARNESS</span>
+  <nav class="label">
+    <a href="#cards" data-magnetic><span>PROJECTS</span></a>
+    <a href="#patches" data-magnetic><span>DEPARTMENTS</span></a>
+    <a href="#photos" data-magnetic><span>PARTNERS</span></a>
+    <a href="#magnetic" data-magnetic><span>CONTACT</span></a>
+  </nav>
+  <button class="label" id="fx" type="button">FX ON</button>
+</header>
+
+<main>
+  <section class="wrap" id="cards">
+    <p class="label head">[data-tilt data-tilt-glare] + [data-tilt-depth] children</p>
+    <div class="cards">
+      <a class="card" href="#" data-tilt data-tilt-glare data-tilt-max="12">
+        <img src="/img/patches/borealis.svg" width="811" height="719" alt="Borealis mission patch" data-tilt-depth="70">
+        <h3 class="display" data-tilt-depth="40">BOREALIS</h3>
+        <p data-tilt-depth="20">Borealis is Aurora Rocketry’s first ever rocket, designed to test core subsystems.</p>
+        <span class="label" data-tilt-depth="20">2024</span>
+      </a>
+      <a class="card" href="#" data-tilt data-tilt-glare data-tilt-max="12">
+        <img src="/img/patches/nemesis.svg" width="1881" height="1631" alt="Nemesis mission patch" data-tilt-depth="70">
+        <h3 class="display" data-tilt-depth="40">NEMESIS</h3>
+        <p data-tilt-depth="20">Aurora’s first competition rocket, Nemesis, is a single-stage vehicle, powered by a commercial solid motor.</p>
+        <span class="label" data-tilt-depth="20">EUROC 2025</span>
+      </a>
+      <a class="card" href="#" data-tilt data-tilt-glare data-tilt-max="12">
+        <img src="/img/patches/atlas.svg" width="2017" height="2017" alt="Atlas mission patch" data-tilt-depth="70">
+        <h3 class="display" data-tilt-depth="40">ATLAS</h3>
+        <p data-tilt-depth="20">Atlas is the result of everything we’ve learnt from previous projects.</p>
+        <span class="label" data-tilt-depth="20">EUROC 2026</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="wrap" id="patches">
+    <p class="label head">[data-tilt data-tilt-holo] — masked to the artwork · padded wrapper · ="hex"</p>
+    <div class="patches">
+      <a class="patch" href="#" data-tilt data-tilt-holo data-tilt-max="16"><img src="/img/patches/borealis.svg" width="811" height="719" alt="Borealis mission patch: a rocket lifting off under an aurora, dated 2024"></a>
+      <a class="patch" href="#" data-tilt data-tilt-holo data-tilt-max="16"><img src="/img/patches/nemesis.svg" width="1881" height="1631" alt="Nemesis mission patch: a rocket and a satellite, EUROC 2025"></a>
+      <a class="patch patch--padded" href="#" data-tilt data-tilt-holo data-tilt-max="16"><img src="/img/patches/atlas.svg" width="2017" height="2017" alt="Atlas mission patch: Atlas holding the Earth with a rocket orbiting, EUROC 2026"></a>
+      <div class="hexagon" data-tilt data-tilt-holo="hex" data-tilt-max="16"><span class="display" style="font-size:var(--fs-h3)">HEX</span></div>
+    </div>
+    <p class="label head" style="margin-top:var(--space-7)">bare &lt;img data-tilt data-tilt-holo&gt; (filter fallback)</p>
+    <img src="/img/patches/nemesis.svg" width="1881" height="1631" alt="Nemesis mission patch" style="width:200px" data-tilt data-tilt-holo id="bare">
+  </section>
+
+  <section class="wrap" id="photos">
+    <p class="label head">[data-tilt data-tilt-glare] on photos — max 6 / 10 (default) / 18</p>
+    <div class="photos">
+      <figure class="photo" data-tilt data-tilt-glare data-tilt-max="6"><img src="/img/photos/nemesis-carried-to-pad-800.webp" width="800" height="600" alt="Nemesis carried to the launch pad" loading="lazy"><figcaption class="label">MAX 6</figcaption></figure>
+      <figure class="photo" data-tilt data-tilt-glare><img src="/img/photos/ground-station-sunset-800.webp" width="800" height="533" alt="Ground station at sunset" loading="lazy"><figcaption class="label">MAX 10</figcaption></figure>
+      <figure class="photo" data-tilt data-tilt-glare data-tilt-max="18"><img src="/img/photos/pcb-soldering-800.webp" width="800" height="533" alt="Soldering a PCB" loading="lazy"><figcaption class="label">MAX 18</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="wrap" id="magnetic">
+    <p class="label head">[data-magnetic] — default 0.35 · 0.6 · text-only · button</p>
+    <div class="btns">
+      <a class="btn" href="#" data-magnetic id="m1"><span>DISCOVER THE TEAM</span></a>
+      <a class="btn btn--solid" href="#" data-magnetic="0.6" id="m2"><span data-magnetic-label>DISCOVER THE PROJECTS</span><span aria-hidden="true">→</span></a>
+      <a class="label" href="#" data-magnetic id="m3">info@aurorarocketry.eu</a>
+      <button class="btn" type="button" data-magnetic id="add"><span>ADD A CARD (refresh)</span></button>
+    </div>
+    <div class="cards" id="dynamic"></div>
+    <p id="clicks" class="label">clicks: 0</p>
+    <pre id="out"></pre>
+  </section>
+  <div style="height:60vh"></div>
+</main>
+
+<script type="module">
+import { core } from '/src/js/core.js';
+import init, { refresh } from '/src/js/fx/tilt.js';
+
+window.__handle = init();
+
+const fx = document.getElementById('fx');
+const label = () => { fx.textContent = core.fx.enabled ? 'FX ON' : 'FX OFF'; };
+fx.addEventListener('click', () => core.toggleFx());
+core.on('fx:change', label);
+label();
+
+// Elements added later are picked up by refresh().
+document.getElementById('add').addEventListener('click', () => {
+  const card = document.querySelector('.card').cloneNode(true);
+  card.classList.remove('is-tilting', 'tilt-3d');
+  card.removeAttribute('style');
+  card.querySelectorAll('.tilt__glare').forEach((n) => n.remove());
+  document.getElementById('dynamic').append(card);
+  refresh();
+});
+
+let clicks = 0;
+for (const el of document.querySelectorAll('[data-magnetic]')) {
+  el.addEventListener('click', (e) => {
+    if (el.tagName === 'A') e.preventDefault();
+    document.getElementById('clicks').textContent = `clicks: ${++clicks} (last: ${el.id || el.textContent.trim()})`;
+  });
+}
+
+// Live read-out of what tilt.js writes (always-on ticker: harness only).
+const out = document.getElementById('out');
+core.tick(() => {
+  const tilting = Array.from(document.querySelectorAll('.is-tilting'), (el) => ['--rx', '--ry', '--mx', '--my', '--tilt'].map((v) => `${v} ${el.style.getPropertyValue(v)}`).join('  '));
+  const pulled = Array.from(document.querySelectorAll('[data-magnetic]')).filter((el) => el.style.translate).map((el) => `${el.id || 'nav'} → ${el.style.translate}`);
+  out.textContent = [...tilting, ...pulled].join('\n');
+}, { always: true });
+</script>
+</body>
+</html>

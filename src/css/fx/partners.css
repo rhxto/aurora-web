@@ -1,0 +1,189 @@
+/* partners.js — what exists only while the module runs on /partners/ (html.partners-ready):
+   the pointer spotlight on the plates, the hover sweep, the trajectory drawn by the scroll, the
+   tier markers that light up as it reaches them and the plates assembling as they enter.
+   The static page is src/css/components/partners.css. */
+
+/* ── spotlight ──────────────────────────────────────────────────────────── */
+
+/* Both lights are a gradient sheet inside a clipping frame. partners.js un-hides the frames of
+   the plates near the pointer and writes each sheet's transform (the pointer's position inside
+   the plate) and opacity (how close it is): painted once, composited afterwards, and no other
+   node of the plate is restyled. */
+.partners-spot,
+.partners-glow {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+/* The ring: only a 2 px frame of the sheet shows through, just outside the plate's edge. */
+.partners-spot {
+  inset: -2px;
+  padding: 2px;
+  border-radius: calc(var(--radius-s) + 2px);
+  -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(black 0 0) content-box exclude, linear-gradient(black 0 0);
+}
+.partners-sheet {
+  position: absolute;
+  left: calc(var(--partners-edge, 0px) - var(--partners-reach));
+  top: calc(var(--partners-edge, 0px) - var(--partners-reach));
+  width: calc(var(--partners-reach) * 2);
+  height: calc(var(--partners-reach) * 2);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.partners-spot > .partners-sheet {
+  --partners-reach: 15rem;
+  --partners-edge: 2px;   /* the ring's frame starts 2 px outside the plate */
+  background: radial-gradient(closest-side, var(--c-ink), var(--c-coral) 16%, rgba(var(--rgb-coral), 0.6) 42%, rgba(var(--rgb-amber), 0.2) 66%, transparent);
+}
+/* The light is the border while the module runs: no flat hover ring on top of it. */
+html.fx-on.partners-ready .decal { --partner-ring: transparent; }
+/* A faint pool of light on the plate itself — under the logo, which it must never veil. */
+.partners-glow { z-index: -1; }
+.partners-glow > .partners-sheet {
+  --partners-reach: 13rem;
+  background: radial-gradient(closest-side, rgba(var(--rgb-sky), 0.24), rgba(var(--rgb-sky), 0.07) 50%, transparent);
+}
+.decal--light .partners-glow > .partners-sheet {
+  background: radial-gradient(closest-side, rgba(var(--rgb-sky), 0.2), rgba(var(--rgb-sky), 0.06) 50%, transparent);
+}
+
+/* The tilt glare is tuned for dark cards; on a near-white plate it is a whisper of cool shade,
+   light enough to leave the logo's colours alone. */
+.decal--light > .tilt__glare::before {
+  background: radial-gradient(closest-side, rgba(var(--rgb-sky), 0.09), rgba(var(--rgb-sky), 0.03) 40%, transparent 66%);
+}
+
+/* ── sweep: a band of light crosses the plate on hover / focus ──────────── */
+.partners-sweep {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.partners-sweep::before {
+  content: '';
+  position: absolute;
+  inset: -20% -40%;
+  background: linear-gradient(105deg, transparent 42%, color-mix(in srgb, var(--c-ink) 22%, transparent) 50%, transparent 58%);
+  transform: translateX(-70%);
+}
+.decal--light > .partners-sweep::before {
+  background: linear-gradient(105deg, transparent 40%, rgba(var(--rgb-sky), 0.26) 48%, rgba(var(--rgb-coral), 0.14) 53%, transparent 60%);
+}
+html.fx-on .partner:is(:hover, :focus-visible) .partners-sweep::before {
+  transform: translateX(70%);
+  transition: transform 900ms var(--ease-out);
+}
+html.fx-off .partners-sweep { display: none; }
+
+/* ── trajectory ─────────────────────────────────────────────────────────── */
+
+/* While the module runs the static line becomes a faint dashed rail, and .partners-fill (moved
+   with a transform, clipped by the segment) is the part the scroll has drawn so far. */
+html.fx-on.partners-ready .tier__path {
+  width: 2.5rem;
+  clip-path: inset(0);
+  background: repeating-linear-gradient(to bottom, var(--c-line-strong) 0 4px, transparent 4px 10px) center / 1px 100% no-repeat;
+}
+.partners-fill {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(var(--rgb-coral), 0.5), var(--c-coral) calc(100% - 9rem), var(--c-amber)) center / 1px 100% no-repeat;
+  transform: translate3d(0, -100%, 0);
+  will-change: transform;
+}
+html.fx-on.partners-ready .partners-fill { display: block; }
+/* The head of the line: a short hot streak with a spark at its tip. */
+.partners-fill::before,
+.partners-fill::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+}
+.partners-fill::before {
+  width: 3px;
+  height: 4.5rem;
+  margin-left: -1.5px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, transparent, rgba(var(--rgb-amber), 0.9));
+}
+.partners-fill::after {
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: var(--c-ink);
+  box-shadow: 0 0 0 3px rgba(var(--rgb-amber), 0.35), 0 0 16px 4px rgba(var(--rgb-coral), 0.8);
+}
+
+/* Markers wait, hollow, until the line reaches them. */
+html.fx-on.partners-ready :is(.tier, .tiers__end) .tier__node {
+  transition: background-color var(--dur-2), border-color var(--dur-2), box-shadow var(--dur-3);
+}
+html.fx-on.partners-ready :is(.tier, .tiers__end):not(.is-reached) .tier__node {
+  border-color: var(--c-line-strong);
+  background: transparent;
+  box-shadow: none;
+}
+html.fx-on.partners-ready :is(.tier, .tiers__end) .tier__tag { transition: opacity var(--dur-3); }
+html.fx-on.partners-ready :is(.tier, .tiers__end):not(.is-reached) .tier__tag { opacity: 0.35; }
+html.fx-on.partners-ready .tier:first-child:not(.is-reached) .tier__marker::before { opacity: 0.35; }
+/* One ring leaves the node at the moment it lights up. */
+.tier__node::after {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border: 1px solid var(--c-coral);
+  opacity: 0;
+}
+html.fx-on.partners-ready .is-reached .tier__node::after { animation: partners-ping 900ms var(--ease-out); }
+@keyframes partners-ping {
+  from { opacity: 0.9; transform: scale(1); }
+  to { opacity: 0; transform: scale(4.2); }
+}
+
+/* ── assembly: plate, registration marks, logo and caption arrive in turn ─ */
+
+/* reveal.js adds .is-inview (and the stagger index --reveal-i) to each .tier__item; partners.js
+   adds .is-assembled when the last piece has landed, which retires every rule below. */
+html.fx-on.reveal-ready.partners-ready .tier__item:not(.is-inview) { opacity: 0; }
+html.fx-on.reveal-ready.partners-ready .tier__item.is-inview:not(.is-assembled) :is(.decal__face, .corners, .decal__logo, .partner__meta) {
+  --partners-at: calc(var(--reveal-i, 0) * 85ms);
+  animation: partners-face 760ms var(--ease-out) var(--partners-at) backwards;
+}
+html.fx-on.reveal-ready.partners-ready .tier__item.is-inview:not(.is-assembled) .corners {
+  animation: partners-marks 620ms var(--ease-out) calc(var(--partners-at) + 200ms) backwards;
+}
+html.fx-on.reveal-ready.partners-ready .tier__item.is-inview:not(.is-assembled) .decal__logo {
+  animation: partners-logo 700ms var(--ease-out) calc(var(--partners-at) + 300ms) backwards;
+}
+html.fx-on.reveal-ready.partners-ready .tier__item.is-inview:not(.is-assembled) .partner__meta {
+  animation: partners-meta 600ms var(--ease-out) calc(var(--partners-at) + 420ms) backwards;
+}
+@keyframes partners-face {
+  from { opacity: 0; clip-path: inset(46% 0 46% 0); transform: translateY(1.5rem); }
+  to { clip-path: inset(0); }
+}
+@keyframes partners-marks {
+  from { opacity: 0; transform: scale(1.3); }
+}
+@keyframes partners-logo {
+  from { opacity: 0; scale: 0.9; }
+}
+@keyframes partners-meta {
+  from { opacity: 0; transform: translateY(0.5rem); }
+}
+
+@media print {
+  html.fx-on.partners-ready .tier__item,
+  html.fx-on.partners-ready .tier__item * { opacity: 1 !important; animation: none !important; }
+}

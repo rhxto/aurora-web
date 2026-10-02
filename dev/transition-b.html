@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>transition harness · B</title>
+<!--
+  Standalone harness for src/js/fx/transition.js — page B of a pair (see dev/transition.html for
+  the query switches and the window.__clicks / window.__probe helpers, which work here too).
+-->
+<!-- the layout's inline head snippet (ARCHITECTURE.md §3) + the ?failsafe switch of this harness -->
+<script>try{var n=sessionStorage.getItem('aurora:nav');sessionStorage.removeItem('aurora:nav');if(n||/[?&]failsafe/.test(location.search)){document.documentElement.classList.add('is-entering')}}catch(e){}</script>
+<link rel="stylesheet" href="/src/css/tokens.css">
+<link rel="stylesheet" href="/src/css/fonts.css">
+<link rel="stylesheet" href="/src/css/fx/transition.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--c-void); color: var(--c-ink); font-family: var(--font-body); font-size: var(--fs-body); line-height: var(--lh-body); }
+  body::before { /* stand-in for the sky layer */
+    content: ''; position: fixed; inset: 0; z-index: var(--z-sky); pointer-events: none;
+    background:
+      radial-gradient(60% 40% at 70% 0%, rgba(var(--rgb-aurora), 0.14), transparent 70%),
+      radial-gradient(50% 45% at 15% 20%, rgba(var(--rgb-sky), 0.16), transparent 70%),
+      linear-gradient(var(--c-night), var(--c-void));
+  }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; height: auto; }
+  .site-header { position: fixed; inset: 0 0 auto; z-index: var(--z-header); height: var(--header-h); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gutter); background: var(--c-panel); border-bottom: 1px solid var(--c-line); }
+  .site-header img { height: 38px; width: auto; }
+  .site-nav { display: flex; gap: var(--space-6); font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; }
+  .site-nav a { text-decoration: none; }
+  .site-nav a[aria-current] { color: var(--c-coral); }
+  .page { position: relative; z-index: var(--z-content); }
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: var(--space-7); align-items: center; width: min(100% - 2 * var(--gutter), var(--container)); margin-inline: auto; padding-top: var(--header-h); }
+  .hero img { width: min(100%, 420px); margin-inline: auto; }
+  h1, h2 { font-family: var(--font-display); font-stretch: 125%; font-weight: 900; text-transform: uppercase; line-height: var(--lh-tight); margin: 0; }
+  h1 { font-size: var(--fs-h1); }
+  h1 span { display: block; color: var(--c-coral); }
+  h2 { font-size: var(--fs-h2); margin-bottom: var(--space-5); }
+  .kicker { font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--c-mute); margin-bottom: var(--space-5); }
+  section { width: min(100% - 2 * var(--gutter), var(--container)); margin-inline: auto; padding: var(--section-gap) 0; }
+  p { color: var(--c-mute); max-width: 62ch; }
+  .btn { display: inline-block; margin: var(--space-4) var(--space-3) 0 0; padding: 0.8em 1.6em; border: 1px solid var(--c-coral); border-radius: var(--radius-pill); color: var(--c-coral); font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; text-decoration: none; }
+  @media (max-width: 760px) { .hero { grid-template-columns: 1fr; align-content: center; } }
+</style>
+</head>
+<body data-page="project" data-slug="nemesis">
+<header class="site-header" data-header>
+  <a href="/dev/transition.html" id="logo" aria-label="Aurora Rocketry — home"><img src="/img/brand/logo-mark.svg" width="109" height="125" alt=""></a>
+  <nav class="site-nav">
+    <a class="site-nav__link" href="/dev/transition.html" id="to-a">Home</a>
+    <a class="site-nav__link" href="/dev/transition-b.html" aria-current="page">Nemesis</a>
+    <a class="site-nav__link" href="/dev/egg.html">Egg</a>
+  </nav>
+</header>
+<main id="main" class="page">
+  <div class="hero">
+    <div>
+      <p class="kicker">Harness page B · 02 / 03</p>
+      <h1>Discover <span>Nemesis</span></h1>
+      <p>Filler copy for the harness only. The real pages take every word from content/site.json.</p>
+      <p><a class="btn" href="/dev/transition.html" id="back">Back to home</a></p>
+    </div>
+    <img src="/img/patches/nemesis.svg" width="420" height="420" alt="">
+  </div>
+  <section>
+    <h2>Recovery</h2>
+    <p><img src="/img/photos/nemesis-recovery-bay-800.webp" width="800" height="533" alt="" loading="lazy"></p>
+  </section>
+</main>
+<script type="module">
+  import { core } from '/src/js/core.js';
+
+  const params = new URLSearchParams(location.search);
+  window.__clicks = [];
+  window.__nav = null;
+  core.on('navigate:start', (detail) => { window.__nav = detail; });
+
+  if (!params.has('failsafe')) {
+    const boot = Number(params.get('boot') || 0);
+    if (boot) await new Promise((resolve) => setTimeout(resolve, boot));
+    const transition = await import('/src/js/fx/transition.js');
+    transition.default();
+    window.__go = transition.go;
+  }
+  // Registered after transition.js, on window: it sees the click after the module handled it.
+  window.addEventListener('click', (e) => {
+    const a = e.target.closest?.('a');
+    if (!a) return;
+    window.__clicks.push({ id: a.id, prevented: e.defaultPrevented });
+    if (window.__probe) e.preventDefault();
+  });
+</script>
+</body>
+</html>

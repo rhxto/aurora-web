@@ -1,0 +1,125 @@
+/* THE SKY (fx/sky.js) — fixed background layer behind every page.
+
+   Without JS, before the module loads, or when WebGL is unavailable (.sky--css), the aurora is
+   the pair of gradient "veils" below. Once the shader runs (.sky--gl) they fade out and the
+   canvas takes over.
+
+   Legibility: there is no scrim element. The shader caps its own luminance and keeps the aurora
+   calm everywhere except behind the page's hero (see sky.js). The CSS veils have no such
+   control, so they are faded as a whole with --sky-vivid (an opacity: 1 at the top of the page →
+   about 0.4 further down, written by sky.js; without JS it stays at 0.5). */
+
+#fx-sky {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-sky);
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+  background:
+    radial-gradient(130% 55% at 50% 108%, rgba(var(--rgb-navy), 0.42), transparent 72%),
+    linear-gradient(to bottom, var(--c-void) 25%, var(--c-night));
+}
+
+/* ── CSS aurora: two slanted curtains of soft gradients, striped into vertical rays ── */
+#fx-sky::before,
+#fx-sky::after {
+  content: '';
+  position: absolute;
+  inset: -14% -18% 30%;
+  opacity: var(--sky-vivid, 0.5);
+  transform-origin: 50% 100%;
+  transition: opacity var(--dur-3) linear, visibility 0s;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* nearer curtain: bright green hem rising into blue, violet fringe on top */
+#fx-sky::before {
+  background:
+    linear-gradient(to top, transparent 60%, rgba(var(--rgb-coral), 0.24) 82%, transparent 97%),
+    linear-gradient(to top,
+      transparent 9%,
+      rgba(var(--rgb-aurora), 0.64) 15%,
+      rgba(var(--rgb-aurora), 0.36) 30%,
+      rgba(var(--rgb-sky), 0.44) 58%,
+      rgba(var(--rgb-sky), 0.22) 80%,
+      transparent 96%);
+  transform: skewX(-16deg) rotate(-5deg);
+  -webkit-mask-image:
+    repeating-linear-gradient(90deg, rgb(0 0 0) 0, rgb(0 0 0 / 0.25) 2.1%, rgb(0 0 0) 4.9%, rgb(0 0 0 / 0.5) 6.2%, rgb(0 0 0) 7.3%),
+    repeating-linear-gradient(90deg, rgb(0 0 0) 0, rgb(0 0 0 / 0.45) 1.3%, rgb(0 0 0) 3.1%),
+    radial-gradient(62% 100% at 34% 40%, rgb(0 0 0) 25%, transparent 100%);
+  mask-image:
+    repeating-linear-gradient(90deg, rgb(0 0 0) 0, rgb(0 0 0 / 0.25) 2.1%, rgb(0 0 0) 4.9%, rgb(0 0 0 / 0.5) 6.2%, rgb(0 0 0) 7.3%),
+    repeating-linear-gradient(90deg, rgb(0 0 0) 0, rgb(0 0 0 / 0.45) 1.3%, rgb(0 0 0) 3.1%),
+    radial-gradient(62% 100% at 34% 40%, rgb(0 0 0) 25%, transparent 100%);
+}
+
+/* farther curtain, higher in the sky: mostly blue */
+#fx-sky::after {
+  background:
+    linear-gradient(to top, transparent 62%, rgba(var(--rgb-coral), 0.16) 84%, transparent 98%),
+    linear-gradient(to top,
+      transparent 30%,
+      rgba(var(--rgb-aurora), 0.46) 36%,
+      rgba(var(--rgb-aurora), 0.22) 48%,
+      rgba(var(--rgb-sky), 0.4) 66%,
+      rgba(var(--rgb-sky), 0.18) 84%,
+      transparent 97%);
+  transform: skewX(12deg) rotate(4deg);
+  -webkit-mask-image:
+    repeating-linear-gradient(90deg, rgb(0 0 0) 0, rgb(0 0 0 / 0.3) 2.7%, rgb(0 0 0) 5.3%, rgb(0 0 0 / 0.55) 7.9%, rgb(0 0 0) 9.1%),
+    repeating-linear-gradient(90deg, rgb(0 0 0) 0, rgb(0 0 0 / 0.5) 1.9%, rgb(0 0 0) 3.7%),
+    radial-gradient(58% 100% at 72% 34%, rgb(0 0 0) 20%, transparent 100%);
+  mask-image:
+    repeating-linear-gradient(90deg, rgb(0 0 0) 0, rgb(0 0 0 / 0.3) 2.7%, rgb(0 0 0) 5.3%, rgb(0 0 0 / 0.55) 7.9%, rgb(0 0 0) 9.1%),
+    repeating-linear-gradient(90deg, rgb(0 0 0) 0, rgb(0 0 0 / 0.5) 1.9%, rgb(0 0 0) 3.7%),
+    radial-gradient(58% 100% at 72% 34%, rgb(0 0 0) 20%, transparent 100%);
+}
+
+/* The veils only move when effects are on and they are the aurora in use (transform only). */
+html.fx-on #fx-sky.sky--css::before { animation: sky-sway-a 26s var(--ease-in-out) infinite alternate; }
+html.fx-on #fx-sky.sky--css::after { animation: sky-sway-b 34s var(--ease-in-out) infinite alternate; }
+
+@keyframes sky-sway-a {
+  from { transform: translate3d(-3%, 0, 0) skewX(-16deg) rotate(-5deg) scaleY(1); }
+  to { transform: translate3d(4%, -2%, 0) skewX(-9deg) rotate(-2deg) scaleY(1.08); }
+}
+@keyframes sky-sway-b {
+  from { transform: translate3d(3%, 0, 0) skewX(12deg) rotate(4deg) scaleY(1.06); }
+  to { transform: translate3d(-4%, 2%, 0) skewX(5deg) rotate(1deg) scaleY(1); }
+}
+
+/* shader running: hand over to the canvas */
+#fx-sky.sky--gl::before,
+#fx-sky.sky--gl::after {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--dur-4) linear, visibility 0s linear var(--dur-4);
+}
+
+/* ── canvases (above both veils: the stars shine through the CSS aurora too) ── */
+.sky-aurora,
+.sky-stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* low-resolution shader buffer stretched to the viewport (the aurora is soft by nature) */
+.sky-aurora {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+.sky--gl .sky-aurora {
+  opacity: var(--sky-vivid, 1);
+  animation: sky-in var(--dur-4) var(--ease-out) backwards;
+}
+html.fx-off .sky--gl .sky-aurora { animation: none; }
+
+@keyframes sky-in {
+  from { opacity: 0; }
+}

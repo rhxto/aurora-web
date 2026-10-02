@@ -1,0 +1,147 @@
+/* Departments map (src/templates/partials/orbit.mjs).
+   Static state — no JS, or fx/orbit.js not running: a neat grid of chips, one per department.
+   The live orbital map (html.js, .orbit--live) is styled in src/css/fx/orbit.css; the size of
+   its box is defined here, so the page can reserve it before the module runs.
+   Also here: .orbit-glyph, the small inline diagram used in row headers. */
+
+/* ── the map's box ─────────────────────────────────────────────────────── */
+/* How tall the live map is, defined once and used twice: fx/orbit.css sizes the live stage with
+   it, and the rule at the end of this block reserves the same box from the first paint whenever
+   JavaScript runs. The document therefore has its final height before fx/orbit.js starts:
+   nothing below the map moves when the module arrives late, and reload / back restore the
+   scroll position against the layout the visitor left.
+   --orbit-layout is the single source of the side / stack decision (fx/orbit.js reads it):
+     stack  the info card sits in a read-out under the map (--orbit-dock-h tall at rest)
+     side   wide stage: the card docks in a corner of the map, nothing below it */
+.orbit {
+  container: orbit / inline-size;
+  --orbit-dock-h: 7rem;
+}
+.orbit__stage {
+  position: relative;
+  --orbit-layout: stack;
+  --orbit-stage-h: clamp(18.5rem, 80vw, 32rem);
+  --orbit-below: calc(var(--space-3) + var(--orbit-dock-h));
+}
+/* a phone held sideways: the whole map fits between the header and the HUD status bar */
+@media (orientation: landscape) and (max-height: 500px) {
+  .orbit__stage { --orbit-stage-h: max(12rem, 100vh - var(--header-h) - var(--hud-bar-h) - 2rem); }
+  /* (a custom property cannot fall back from an unknown unit by itself) */
+  @supports (height: 100svh) {
+    .orbit__stage { --orbit-stage-h: max(12rem, 100svh - var(--header-h) - var(--hud-bar-h) - 2rem); }
+  }
+}
+@container orbit (min-width: 1000px) {
+  .orbit__stage {
+    --orbit-layout: side;
+    /* as tall as the viewport comfortably shows at once, growing with very large screens */
+    --orbit-stage-h: clamp(31rem, min(46vw, 100vh - 11rem), max(41rem, 38vw));
+    --orbit-below: 0px;
+  }
+}
+/* JavaScript is running but the map is not live yet (or never will be, if the module fails):
+   the static grid waits in the middle of the box the map is about to fill. */
+html.js .orbit:not(.orbit--live) .orbit__stage {
+  display: grid;
+  align-content: center;
+  min-height: calc(var(--orbit-stage-h) + var(--orbit-below));
+}
+/* Effects are about to run (html.fx-boot, see fx/reveal.css): the grid is not painted first,
+   the map deploys into an empty sky. The class goes away once the modules have started — or
+   after 2.5 s if they have not, and then the grid shows. */
+html.fx-boot .orbit:not(.orbit--live) .orbit__list { opacity: 0; }
+
+/* ── static grid ───────────────────────────────────────────────────────── */
+.orbit:not(.orbit--live) .orbit__core,
+.orbit:not(.orbit--live) .orbit__sat { display: none; }
+
+.orbit:not(.orbit--live) .orbit__list {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: var(--space-3);
+  list-style: none;
+}
+.orbit:not(.orbit--live) .orbit__node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+  min-height: 8.25rem;
+  padding: var(--space-4);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-s);
+  background: var(--c-panel);
+  text-decoration: none;
+  transition: border-color var(--dur-2), background-color var(--dur-2), box-shadow var(--dur-2);
+}
+.orbit:not(.orbit--live) .orbit__idx {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: var(--track-label);
+  color: var(--c-coral);
+}
+.orbit:not(.orbit--live) .orbit__short {
+  margin-top: auto;
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+  line-height: 1;
+}
+.orbit:not(.orbit--live) .orbit__name {
+  min-height: 2.9em;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  line-height: 1.45;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-mute);
+}
+.orbit:not(.orbit--live) .orbit__node:hover,
+.orbit:not(.orbit--live) .orbit__node:focus-visible {
+  border-color: var(--c-coral);
+  background: color-mix(in srgb, var(--c-navy) 45%, transparent);
+  box-shadow: 0 0 2rem rgba(var(--rgb-coral), 0.18);
+}
+
+@media (max-width: 1100px) {
+  .orbit:not(.orbit--live) .orbit__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .orbit:not(.orbit--live) .orbit__node { min-height: 6.75rem; }
+}
+
+/* ── orbit glyph ───────────────────────────────────────────────────────── */
+/* The system in miniature with one satellite lit: a department's position on the map. */
+.orbit-glyph {
+  flex: none;
+  width: 3.5rem;
+  height: auto;
+  overflow: visible;
+}
+.orbit-glyph__ring {
+  fill: none;
+  stroke: var(--c-line-strong);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.orbit-glyph__ring.is-own { stroke: color-mix(in srgb, var(--c-coral) 70%, transparent); }
+.orbit-glyph__core { fill: var(--c-ink); }
+.orbit-glyph__dot { fill: var(--c-dim); }
+.orbit-glyph__sat { fill: var(--c-coral); }
+.orbit-glyph__halo {
+  fill: none;
+  stroke: var(--c-coral);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.45;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+/* The satellite pings when its row comes into view (reveal.js adds .is-inview). */
+html.fx-on .is-inview > .orbit-glyph .orbit-glyph__halo {
+  animation: orbit-glyph-ping 1500ms var(--ease-out) 600ms 3 backwards;
+}
+@keyframes orbit-glyph-ping {
+  from { transform: scale(0.4); opacity: 1; }
+  to { transform: scale(2.2); opacity: 0; }
+}

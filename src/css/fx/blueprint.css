@@ -1,0 +1,246 @@
+/* blueprint.js — the scroll-synced highlight on the project blueprint.
+   Every element styled here is injected by the script (aria-hidden, pointer-events: none);
+   .blueprint.is-live is its ready class. Positions along the rocket are written by the script
+   as transforms; this file only draws.
+   With effects off the highlight still follows the page — it snaps instead of gliding — and
+   nothing below animates. */
+
+.blueprint {
+  --band: var(--c-coral);
+  --band-rgb: var(--rgb-coral);
+}
+/* Previewing a zone the pointer or the keyboard focus is on (not the one being read). */
+.blueprint.is-preview {
+  --band: var(--c-sky);
+  --band-rgb: var(--rgb-sky);
+}
+
+/* ── Lit copy: the active zone at full brightness, the rest of the rocket dimmed ── */
+.blueprint__lit,
+.blueprint__band,
+.blueprint__plot,
+.blueprint__callout {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+/* Two nested clipping windows (.blueprint__lit > .blueprint__lit-inner) cut the copy at both
+   ends of the zone; the script slides them along the rocket and slides the picture back. Across
+   the rocket they are --lit-bleed wider than it, so the glow of the picture is not cut. */
+.blueprint__lit {
+  --lit-bleed: 40px;
+  --craft-glow: drop-shadow(0 0 9px rgba(var(--band-rgb), 0.5));
+  inset: calc(var(--lit-bleed) * -1) 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity var(--dur-2);
+}
+.blueprint__lit-inner { position: absolute; inset: 0; overflow: hidden; }
+.blueprint__lit-art { position: absolute; inset: var(--lit-bleed) 0; }
+.blueprint__lit,
+.blueprint__lit-inner,
+.blueprint__lit-art { will-change: transform; }
+.blueprint__art { transition: opacity var(--dur-3); }
+.blueprint.has-zone .blueprint__lit { opacity: 1; }
+.blueprint.has-zone .blueprint__art { opacity: 0.46; }
+
+/* ── Band: bracket caps at both ends of the zone, a tinted fill, a scan line ── */
+.blueprint__band {
+  opacity: 0;
+  transition: opacity var(--dur-2);
+}
+.blueprint.has-zone .blueprint__band { opacity: 1; }
+.blueprint__fill,
+.blueprint__cap,
+.blueprint__scan {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: 0;
+  will-change: transform;
+}
+.blueprint__fill {
+  width: 100%;
+  background: linear-gradient(rgba(var(--band-rgb), 0.16), rgba(var(--band-rgb), 0.05));
+  transform-origin: 0 0;
+}
+.blueprint__cap {
+  width: 7px;
+  border: 1.5px solid var(--band);
+  filter: drop-shadow(0 0 5px rgba(var(--band-rgb), 0.7));
+}
+.blueprint__cap--a { border-right: 0; }
+.blueprint__cap--b { margin-left: -7px; border-left: 0; }
+/* The line leads, its glow trails behind (towards the nose). */
+.blueprint__scan {
+  width: 26px;
+  border-left: 1.5px solid var(--band);
+  background: linear-gradient(90deg, rgba(var(--band-rgb), 0.42), transparent);
+  opacity: 0;
+  transform-origin: 0 0;
+}
+
+/* Active zone on the strip: its index above its name. A long name wraps onto a second line
+   rather than being cut short (the row is as tall as the chips beside it). */
+.blueprint__readout {
+  grid-area: readout;
+  display: grid;
+  gap: 0.2em;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.08em;
+  color: var(--c-mute);
+}
+.blueprint__readout-idx { color: var(--band); }
+.blueprint__readout-idx:empty { display: none; }
+.blueprint.has-zone .blueprint__readout-name { color: var(--c-ink); }
+.blueprint__callout { display: none; }
+
+/* The script takes over the hover feedback: the band itself glides to the zone. */
+.blueprint.is-live .blueprint__hot:hover,
+.blueprint.is-live .blueprint__hot:focus-visible { background-color: transparent; }
+
+@media (min-width: 1000px) {
+  .blueprint__readout { display: none; }
+
+  .blueprint__lit { inset: 0 calc(var(--lit-bleed) * -1); }
+  .blueprint__lit-art { inset: 0 var(--lit-bleed); }
+
+  .blueprint__fill,
+  .blueprint__cap,
+  .blueprint__scan {
+    top: 0;
+    right: -10px;
+    bottom: auto;
+    left: -10px;
+    width: auto;
+  }
+  .blueprint__fill {
+    height: 100%;
+    border-inline: 1px solid rgba(var(--band-rgb), 0.5);
+    background: linear-gradient(90deg, rgba(var(--band-rgb), 0.05), rgba(var(--band-rgb), 0.17));
+  }
+  .blueprint__cap { height: 8px; }
+  .blueprint__cap--a { border: 1.5px solid var(--band); border-bottom: 0; }
+  .blueprint__cap--b { margin: -8px 0 0; border: 1.5px solid var(--band); border-top: 0; }
+  .blueprint__scan {
+    height: 26px;
+    margin-top: -26px;
+    border: 0;
+    border-bottom: 1.5px solid var(--band);
+    background: linear-gradient(to top, rgba(var(--band-rgb), 0.42), transparent);
+    transform-origin: 0 100%;
+  }
+
+  /* Call-out: a leader from the zone to its index and name. */
+  .blueprint__callout {
+    display: block;
+    inset: 0 auto auto calc(100% + 10px);
+    width: 0;
+    height: 0;
+    opacity: 0;
+    transition: opacity var(--dur-2);
+    will-change: transform;
+  }
+  .blueprint.has-zone .blueprint__callout { opacity: 1; }
+  .blueprint__callout::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 22px;
+    height: 1px;
+    background: var(--band);
+  }
+  .blueprint__callout::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: 5px;
+    height: 5px;
+    background: var(--band);
+  }
+  .blueprint__tag {
+    position: absolute;
+    top: 0;
+    left: 22px;
+    display: grid;
+    gap: 0.3em;
+    width: calc(var(--note-w, 8.5rem) - 22px);
+    padding: 0.55em 0.5em 0.6em 0.75em;
+    border-left: 2px solid var(--band);
+    /* opaque: the tag settles exactly over the zone's printed annotation */
+    background: var(--c-panel-solid);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    line-height: 1.3;
+    text-transform: none;
+    transform: translateY(-50%);
+  }
+  .blueprint__tag-idx { font-size: 0.56rem; letter-spacing: 0.16em; color: var(--band); }
+  .blueprint__tag-name { font-size: 0.66rem; letter-spacing: 0.1em; color: var(--c-ink); }
+}
+
+/* ── Motion (effects on) ────────────────────────────────────────────────── */
+/* Plot: the drawing is wiped in from the nose to the tail behind a plotter head, once, when
+   the sheet comes into view. --plot-* describe the wipe for the current layout. */
+.blueprint {
+  --plot-from: inset(-40px -40px -40px 100%);
+  --plot-head: 100% 0;
+}
+.blueprint__plot {
+  top: -6px;
+  bottom: -6px;
+  border-left: 1.5px solid var(--c-coral);
+  background: linear-gradient(90deg, rgba(var(--rgb-coral), 0.4), transparent 28px);
+  opacity: 0;
+}
+@media (min-width: 1000px) {
+  .blueprint {
+    --plot-from: inset(-40px -40px 100% -40px);
+    --plot-head: 0 -100%;
+  }
+  .blueprint__plot {
+    inset: 0 -18px;
+    border: 0;
+    border-bottom: 1.5px solid var(--c-coral);
+    background: linear-gradient(to top, rgba(var(--rgb-coral), 0.4), transparent 28px);
+  }
+}
+html.js.fx-on .blueprint.is-live:not(.is-plotting, .is-plotted) :is(.blueprint__art, .blueprint__ruler, .blueprint__note) { opacity: 0; }
+html.js.fx-on .blueprint.is-plotting .blueprint__art {
+  animation: blueprint-plot 1500ms var(--ease-in-out) both;
+}
+html.js.fx-on .blueprint.is-plotting .blueprint__plot {
+  animation: blueprint-plot-head 1500ms var(--ease-in-out) both;
+}
+html.js.fx-on .blueprint.is-plotting :is(.blueprint__ruler, .blueprint__note) {
+  animation: blueprint-fade 900ms ease-out 700ms both;
+}
+@keyframes blueprint-plot {
+  from { clip-path: var(--plot-from); }
+  to { clip-path: inset(-40px); }
+}
+@keyframes blueprint-plot-head {
+  from { translate: var(--plot-head); opacity: 1; }
+  88% { opacity: 1; }
+  to { translate: 0 0; opacity: 0; }
+}
+@keyframes blueprint-fade {
+  from { opacity: 0; }
+}
+
+/* Idle float of the standing rocket (band, hotspots and call-out ride along). */
+@media (min-width: 1000px) {
+  html.fx-on .blueprint.is-plotted.is-visible .blueprint__rocket {
+    animation: blueprint-float 7s var(--ease-in-out) infinite alternate;
+  }
+}
+@keyframes blueprint-float {
+  from { translate: 0 -3px; }
+  to { translate: 0 4px; }
+}

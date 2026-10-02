@@ -1,0 +1,231 @@
+/* fx/lightbox — the "enlarge" button fx/lightbox.js puts over every content figure, and the
+   image viewer dialog. Motion (zoom, fades) only under html.fx-on; with effects off the viewer
+   simply appears. The frame's resting box comes from --lb-x/-y/-w/-h (set by the module). */
+
+/* ── trigger ───────────────────────────────────────────────────────────── */
+.lightbox-trigger {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+.lightbox-trigger:focus-visible { outline-offset: -5px; }
+.lightbox-trigger__icon {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--c-line-strong);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--c-void) 78%, transparent);
+  color: var(--c-ink);
+  opacity: 0;
+  transform: translateY(-0.25rem);
+  transition: opacity var(--dur-2), transform var(--dur-2) var(--ease-out), border-color var(--dur-2), color var(--dur-2);
+}
+.lightbox-trigger__icon svg { width: 0.85rem; height: 0.85rem; }
+.lightbox-trigger:hover .lightbox-trigger__icon,
+.lightbox-trigger:focus-visible .lightbox-trigger__icon {
+  border-color: var(--c-coral);
+  color: var(--c-coral);
+  opacity: 1;
+  transform: none;
+}
+/* no hover on touch screens: the affordance is always there */
+html.pointer-coarse .lightbox-trigger__icon { opacity: 0.92; transform: none; }
+
+/* the thumbnail hands over to the viewer while its image is open */
+.frame.is-lightbox-origin .frame__media img { visibility: hidden; }
+
+/* ── dialog ────────────────────────────────────────────────────────────── */
+html.lightbox-lock { overflow: hidden; }
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  touch-action: manipulation; /* pinch-zoom stays; one-finger scrolling is stopped by the module */
+  -webkit-user-select: none;
+  user-select: none;
+}
+.lightbox[hidden] { display: none; }
+/* zooming out: the page underneath is already live again (a click may even re-open a figure) */
+.lightbox:not(.is-open) { pointer-events: none; }
+
+.lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  /* nearly opaque: the caption stays readable where backdrop-filter is not available */
+  background: color-mix(in srgb, var(--c-void) 95%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  cursor: zoom-out;
+}
+.lightbox.is-open .lightbox__backdrop { opacity: 1; }
+
+.lightbox__frame {
+  position: absolute;
+  left: var(--lb-x);
+  top: var(--lb-y);
+  width: var(--lb-w);
+  height: var(--lb-h);
+  overflow: hidden;
+  background: var(--c-panel-solid);
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.lightbox__img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+/* the full-size file is still on its way: a thin scan along the bottom edge */
+.lightbox__frame.is-loading::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 28%;
+  height: 2px;
+  background: var(--c-coral);
+}
+html.fx-on .lightbox__frame.is-loading::after { animation: lightbox-load 900ms linear infinite; }
+
+.lightbox__corners {
+  --corner-size: 16px;
+  inset: auto;
+  left: calc(var(--lb-x) - 10px);
+  top: calc(var(--lb-y) - 10px);
+  width: calc(var(--lb-w) + 20px);
+  height: calc(var(--lb-h) + 20px);
+}
+
+/* announced, not shown */
+.lightbox__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.lightbox__count,
+.lightbox__caption {
+  position: absolute;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.lightbox__count {
+  left: var(--gutter);
+  top: 0;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  color: var(--c-coral);
+}
+.lightbox__caption {
+  left: 50%;
+  bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.1em;
+  width: min(100% - 2 * var(--gutter), 62rem);
+  color: var(--c-ink);
+  text-align: center;
+  transform: translateX(-50%);
+}
+.lightbox__tag { flex: none; color: var(--c-coral); }
+.lightbox__tag:empty { display: none; }
+
+.lightbox__btn {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid var(--c-line-strong);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--c-night) 70%, transparent);
+  color: var(--c-ink);
+  cursor: pointer;
+  transition: background-color var(--dur-2), border-color var(--dur-2), color var(--dur-2);
+}
+.lightbox__btn:hover,
+.lightbox__btn:focus-visible {
+  border-color: var(--c-coral);
+  background: var(--c-coral);
+  color: var(--c-void);
+}
+.lightbox__btn svg { width: 22px; height: 11px; }
+.lightbox__btn--close { top: 8px; right: calc(var(--gutter) - 12px); }
+.lightbox__btn--close svg { width: 13px; height: 13px; }
+.lightbox__btn--prev,
+.lightbox__btn--next { top: 50%; margin-top: -24px; }
+.lightbox__btn--prev { left: 20px; }
+.lightbox__btn--next { right: 20px; }
+.lightbox--single :is(.lightbox__btn--prev, .lightbox__btn--next) { display: none; }
+
+/* everything but the image waits for .is-open */
+.lightbox :is(.lightbox__corners, .lightbox__count, .lightbox__caption, .lightbox__btn) { opacity: 0; }
+.lightbox.is-open :is(.lightbox__corners, .lightbox__count, .lightbox__caption, .lightbox__btn) { opacity: 1; }
+
+@media (max-width: 719px) {
+  .lightbox__caption {
+    bottom: 5.25rem;
+    flex-direction: column;
+    gap: 0.3em;
+    font-size: 0.66rem;
+  }
+  .lightbox__btn--prev,
+  .lightbox__btn--next { top: auto; bottom: 1.25rem; margin-top: 0; }
+  .lightbox__btn--prev { left: var(--gutter); }
+  .lightbox__btn--next { right: var(--gutter); }
+}
+
+/* ── motion ────────────────────────────────────────────────────────────── */
+html.fx-on .lightbox__backdrop { transition: opacity 360ms ease-out; }
+html.fx-on .lightbox :is(.lightbox__count, .lightbox__caption, .lightbox__btn) { transition: opacity var(--dur-2), background-color var(--dur-2), border-color var(--dur-2), color var(--dur-2); }
+html.fx-on .lightbox.is-open :is(.lightbox__count, .lightbox__caption, .lightbox__btn) { transition-delay: 220ms, 0s, 0s, 0s; }
+html.fx-on .lightbox__corners { transform: scale(1.03); transition: opacity var(--dur-1), transform var(--dur-3) var(--ease-out); }
+html.fx-on .lightbox.is-open .lightbox__corners { transform: none; transition-delay: 340ms; }
+/* stepping: the next image slides in from the side it comes from */
+html.fx-on .lightbox.is-stepping .lightbox__frame { animation: lightbox-step 340ms var(--ease-out) backwards; }
+html.fx-on .lightbox.is-stepping .lightbox__corners { transition: none; }
+/* closing with no thumbnail on screen to fly back to */
+html.fx-on .lightbox.is-closing .lightbox__frame {
+  opacity: 0;
+  scale: 0.97;
+  transition: opacity 240ms ease-out, scale 240ms ease-out;
+}
+@keyframes lightbox-step {
+  from { opacity: 0; translate: calc(var(--lb-dir, 1) * 2rem) 0; }
+}
+@keyframes lightbox-load {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(360%); }
+}
+
+/* The cursor rocket and its reticle fly under the dialog, so the native pointer comes back
+   (the selectors outweigh the site-wide "cursor: none" of fx/rocket). */
+html.fx-on.pointer-fine.rocket-cursor .lightbox,
+html.fx-on.pointer-fine.rocket-cursor .lightbox * { cursor: default !important; }
+html.fx-on.pointer-fine.rocket-cursor .lightbox .lightbox__backdrop { cursor: zoom-out !important; }
+html.fx-on.pointer-fine.rocket-cursor .lightbox .lightbox__btn { cursor: pointer !important; }

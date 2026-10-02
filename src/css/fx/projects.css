@@ -1,0 +1,67 @@
+/* projects.js — projects index: roll-out and row spotlight.
+   The script scales the line (.fleet__drop / .fleet__rail) and moves the rockets; this file
+   only adds what the static layout does not need. .fleet.is-live is the ready class. */
+
+.fleet.is-live :is(.fleet__drop, .fleet__rail, .fleet__rocket) { will-change: transform; }
+
+/* A soft glow leads the line while it is being drawn. */
+html.fx-on .fleet.is-live :is(.fleet__drop, .fleet__rail) { box-shadow: 0 0 12px var(--c-glow-coral); }
+
+/* ── Row spotlight (fine pointers) ──────────────────────────────────────── */
+html.fx-on.pointer-fine .fleet.is-live .fleet__glow {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-3);
+}
+html.fx-on.pointer-fine .fleet.is-live .fleet__row:hover .fleet__glow { opacity: 1; }
+/* Positioned by the script at the pointer (transform), centred on its own top-left corner. */
+.fleet__spot {
+  position: absolute;
+  top: -22rem;
+  left: -22rem;
+  width: 44rem;
+  height: 44rem;
+  background: radial-gradient(closest-side, rgba(var(--rgb-sky), 0.13), rgba(var(--rgb-sky), 0.04) 55%, transparent);
+  will-change: transform;
+}
+/* One scan line crosses the row when the pointer enters it. */
+.fleet__sweep {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 9rem;
+  border-right: 1px solid rgba(var(--rgb-sky), 0.55);
+  background: linear-gradient(90deg, transparent, rgba(var(--rgb-sky), 0.1));
+  opacity: 0;
+  translate: -100% 0;
+}
+html.fx-on.pointer-fine .fleet.is-live .fleet__row:hover .fleet__sweep {
+  animation: projects-sweep 1100ms var(--ease-in-out) both;
+}
+.fleet__row--rtl .fleet__sweep {
+  inset: 0 0 0 auto;
+  border-right: 0;
+  border-left: 1px solid rgba(var(--rgb-sky), 0.55);
+  background: linear-gradient(270deg, transparent, rgba(var(--rgb-sky), 0.1));
+  translate: 100% 0;
+}
+@keyframes projects-sweep {
+  from { opacity: 1; }
+  80% { opacity: 1; }
+  to { opacity: 0; translate: calc(var(--sweep-to, 1) * 100vw) 0; }
+}
+.fleet__row--rtl { --sweep-to: -1; }
+
+/* ── Medallion: slow idle float ─────────────────────────────────────────── */
+html.fx-on .fleet.is-live .fleet__patch .patch {
+  animation: projects-float 8s var(--ease-in-out) infinite alternate;
+}
+html.fx-on .fleet.is-live .fleet__row:nth-child(even) .fleet__patch .patch { animation-delay: -3s; }
+@keyframes projects-float {
+  from { translate: 0 -6px; }
+  to { translate: 0 8px; }
+}

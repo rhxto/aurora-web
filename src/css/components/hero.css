@@ -1,0 +1,257 @@
+/* Home hero (src/templates/partials/hero.mjs) — the static composition: what the page shows
+   without JS, with effects off, or before fx/hero.js starts. Motion lives in fx/hero.css. */
+
+.hero {
+  /* Everything fixed to the bottom of the first viewport stays above the HUD status bar (§8). */
+  --hero-clear: calc(var(--hud-bar-h, 30px) + 1.125rem);
+  --hero-mark-x: calc(var(--gutter) / 2);
+  --hero-mark-top: calc(var(--header-h) + 0.75rem);
+  /* The first viewport, top to bottom: header and upper read-outs · wordmark · kicker and slogan ·
+     scroll cue. Everything but the wordmark is budgeted here (the media queries at the end of
+     the file adjust the parts), so the wordmark can be capped to the room that is left. */
+  --hero-head: calc(var(--hero-mark-top) + 1.75rem);                      /* the copy starts below the CAM / REC read-outs */
+  --hero-gap: clamp(1.5rem, 4.5vh, 2.75rem);                              /* wordmark → horizon line */
+  --hero-meta-pad: var(--space-5);                                        /* horizon line → kicker and slogan */
+  --hero-kicker: clamp(0.7rem, 1vw, 0.82rem);
+  --hero-slogan: clamp(0.95rem, 1.7vw, 1.45rem);
+  --hero-meta: calc(var(--hero-meta-pad) + 1.2 * var(--hero-slogan));     /* kicker and slogan share one row */
+  --hero-foot: calc(var(--hero-clear) + clamp(6.25rem, 14vh, 8.5rem));    /* the scroll cue takes the bottom centre */
+  --hero-title-lh: 0.84;
+  position: relative;
+  isolation: isolate;
+}
+.hero__stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-block: var(--hero-head) var(--hero-foot);
+  overflow: clip;
+}
+
+/* ── Camera feed ───────────────────────────────────────────────────────── */
+/* The footage fills the stage and dissolves into the sky at the bottom. */
+.hero__feed {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: var(--c-night);
+  -webkit-mask-image: linear-gradient(to bottom, var(--c-void) 62%, transparent 99%);
+  mask-image: linear-gradient(to bottom, var(--c-void) 62%, transparent 99%);
+}
+.hero__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+}
+/* Scanlines, plus a film grain tile on the pseudo-element (animated by fx/hero.css). */
+.hero__grain,
+.hero__shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero__grain {
+  overflow: hidden;
+  background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--c-void) 18%, transparent) 0 1px, transparent 1px 3px);
+}
+.hero__grain::after {
+  content: '';
+  position: absolute;
+  inset: -96px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1.7 0 0 0 -.85'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0 / 192px 192px;
+  opacity: 0.22;
+}
+/* Colour grade: night at the bottom, a darker left side under the wordmark, a navy cast overall. */
+.hero__shade {
+  background:
+    linear-gradient(to top, var(--c-void) 3%, transparent 54%),
+    linear-gradient(78deg, color-mix(in srgb, var(--c-void) 80%, transparent), transparent 72%),
+    radial-gradient(120% 90% at 50% 40%, transparent 40%, color-mix(in srgb, var(--c-void) 62%, transparent)),
+    color-mix(in srgb, var(--c-navy-deep) 44%, transparent);
+}
+
+/* ── On-screen display: corner marks with their read-outs ──────────────── */
+.hero__osd {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--c-ink) 86%, transparent);
+}
+.hero__mark {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 0 solid var(--c-line-strong);
+}
+.hero__mark--tl { top: var(--hero-mark-top); left: var(--hero-mark-x); border-width: 1.5px 0 0 1.5px; }
+.hero__mark--tr { top: var(--hero-mark-top); right: var(--hero-mark-x); border-width: 1.5px 1.5px 0 0; }
+.hero__mark--bl { bottom: var(--hero-clear); left: var(--hero-mark-x); border-width: 0 0 1.5px 1.5px; }
+.hero__mark--br { bottom: var(--hero-clear); right: var(--hero-mark-x); border-width: 0 1.5px 1.5px 0; }
+.hero__tag {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  white-space: nowrap;
+}
+.hero__mark--tl .hero__tag { top: 8px; left: 12px; }
+.hero__mark--tr .hero__tag { top: 8px; right: 12px; }
+.hero__mark--bl .hero__tag { bottom: 8px; left: 12px; }
+.hero__mark--br .hero__tag { bottom: 8px; right: 12px; }
+/* Tally light: hollow on standby, lit while the footage runs (.is-rec, fx/hero.js). */
+.hero__led {
+  width: 6px;
+  height: 6px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+.hero.is-rec .hero__led {
+  border-color: var(--c-coral);
+  background: var(--c-coral);
+  box-shadow: 0 0 8px var(--c-glow-coral);
+}
+/* Playback position of the footage. */
+.hero__tag--bar {
+  width: 3.5rem;
+  height: 2px;
+  background: var(--c-line-strong);
+}
+.hero__tag--bar i {
+  width: 100%;
+  height: 100%;
+  background: var(--c-coral);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+/* The monitor window the feed shrinks into while scrolling (fx/hero.js): hidden until then. */
+.hero__outline { display: none; }
+
+/* ── Wordmark ──────────────────────────────────────────────────────────── */
+/* The wordmark spans the content column exactly: "ROCKETRY" is 7.29em wide at this
+   letter-spacing, so 13.6% of the column width per em fills it edge to edge. In a viewport too
+   short for that (a phone on its side, a low desktop window) its two lines take the height the
+   rest of the first screen leaves instead, so it never runs under the read-outs or the header. */
+.hero__inner {
+  position: relative;
+  z-index: 2;
+  container-type: inline-size;
+}
+.hero__title {
+  --hero-room: calc(100svh - var(--hero-head) - var(--hero-gap) - var(--hero-meta) - var(--hero-foot));
+  display: grid;
+  font-size: min(13.6cqw, max(1.75rem, calc(var(--hero-room) / (2 * var(--hero-title-lh)))));
+  line-height: var(--hero-title-lh);
+  letter-spacing: -0.025em;
+}
+.hero__word { display: block; }
+.hero__word--b { color: var(--c-coral); }
+
+/* ── Kicker + slogan on the horizon line ───────────────────────────────── */
+.hero__meta {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-6);
+  margin-top: var(--hero-gap);
+  padding-top: var(--hero-meta-pad);
+}
+.hero__horizon {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(to right, var(--c-coral) 0 3rem, var(--c-line-strong) 3rem);
+}
+.hero__kicker {
+  font-family: var(--font-mono);
+  font-size: var(--hero-kicker);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+}
+.hero__slogan {
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: var(--hero-slogan);
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+}
+
+/* ── Scroll cue ────────────────────────────────────────────────────────── */
+/* A label over a hairline with a travelling pulse; it ends above the HUD status bar. */
+.hero__cue {
+  position: absolute;
+  bottom: var(--hero-clear);
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 5.5rem;
+  padding-top: var(--space-3);
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  text-decoration: none;
+  color: var(--c-mute);
+  transition: color var(--dur-2);
+}
+.hero__cue:hover,
+.hero__cue:focus-visible { color: var(--c-ink); }
+.hero__cue-label { margin-right: -0.34em; /* optically cancel the trailing letter-spacing */ }
+.hero__cue-line {
+  position: relative;
+  width: 1px;
+  height: clamp(2.25rem, 6vh, 3.5rem);
+  overflow: hidden;
+  background: var(--c-line-strong);
+}
+.hero__cue-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent, var(--c-coral) 45%, var(--c-coral));
+  transform: translateY(-101%);
+}
+
+/* Narrow screens: a shorter cue between the two bottom marks. */
+@media (max-width: 860px) {
+  .hero { --hero-foot: calc(var(--hero-clear) + 5.25rem); }
+  .hero__cue { min-width: 5rem; gap: var(--space-2); font-size: 0.6rem; }
+  .hero__cue-line { height: 1.75rem; }
+}
+/* Kicker and slogan no longer fit side by side: one under the other. */
+@media (max-width: 760px) {
+  .hero { --hero-meta: calc(var(--hero-meta-pad) + var(--lh-body) * var(--hero-kicker) + var(--space-3) + 1.2 * var(--hero-slogan)); }
+  .hero__meta { flex-direction: column; gap: var(--space-3); }
+}
+/* Very short viewports (phones on their side): the copy takes the room of the cue and the lower
+   marks, and closes up. */
+@media (max-height: 480px) {
+  .hero {
+    --hero-gap: var(--space-4);
+    --hero-meta-pad: var(--space-4);
+    --hero-foot: calc(var(--hero-clear) + var(--space-4));
+  }
+  .hero__cue,
+  .hero__mark--bl,
+  .hero__mark--br { display: none; }
+}

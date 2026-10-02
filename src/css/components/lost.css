@@ -1,0 +1,138 @@
+/* 404 — "LOST IN SPACE" (src/templates/pages.mjs). The numerals and a derelict rocket hang in
+   zero-g behind the message; this file composes them statically, fx/lost.js sets them adrift.
+   Overrides the base layout of .lost in pages.css. */
+
+.lost {
+  gap: var(--space-4);
+  padding-block: calc(var(--header-h) + var(--space-7)) calc(var(--space-8) + var(--hud-bar-h));
+}
+
+/* ── the void: three numerals and the rocket, each its own floating body ── */
+.lost__void {
+  position: absolute;
+  inset: 0 calc(var(--gutter) * -1) 0 43%;
+  z-index: -1;
+  container-type: inline-size;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+}
+.lost__digit {
+  flex: none;
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: clamp(8rem, 20vw, 26rem);
+  font-size: min(37cqw, 62vh);   /* the three numerals always fit the void */
+  line-height: 0.8;
+  margin-inline: -0.03em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--c-ink) 36%, transparent);
+  transform: translate(var(--x, 0), var(--y, 0)) rotate(var(--r, 0deg));
+}
+.lost__digit:nth-child(1) { --x: 4%; --y: -9%; --r: -9deg; }
+.lost__digit--zero {
+  --y: 7%;
+  --r: 7deg;
+  -webkit-text-stroke-color: rgba(var(--rgb-coral), 0.8);
+}
+.lost__digit:nth-child(3) { --x: -3%; --y: -3%; --r: 13deg; }
+
+.lost__rocket {
+  position: absolute;
+  right: 12%;
+  bottom: 14%;
+  width: clamp(9rem, 17vw, 16rem);
+  max-width: none;
+  overflow: visible;
+  fill: color-mix(in srgb, var(--c-navy) 30%, transparent);
+  stroke: color-mix(in srgb, var(--c-ink) 42%, transparent);
+  stroke-width: 1.25;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transform: rotate(-24deg);
+}
+
+/* ── message ───────────────────────────────────────────────────────────── */
+/* The label sits right over the vivid aurora: a dark chip keeps its small coral type readable
+   (≥ 4.5:1) whatever the sky is doing behind it. */
+.lost__label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 0.45em 1em;
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-s);
+  background: color-mix(in srgb, var(--c-void) 82%, transparent);
+}
+.lost__signal { display: inline-flex; align-items: center; color: var(--c-ink); }
+.lost__led {
+  width: 6px;
+  height: 6px;
+  margin-right: 0.9em;
+  border-radius: 50%;
+  background: var(--c-coral);
+  box-shadow: 0 0 10px rgba(var(--rgb-coral), 0.9);
+}
+.lost__title {
+  max-width: 6.4em;   /* two lines: "LOST IN" / "SPACE" */
+  font-size: clamp(2.9rem, 7.2vw, 6.75rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+.lost__text {
+  margin: var(--space-3) 0 var(--space-5);
+  color: var(--c-ink);
+  text-shadow: 0 0 1.5rem var(--c-void);
+}
+
+/* The way home is the one thing to do here: a larger, solid button. */
+.lost__cta .btn {
+  min-height: 62px;
+  padding: 1.1em 2.5em;
+  background: var(--c-coral);
+  color: var(--c-void);
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 0 2.6rem rgba(var(--rgb-coral), 0.4);
+}
+.lost__cta .btn::before { background: var(--c-ink); }
+.lost__cta .btn:is(:hover, :focus-visible, :active) { box-shadow: 0 0 3rem color-mix(in srgb, var(--c-ink) 35%, transparent); }
+
+/* Narrow, and upright or tall enough to stack (phones and tablets held upright): no room beside
+   the message, so the numerals float in a band of their own above it. */
+@media (max-width: 999px) and (orientation: portrait), (max-width: 999px) and (min-height: 561px) {
+  .lost__void {
+    position: relative;
+    inset: auto;
+    justify-self: stretch;
+    height: clamp(8rem, 27vh, 17rem);
+    margin: 0 calc(var(--gutter) * -1) var(--space-1);
+  }
+  .lost { padding-block: calc(var(--header-h) + var(--space-5)) calc(var(--space-6) + var(--hud-bar-h)); }
+  .lost__digit { font-size: clamp(6rem, 34vw, 15rem); font-size: min(34cqw, 22vh, 15rem); }
+  .lost__rocket { right: 9%; bottom: -6%; width: clamp(7rem, 26vw, 11rem); }
+}
+
+/* Short and wide (a phone on its side, a squat window): the numerals stay beside the message at
+   every width and the message is set tighter, so heading, text and the way home all fit
+   between the header and the HUD bar. */
+@media (max-height: 560px) and (orientation: landscape) {
+  .lost {
+    gap: clamp(0.375rem, 2.5vh, 1rem);
+    padding-block: calc(var(--header-h) + var(--space-2)) calc(var(--hud-bar-h) + var(--space-2));
+  }
+  .lost__label { padding-block: 0.3em; }
+  .lost__title {
+    font-size: clamp(1.75rem, min(7.2vw, 12vh), 6.75rem);
+    font-size: clamp(1.75rem, min(7.2vw, 12svh), 6.75rem);
+  }
+  .lost__text { margin: 0; font-size: 1rem; line-height: 1.45; }
+  .lost__cta .btn {
+    min-height: clamp(44px, 14vh, 62px);
+    padding-block: 0.6em;
+  }
+  .lost__rocket { bottom: 18%; width: clamp(6rem, 15vw, 12rem); }
+}

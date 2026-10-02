@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fx/rocket harness</title>
+<link rel="stylesheet" href="/src/css/tokens.css">
+<link rel="stylesheet" href="/src/css/fonts.css">
+<link rel="stylesheet" href="/src/css/fx/rocket.css">
+<style>
+  /* Stand-in page styles (the real ones live in base.css, owned by another module). */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--c-void); color: var(--c-ink); font-family: var(--font-body); font-size: var(--fs-body); line-height: var(--lh-body); }
+  body { background: radial-gradient(120% 80% at 70% 0%, var(--c-navy-deep), var(--c-void) 60%) fixed; }
+  a { color: var(--c-coral); }
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); }
+  header { position: sticky; top: 0; z-index: var(--z-header); height: var(--header-h); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gutter); background: color-mix(in srgb, var(--c-void) 70%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--c-line); }
+  header img { height: 34px; display: block; }
+  nav { display: flex; gap: var(--space-6); }
+  nav a { font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); color: var(--c-ink); text-decoration: none; }
+  .hero { min-height: 82vh; display: grid; align-content: center; gap: var(--space-5); }
+  h1, h2 { font-family: var(--font-display); font-variation-settings: var(--display-settings); text-transform: uppercase; line-height: var(--lh-tight); margin: 0; }
+  h1 { font-size: var(--fs-hero); }
+  h1 span, h2 span { color: var(--c-coral); }
+  h2 { font-size: var(--fs-h2); margin-bottom: var(--space-5); }
+  .kicker { font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); color: var(--c-mute); }
+  .lead { font-size: var(--fs-lead); color: var(--c-mute); max-width: 60ch; margin: 0; }
+  .row { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center; }
+  .btn { font: 600 var(--fs-small) var(--font-mono); letter-spacing: var(--track-label); text-transform: uppercase; text-decoration: none; padding: 0.95em 1.6em; border-radius: var(--radius-s); border: 1px solid var(--c-coral); background: var(--c-coral); color: var(--c-void); }
+  .btn--ghost { background: transparent; color: var(--c-ink); border-color: var(--c-line-strong); }
+  .btn:disabled { opacity: 0.4; }
+  section { padding: var(--space-9) 0; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); align-items: start; }
+  .cols p { color: var(--c-mute); margin: 0 0 var(--space-4); }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+  .card { padding: var(--space-6); border: 1px solid var(--c-line); border-radius: var(--radius-m); background: var(--c-panel); }
+  .card img { width: 96px; height: 96px; display: block; margin-bottom: var(--space-4); }
+  .card h3 { font-family: var(--font-display); font-variation-settings: var(--display-settings); text-transform: uppercase; font-size: var(--fs-h3); margin: 0 0 var(--space-2); }
+  .card p { margin: 0; color: var(--c-mute); font-size: var(--fs-small); }
+  .bright { background: var(--c-ink); color: var(--c-navy-deep); }
+  .bright p { color: var(--c-navy); max-width: 62ch; }
+  .bright .btn--ghost { color: var(--c-navy-deep); border-color: var(--c-navy); }
+  form { display: grid; gap: var(--space-4); max-width: 520px; }
+  input, textarea { font: inherit; color: var(--c-ink); background: var(--c-panel-solid); border: 1px solid var(--c-line-strong); border-radius: var(--radius-s); padding: 0.8em 1em; }
+  footer { padding: var(--space-7) 0 var(--space-9); border-top: 1px solid var(--c-line); color: var(--c-dim); font-size: var(--fs-small); }
+  /* harness-only debug panel */
+  .dbg { position: fixed; left: 12px; bottom: 12px; z-index: var(--z-hud); width: 250px; padding: 10px 12px; font: 11px/1.5 var(--font-mono); color: var(--c-mute); background: var(--c-panel-solid); border: 1px solid var(--c-line); border-radius: var(--radius-s); }
+  .dbg pre { margin: 0 0 8px; white-space: pre-wrap; }
+  .dbg button { font: inherit; color: var(--c-ink); background: none; border: 1px solid var(--c-line-strong); border-radius: var(--radius-s); padding: 2px 6px; margin: 0 4px 4px 0; }
+  @media (max-width: 720px) {
+    nav { gap: var(--space-4); } nav a:nth-child(n + 3) { display: none; }
+    .cols, .cards { grid-template-columns: 1fr; }
+    .dbg { display: none; }
+  }
+</style>
+</head>
+<body data-page="home">
+<header class="site-header" data-header>
+  <a href="#top" aria-label="Aurora Rocketry"><img src="/img/brand/logo-mark.svg" alt=""></a>
+  <nav class="site-nav">
+    <a class="site-nav__link" href="#projects">PROJECTS</a>
+    <a class="site-nav__link" href="#departments">DEPARTMENTS</a>
+    <a class="site-nav__link" href="#partners">PARTNERS</a>
+    <a class="site-nav__link" href="#contact">CONTACT</a>
+  </nav>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <p class="kicker">THE UNIVERSITY OF BOLOGNA ROCKETRY TEAM</p>
+    <h1>Aurora <span>Rocketry</span></h1>
+    <p class="lead">Aurora Rocketry is an Italian non-profit organisation of the University of Bologna based in Forlì. Our team brings together passionate minds from diverse academic backgrounds, creating a truly multidisciplinary environment.</p>
+    <div class="row">
+      <a class="btn" id="cta" href="#projects">Discover the projects</a>
+      <a class="btn btn--ghost" id="cta2" href="#departments">Discover the team</a>
+    </div>
+  </div>
+
+  <section id="projects"><div class="wrap">
+    <h2>Nemesis <span>EuRoC 2025</span></h2>
+    <div class="cols">
+      <div>
+        <p>Aurora’s first competition rocket, Nemesis, is a single-stage vehicle, powered by a commercial solid motor, designed to carry a 1 kg payload up to an apogee of 3000 m and to return safely to the ground thanks to a recovery system. Read more about the <a id="inline" href="#propulsion">propulsion system and its solid motor with a non-toxic APCP-based propellant</a> or the <a href="#recovery">recovery system</a>.</p>
+        <p>The rocket is designed with reliability, ease of maintenance and assembly in mind. The aerostructure ensures stability and integrity, housing the propulsion system, electronics bay, recovery system, and our payload, Aether.</p>
+      </div>
+      <div>
+        <p>We offer students an exciting, hands-on journey into the world of aerospace engineering by designing, building and testing rockets from the ground up. To operate efficiently, our association is structured into departments, each covering a specific area of expertise.</p>
+        <p>This link is excluded from lock-on: <span data-no-lock><a id="nolock" href="#x">no brackets here</a></span>.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <section id="departments"><div class="wrap">
+    <h2>Mission <span>patches</span></h2>
+    <div class="cards">
+      <article class="card" data-lock id="card1"><img src="/img/patches/borealis.svg" alt=""><h3>Borealis</h3><p>Aurora Rocketry’s first ever rocket, designed to test core subsystems.</p></article>
+      <article class="card" data-lock><img src="/img/patches/nemesis.svg" alt=""><h3>Nemesis</h3><p>Aurora’s first competition rocket: 1 kg payload to an apogee of 3000 m.</p></article>
+      <article class="card" data-lock><img src="/img/patches/atlas.svg" alt=""><h3>Atlas</h3><p>The result of everything we’ve learnt from previous projects.</p></article>
+    </div>
+  </div></section>
+
+  <section class="bright" id="partners"><div class="wrap">
+    <h2>Bright <span>background</span></h2>
+    <p>The rocket, its exhaust and the reticle must stay readable on light photographs and partner plates too. Text under the trail has to remain comfortable to read while the rocket circles the pointer.</p>
+    <div class="row"><a class="btn" id="brightBtn" href="#partners">Become a partner</a><a class="btn btn--ghost" href="#contact">Contact us</a></div>
+  </div></section>
+
+  <section id="contact"><div class="wrap">
+    <h2>Comm <span>link</span></h2>
+    <form onsubmit="return false">
+      <input id="name" type="text" placeholder="Name" autocomplete="off">
+      <textarea id="msg" rows="4" placeholder="Message"></textarea>
+      <div class="row"><button class="btn" type="submit" id="send">Send</button><button class="btn btn--ghost" type="button" disabled id="disabled">Disabled</button></div>
+    </form>
+  </div></section>
+</main>
+
+<footer class="site-footer"><div class="wrap row">
+  <span>© 2024 Aurora Rocketry, All Rights Reserved</span>
+  <a href="#instagram">Instagram</a><a href="#linkedin">LinkedIn</a><a href="mailto:info@aurorarocketry.eu">info@aurorarocketry.eu</a>
+</div></footer>
+
+<aside class="dbg">
+  <pre id="out"></pre>
+  <button id="bFx">FX</button><button id="bBurst">burst</button><button id="bBoost">boost</button><button id="bNav">navigate</button><button id="bStress">stress</button>
+</aside>
+
+<script type="module">
+import { core } from '/src/js/core.js';
+
+// Harness-only instrumentation: time every ticker the rocket registers (JS cost of update + draw)
+// and the real frame interval, so the worst case (pool at its cap) can be measured.
+const perf = { js: [], frame: [], stress: false };
+const tick = core.tick;
+core.tick = (fn, opts) => tick((dt, now) => {
+  const t0 = performance.now();
+  fn(dt, now);
+  perf.acc = (perf.acc || 0) + performance.now() - t0;
+}, opts);
+
+const { default: initRocket } = await import('/src/js/fx/rocket.js');
+const rocket = initRocket();
+core.tick = tick;
+
+let last = 0;
+tick((dt, now) => {
+  const t = performance.now();
+  if (last) perf.frame.push(t - last);
+  last = t;
+  perf.js.push(perf.acc || 0);
+  perf.acc = 0;
+  if (perf.js.length > 240) { perf.js.shift(); perf.frame.shift(); }
+  // stress: keep the pool saturated with bursts all over the viewport
+  if (perf.stress) for (let i = 0; i < 4; i++) core.emit('burst', { x: Math.random() * core.viewport.w, y: Math.random() * core.viewport.h, power: 3 });
+  if (core.time.frame % 6 === 0) {
+    const r = core.rocket, s = rocket.stats();
+    out.textContent = `pos ${r.x.toFixed(0)},${r.y.toFixed(0)}  spd ${r.speed.toFixed(0)}\nboost ${r.boost.toFixed(2)}  vis ${r.visible}\nlock ${r.locked ? r.locked.id || r.locked.tagName : '-'}\nparticles ${s.particles}/${s.cap}\njs ${avg(perf.js).toFixed(2)} ms  frame ${avg(perf.frame).toFixed(1)} ms`;
+  }
+}, { order: 99, always: true });
+
+const avg = (a) => a.reduce((s, v) => s + v, 0) / Math.max(1, a.length);
+const pct = (a, q) => [...a].sort((x, y) => x - y)[Math.floor(a.length * q)] ?? 0;
+const out = document.getElementById('out');
+const round = (v) => Math.round(v * 100) / 100;
+
+// handles for tools/shot.mjs --steps eval
+window.__rocket = rocket;
+window.__perf = () => ({ ...rocket.stats(), jsAvg: round(avg(perf.js)), jsP95: round(pct(perf.js, 0.95)), frameAvg: round(avg(perf.frame)), frameP95: round(pct(perf.frame, 0.95)), samples: perf.js.length });
+window.__stress = (on) => { perf.stress = on; perf.js.length = perf.frame.length = 0; };
+window.__lockLog = [];
+core.on('lock', (d) => window.__lockLog.push(d ? d.el.id || d.el.tagName : null));
+/** Sample the rocket for `ms` and report how quickly it closes on the pointer. */
+window.__chase = (ms = 1200) => new Promise((resolve) => {
+  const t0 = performance.now(), log = [];
+  const stop = tick(() => {
+    const t = performance.now() - t0, r = core.rocket, p = core.pointer;
+    log.push([Math.round(t), Math.round(Math.hypot(r.x - p.x, r.y - p.y)), Math.round(r.speed)]);
+    if (t > ms) { stop(); resolve({ within60: log.find((l) => l[1] < 60)?.[0] ?? null, maxSpeed: Math.max(...log.map((l) => l[2])), log: log.filter((_, i) => i % 6 === 0) }); }
+  }, { order: 98 });
+});
+
+bFx.onclick = () => core.toggleFx();
+bBurst.onclick = () => core.emit('burst', { x: core.viewport.w / 2, y: core.viewport.h / 2, power: 2, color: '--c-aurora' });
+bBoost.onclick = () => core.emit('boost', { power: 1, duration: 1.2 });
+bNav.onclick = () => core.emit('navigate:start', { href: '#' });
+bStress.onclick = () => window.__stress(!perf.stress);
+</script>
+</body>
+</html>

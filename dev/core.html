@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>core harness</title>
+<link rel="stylesheet" href="/src/css/fonts.css">
+<link rel="stylesheet" href="/src/css/tokens.css">
+<style>
+  html,body{margin:0;background:var(--c-void);color:var(--c-ink);font-family:var(--font-body)}
+  main{min-height:300vh;padding:120px var(--gutter)}
+  h1{font-family:var(--font-display);font-stretch:125%;font-weight:900;font-size:var(--fs-h1);text-transform:uppercase;margin:0}
+  pre{font-family:var(--font-mono);font-size:13px;color:var(--c-mute)}
+</style>
+</head>
+<body>
+<main><h1>Aurora <span style="color:var(--c-coral)">Rocketry</span></h1><pre id="out"></pre></main>
+<script type="module">
+import { core } from '/src/js/core.js';
+const out = document.getElementById('out');
+core.tick(() => {
+  out.textContent = JSON.stringify({ fx: core.fx.enabled, env: core.env, pointer: { x: core.pointer.x, y: core.pointer.y, speed: Math.round(core.pointer.speed) }, scroll: core.scroll, t: core.time.now.toFixed(1) }, null, 1);
+}, { always: true });
+</script>
+</body>
+</html>

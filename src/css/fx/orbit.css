@@ -1,0 +1,305 @@
+/* fx/orbit — the live orbital map of the departments (fx/orbit.js adds .orbit--live).
+   The static grid it replaces is in src/css/components/orbit.css, and so is the size of the
+   map's box (--orbit-stage-h, --orbit-dock-h, --orbit-layout): the page reserves it before
+   this module runs.
+
+   data-layout  side   wide stage: the info card docks in the free corner nearest to the
+                       selected satellite (data-dock = tl | br, kept until the next selection)
+                stack  narrow stage: the card sits in a block under the map (data-dock = below)
+   Classes      .is-awake (intro started) .is-deployed (intro finished) .has-selection
+                .orbit__node.is-selected   .orbit__card.is-open / .is-pinned (touch) */
+
+.orbit--live { position: relative; }
+
+.orbit--live .orbit__stage { height: var(--orbit-stage-h); }
+
+.orbit__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── core ──────────────────────────────────────────────────────────────── */
+.orbit--live .orbit__core {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 4px);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: var(--orbit-core, 5rem);
+  height: var(--orbit-core, 5rem);
+  margin: calc(var(--orbit-core, 5rem) / -2) 0 0 calc(var(--orbit-core, 5rem) / -2);
+  color: var(--c-ink);
+  pointer-events: none;
+  transition: opacity var(--dur-3) var(--ease-out), transform var(--dur-4) var(--ease-out);
+}
+.orbit--live .orbit__core .logo {
+  width: auto;
+  height: 100%;
+  filter: drop-shadow(0 0 0.9rem rgba(var(--rgb-coral), 0.55));
+}
+/* soft halo: lights the linework behind it and dims what passes behind the core */
+.orbit--live .orbit__core::before {
+  content: '';
+  position: absolute;
+  inset: -135%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(var(--rgb-sky), 0.34), rgba(var(--rgb-coral), 0.13) 42%, transparent 72%);
+}
+html.fx-on .orbit--live .orbit__core::before { animation: orbit-breathe 5200ms ease-in-out infinite alternate; }
+html.fx-on .orbit--live:not(.is-awake) .orbit__core { opacity: 0; transform: scale(0.55); }
+@keyframes orbit-breathe {
+  from { opacity: 0.65; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1.06); }
+}
+
+/* ── satellites ────────────────────────────────────────────────────────── */
+.orbit--live .orbit__list { list-style: none; }
+.orbit--live .orbit__node {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  margin: -1.5rem 0 0 -1.5rem;
+  border-radius: 50%;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  will-change: transform, opacity;
+}
+.orbit--live .orbit__idx,
+.orbit--live .orbit__name { display: none; }
+/* Under a finger the target stays at least 44px across, even at the far side of an orbit
+   (fx/orbit.js scales a satellite down to 0.8 with depth). */
+html.pointer-coarse .orbit--live .orbit__node {
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: -1.75rem 0 0 -1.75rem;
+}
+
+/* the glyph: a diamond inside a fine ring; a second ring closes in when selected */
+.orbit--live .orbit__sat {
+  position: relative;
+  width: 1.3rem;
+  height: 1.3rem;
+  border: 1px solid color-mix(in srgb, var(--c-ink) 46%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--c-void) 62%, transparent);
+  transition: border-color var(--dur-2), box-shadow var(--dur-2), transform var(--dur-2) var(--ease-out);
+}
+.orbit--live .orbit__sat::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  background: var(--c-ink);
+  transform: rotate(45deg);
+  transition: background-color var(--dur-2), transform var(--dur-2) var(--ease-out);
+}
+.orbit--live .orbit__sat::after {
+  content: '';
+  position: absolute;
+  inset: -0.6rem;
+  border: 1px solid var(--c-coral);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(1.5);
+  transition: opacity var(--dur-2), transform var(--dur-3) var(--ease-out);
+}
+.orbit--live .orbit__short {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 0.95rem);
+  padding: 0.15em 0.5em 0.15em 0.66em;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--c-void) 58%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+  color: var(--c-ink);
+  transform: translateX(-50%);
+  transition: color var(--dur-2), background-color var(--dur-2);
+}
+.orbit--live .orbit__node:hover .orbit__sat,
+.orbit--live .orbit__node.is-selected .orbit__sat {
+  border-color: var(--c-coral);
+  box-shadow: 0 0 1.1rem rgba(var(--rgb-coral), 0.55), inset 0 0 0.4rem rgba(var(--rgb-coral), 0.35);
+  transform: scale(1.12);
+}
+.orbit--live .orbit__node.is-selected .orbit__sat::before { background: var(--c-coral); transform: rotate(135deg); }
+.orbit--live .orbit__node.is-selected .orbit__sat::after { opacity: 0.7; transform: none; }
+.orbit--live .orbit__node.is-selected .orbit__short {
+  background: var(--c-coral);
+  color: var(--c-void);
+}
+.orbit--live .orbit__node:focus-visible { outline-offset: 2px; border-radius: 50%; }
+
+/* ── legend + hint ─────────────────────────────────────────────────────── */
+.orbit__legend,
+.orbit__hint {
+  transition: opacity var(--dur-3) var(--ease-out);
+}
+.orbit__legend {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  display: grid;
+  gap: 0.55em;
+  pointer-events: none;
+}
+.orbit__legend-title {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  color: var(--c-ink);
+}
+.orbit__legend-title::before {
+  content: '';
+  width: 1.75em;
+  height: 1px;
+  background: var(--c-coral);
+}
+.orbit__hint { color: var(--c-mute); }
+.orbit__hint::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.9em;
+  background: var(--c-coral);
+  transform: rotate(45deg) translateY(-1px);
+}
+html.fx-on .orbit--live .orbit__hint::before { animation: orbit-blink 1600ms steps(1) infinite; }
+html.fx-on .orbit--live:not(.is-awake) :is(.orbit__legend, .orbit__hint) { opacity: 0; }
+@keyframes orbit-blink {
+  50% { opacity: 0.25; }
+}
+
+/* ── info card ─────────────────────────────────────────────────────────── */
+.orbit__dock { pointer-events: none; }
+.orbit__card {
+  --corner-color: var(--c-coral);
+  --corner-size: 10px;
+  --corner-gap: 1px;
+  position: relative;
+  padding: 1.1rem 1.25rem 1rem;
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-s);
+  background: color-mix(in srgb, var(--c-night) 82%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--dur-1), visibility 0s linear var(--dur-1);
+}
+.orbit__card.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.orbit__card-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--c-line);
+}
+.orbit__card-idx { color: var(--c-coral); }
+.orbit__card-name {
+  margin-top: 0.95rem;
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: clamp(1.15rem, 1.7vw, 1.45rem);
+  line-height: 1.02;
+  letter-spacing: var(--track-display);
+  text-wrap: balance;
+}
+.orbit__card-lead {
+  margin-top: 0.7rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--c-ink) 84%, transparent);
+}
+/* The last line of the card, the same height either way. Pinned by a tap: a real link to the
+   department. Selected by hover or keyboard focus: the satellite itself is the link and the
+   card cannot be reached without leaving it, so the line only says how to open. */
+.orbit__card-open,
+.orbit__card-how {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 0.35rem;
+}
+.orbit__card-open {
+  width: fit-content;
+  gap: 1em;
+  color: var(--c-coral);
+  text-decoration: none;
+}
+.orbit__card-open .icon { width: 24px; height: 12px; }
+.orbit__card.is-pinned .orbit__card-open { pointer-events: auto; }
+.orbit__card:not(.is-pinned) .orbit__card-open,
+.orbit__card.is-pinned .orbit__card-how { display: none; }
+
+html.fx-on .orbit__card.is-open > :not(.corners) { animation: orbit-card-in 460ms var(--ease-out) backwards; }
+html.fx-on .orbit__card.is-open > :nth-child(3) { animation-delay: 50ms; }
+html.fx-on .orbit__card.is-open > :nth-child(4) { animation-delay: 100ms; }
+html.fx-on .orbit__card.is-open > :nth-child(n + 5) { animation-delay: 150ms; }
+@keyframes orbit-card-in {
+  from { opacity: 0; transform: translateY(0.6rem); }
+}
+
+/* side: corner docks over the stage */
+.orbit--live[data-layout='side'] .orbit__dock {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+}
+.orbit--live[data-layout='side'] .orbit__card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: clamp(17rem, 25%, 20.5rem);
+}
+.orbit--live[data-layout='side'][data-dock='br'] .orbit__card { left: auto; top: auto; right: 0; bottom: 0; }
+.orbit--live[data-layout='side'] .orbit__hint {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+/* the card takes the legend's corner; the hint has done its job once something is selected */
+.orbit--live[data-layout='side'][data-dock='tl'].has-selection .orbit__legend,
+.orbit--live.has-selection .orbit__hint { opacity: 0; }
+
+/* stack: a read-out under the map; the hint is its idle state, --orbit-dock-h its height at
+   rest (the card joins it with the first selection and may make it taller) */
+.orbit--live[data-layout='stack'] .orbit__dock {
+  position: relative;
+  display: grid;
+  min-height: var(--orbit-dock-h);
+  margin-top: var(--space-3);
+  scroll-margin-bottom: 3.5rem; /* a tapped card scrolls into view clear of the HUD status bar */
+  border-top: 1px solid var(--c-line);
+  transition: border-color var(--dur-2);
+}
+.orbit--live[data-layout='stack'].has-selection .orbit__dock { border-color: transparent; }
+.orbit--live[data-layout='stack'] :is(.orbit__hint, .orbit__card) { grid-area: 1 / 1; }
+.orbit--live[data-layout='stack'] .orbit__hint { place-self: center; }
+.orbit--live[data-layout='stack'] .orbit__card {
+  align-self: start;
+  border-top-color: var(--c-coral);
+}
+.orbit--live[data-layout='stack'] .orbit__legend span:last-child { display: none; }

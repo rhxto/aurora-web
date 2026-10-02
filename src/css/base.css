@@ -1,0 +1,843 @@
+/* Base — reset, typography, layout, fixed layers, header, footer, buttons and the shared
+   components (step title, corner brackets, media frame, feature row, pager, patch).
+   Everything uses the tokens in tokens.css. Motion rule: keyframe animations run only under
+   html.fx-on; plain hover/focus transitions are always allowed. */
+
+/* ── Reset ─────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + var(--space-5));
+  background: var(--c-void);
+  color-scheme: dark;
+}
+html.fx-on { scroll-behavior: smooth; }
+html.menu-open { overflow: hidden; }
+/* The HUD status bar (fx/hud) covers the bottom edge: whatever the browser scrolls into view —
+   keyboard focus above all — stops above it, as it stops below the header at the top. */
+html.has-hud { scroll-padding-bottom: calc(var(--hud-bar-h) + var(--space-4) + env(safe-area-inset-bottom, 0px)); }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-void);
+  color: var(--c-ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Static night sky: what the page looks like before (or without) the sky effect.
+   It sits below #fx-sky, so the animated canvas simply paints over it. */
+body::before {
+  --star: color-mix(in srgb, var(--c-ink) 62%, transparent);
+  --star-dim: color-mix(in srgb, var(--c-ink) 30%, transparent);
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, var(--star) 50%, transparent 51%),
+    radial-gradient(1px 1px at 71% 9%, var(--star-dim) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 38% 64%, var(--star) 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 47%, var(--star-dim) 50%, transparent 51%),
+    radial-gradient(1px 1px at 55% 86%, var(--star) 50%, transparent 51%),
+    radial-gradient(1px 1px at 23% 41%, var(--star-dim) 50%, transparent 51%),
+    radial-gradient(1px 1px at 9% 77%, var(--star-dim) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 63% 31%, var(--star-dim) 50%, transparent 51%),
+    radial-gradient(1px 1px at 82% 83%, var(--star) 50%, transparent 51%),
+    radial-gradient(1px 1px at 46% 12%, var(--star-dim) 50%, transparent 51%),
+    radial-gradient(120% 80% at 12% -10%, rgba(var(--rgb-navy), 0.6), transparent 62%),
+    radial-gradient(80% 60% at 100% 4%, rgba(var(--rgb-coral), 0.08), transparent 58%),
+    radial-gradient(90% 60% at 70% 108%, rgba(var(--rgb-sky), 0.12), transparent 62%);
+  background-size:
+    380px 380px, 380px 380px, 380px 380px, 380px 380px, 380px 380px, 380px 380px,
+    610px 610px, 610px 610px, 610px 610px, 610px 610px,
+    100% 100%, 100% 100%, 100% 100%;
+}
+
+h1, h2, h3, h4, p, figure, blockquote, dl, dd { margin: 0; }
+ul, ol { margin: 0; padding: 0; }
+img, svg, video { display: block; max-width: 100%; }
+img { height: auto; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+strong { font-weight: 600; }
+
+::selection { background: var(--c-coral); color: var(--c-void); }
+
+:focus-visible {
+  outline: 2px solid var(--c-sky);
+  outline-offset: 4px;
+  border-radius: var(--radius-s);
+}
+
+/* Read out, never painted: text for assistive tech only. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Typography ────────────────────────────────────────────────────────── */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 900;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--track-display);
+  text-wrap: balance;
+}
+
+/* The lowercase connective inside capital titles ("GUIDANCE and CONTROL"). */
+.t-and {
+  font-family: var(--font-body);
+  font-stretch: 100%;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0;
+  color: var(--c-coral);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--c-mute);
+}
+.label__sep {
+  display: inline-block;
+  width: 1.75em;
+  height: 1px;
+  margin-inline: 0.9em;
+  vertical-align: middle;
+  background: var(--c-line-strong);
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.4em 0.9em;
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-ink);
+}
+
+.prose { color: var(--c-mute); max-width: 62ch; }
+.prose > * + * { margin-top: 1.1em; }
+.prose a {
+  color: var(--c-coral);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition: color var(--dur-1);
+}
+.prose a:hover { color: var(--c-coral-soft); }
+.prose strong { color: var(--c-ink); }
+.prose--lead { font-size: var(--fs-lead); line-height: 1.6; color: var(--c-ink); }
+
+/* Bullet list as a row of "checked" items. */
+.ticks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  list-style: none;
+}
+.ticks li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.5em 0.9em;
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-s);
+  background: var(--c-panel);
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.04em;
+  color: var(--c-ink);
+}
+.ticks li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--c-coral);
+}
+
+/* ── Layout ────────────────────────────────────────────────────────────── */
+/* --hud-bar-h: height of the HUD status bar docked to the bottom of the viewport (fx/hud); fixed
+   or sticky page UI stays above it (docs/ARCHITECTURE.md §8). */
+:root {
+  --hud-bar-h: 30px;
+  --gutter-token: var(--gutter);
+}
+/* The page is laid out edge to edge (viewport-fit=cover): on a phone held sideways the gutter
+   grows to the notch / rounded corners, on both sides alike, for everything that uses it. (Set on
+   body, from an alias of the token: a property cannot refer to itself on the same element.)
+   --wrap is the content column: the token width, growing gently on very large screens. */
+body {
+  --gutter: max(var(--gutter-token), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+  --wrap: min(100% - 2 * var(--gutter), max(var(--container), 66vw));
+}
+.container {
+  width: var(--wrap);
+  margin-inline: auto;
+}
+.section { padding-block: calc(var(--section-gap) / 2); }
+
+/* ── Fixed layers (docs/ARCHITECTURE.md §5) ────────────────────────────── */
+#fx-sky,
+#fx-hud,
+#fx-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+#fx-sky { z-index: var(--z-sky); }
+#fx-hud { z-index: var(--z-hud); transition: opacity var(--dur-2); }
+#fx-overlay { z-index: var(--z-overlay); }
+/* Hidden once it has faded out — and visible again at once, so focus can go straight back to
+   one of its controls (the launch show, fx/egg, hides the HUD the same way). */
+html.menu-open #fx-hud { opacity: 0; visibility: hidden; transition: opacity var(--dur-2), visibility 0s linear var(--dur-2); }
+
+.page {
+  position: relative;
+  z-index: var(--z-content);
+  flex: 1 0 auto;
+  overflow-x: clip; /* decorative overhangs never widen the page; clip keeps position: sticky working */
+}
+
+.skip-link {
+  position: fixed;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: var(--z-modal);
+  padding: 0.9em 1.3em;
+  border-radius: var(--radius-s);
+  background: var(--c-coral);
+  color: var(--c-void);
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transform: translateY(-250%);
+}
+.skip-link:focus { transform: none; }
+
+/* ── Corner brackets ───────────────────────────────────────────────────── */
+/* <span class="corners"> inside a position: relative parent draws four HUD brackets. */
+.corners {
+  --c: var(--corner-color, var(--c-coral));
+  --s: var(--corner-size, 14px);
+  --t: var(--corner-weight, 1.5px);
+  position: absolute;
+  inset: calc(var(--corner-gap, 0px) * -1);
+  pointer-events: none;
+  background:
+    linear-gradient(var(--c), var(--c)) 0 0 / var(--s) var(--t),
+    linear-gradient(var(--c), var(--c)) 0 0 / var(--t) var(--s),
+    linear-gradient(var(--c), var(--c)) 100% 0 / var(--s) var(--t),
+    linear-gradient(var(--c), var(--c)) 100% 0 / var(--t) var(--s),
+    linear-gradient(var(--c), var(--c)) 0 100% / var(--s) var(--t),
+    linear-gradient(var(--c), var(--c)) 0 100% / var(--t) var(--s),
+    linear-gradient(var(--c), var(--c)) 100% 100% / var(--s) var(--t),
+    linear-gradient(var(--c), var(--c)) 100% 100% / var(--t) var(--s);
+  background-repeat: no-repeat;
+}
+
+/* ── Header ────────────────────────────────────────────────────────────── */
+.site-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: var(--z-header);
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding-inline: var(--gutter);
+}
+/* Two backdrops on pseudo-elements (a backdrop-filter on the header itself would trap the
+   fixed full-screen menu inside it): a soft top shade, and the glass bar once scrolled. */
+.site-header::before,
+.site-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.site-header::before {
+  bottom: -2rem;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--c-void) 78%, transparent), transparent);
+}
+.site-header::after {
+  border-bottom: 1px solid var(--c-line);
+  /* dense enough to carry the navigation by itself where backdrop-filter is not rendered */
+  background: color-mix(in srgb, var(--c-night) 86%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+.site-header.is-scrolled::after,
+html.no-js .site-header::after { opacity: 1; }
+html.menu-open .site-header::after { opacity: 0; }
+
+.site-logo {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 48px;
+  color: var(--c-ink);
+}
+.logo { display: block; }
+.logo--mark { height: 42px; width: auto; }
+.logo__accent { fill: var(--c-coral); }
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.25rem, 3vw, 2.75rem);
+}
+.site-nav__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--c-ink) 82%, transparent);
+  transition: color var(--dur-1);
+}
+.site-nav__link::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 9px;
+  height: 1px;
+  background: var(--c-coral);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--dur-2) var(--ease-out);
+}
+.site-nav__link:hover,
+.site-nav__link[aria-current] { color: var(--c-ink); }
+.site-nav__link:hover::after,
+.site-nav__link:focus-visible::after,
+.site-nav__link[aria-current]::after { transform: none; transform-origin: left; }
+
+.nav-toggle {
+  position: relative;
+  z-index: 2;
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -9px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-ink);
+  cursor: pointer;
+}
+.nav-toggle__bars { position: relative; display: block; width: 26px; height: 12px; }
+.nav-toggle__bars i {
+  position: absolute;
+  inset-inline: 0;
+  height: 2px;
+  background: currentColor;
+  transition: transform var(--dur-2) var(--ease-out), top var(--dur-2) var(--ease-out);
+}
+.nav-toggle__bars i:first-child { top: 0; }
+.nav-toggle__bars i:last-child { top: 10px; }
+.nav-toggle[aria-expanded='true'] i:first-child { top: 5px; transform: rotate(45deg); }
+.nav-toggle[aria-expanded='true'] i:last-child { top: 5px; transform: rotate(-45deg); }
+
+/* Full-screen menu (narrow screens only). */
+.site-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-7);
+  padding: calc(var(--header-h) + var(--space-7)) var(--gutter) max(var(--space-6), env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background:
+    radial-gradient(120% 70% at 0% 0%, rgba(var(--rgb-navy), 0.7), transparent 65%),
+    radial-gradient(90% 50% at 100% 100%, rgba(var(--rgb-coral), 0.14), transparent 60%),
+    color-mix(in srgb, var(--c-void) 92%, transparent);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease-out), visibility 0s linear var(--dur-2);
+}
+html.menu-open .site-menu { visibility: visible; opacity: 1; transition-delay: 0s; }
+.site-menu__list { list-style: none; }
+.site-menu__link {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  padding-block: 0.42em;
+  border-bottom: 1px solid var(--c-line);
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 7.4vw, 3.2rem);
+  line-height: 1;
+  text-decoration: none;
+}
+.site-menu__link[aria-current] { color: var(--c-coral); }
+.site-menu__idx {
+  font-family: var(--font-mono);
+  font-stretch: 100%;
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  color: var(--c-coral);
+}
+/* The links rise in one after the other — only when motion is welcome. */
+html.fx-on .site-menu__list li {
+  opacity: 0;
+  transform: translateY(1.2rem);
+  transition: opacity var(--dur-2), transform var(--dur-2);
+}
+html.fx-on.menu-open .site-menu__list li {
+  opacity: 1;
+  transform: none;
+  transition: opacity var(--dur-3) var(--ease-out), transform var(--dur-3) var(--ease-out);
+}
+html.fx-on.menu-open .site-menu__list li:nth-child(2) { transition-delay: 60ms; }
+html.fx-on.menu-open .site-menu__list li:nth-child(3) { transition-delay: 120ms; }
+html.fx-on.menu-open .site-menu__list li:nth-child(4) { transition-delay: 180ms; }
+.site-menu__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.site-menu__mail {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.04em;
+  color: var(--c-mute);
+  text-decoration: none;
+}
+.site-menu__social { display: flex; gap: var(--space-2); }
+
+@media (max-width: 860px) {
+  .site-nav { display: none; }
+  .nav-toggle { display: grid; }
+  .site-menu { display: flex; }
+
+  /* Without JS the toggle cannot work: show the links as a compact row instead. */
+  html.no-js .nav-toggle,
+  html.no-js .site-menu { display: none; }
+  html.no-js .site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0 0.9rem;
+  }
+  html.no-js .site-nav__link { min-height: 30px; font-size: 0.62rem; letter-spacing: 0.08em; }
+  html.no-js .site-nav__link::after { bottom: 4px; }
+}
+/* A phone held sideways: the four links share two columns, so the menu fits without scrolling
+   (its list would otherwise slide under the logo and the close button). */
+@media (max-width: 860px) and (max-height: 500px) {
+  .site-menu {
+    gap: var(--space-4);
+    padding-block: calc(var(--header-h) + var(--space-3)) max(var(--space-4), env(safe-area-inset-bottom));
+  }
+  .site-menu__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--space-6);
+  }
+  .site-menu__link {
+    min-height: 44px;
+    font-size: clamp(1.1rem, min(8vh, 3.8vw), 2.2rem);
+  }
+}
+
+/* ── Footer ────────────────────────────────────────────────────────────── */
+.site-footer {
+  position: relative;
+  z-index: var(--z-content);
+  margin-top: calc(var(--section-gap) / 2);
+  padding-block: var(--space-8) var(--space-6);
+  border-top: 1px solid var(--c-line);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--c-void) 60%, transparent), color-mix(in srgb, var(--c-void) 94%, transparent) 60%);
+}
+/* The HUD status bar covers the bottom edge of the viewport: the page ends above it. */
+html.has-hud .site-footer { padding-bottom: calc(var(--space-6) + var(--hud-bar-h) + env(safe-area-inset-bottom, 0px)); }
+.site-footer__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-6) var(--space-8);
+}
+.site-footer__logo { display: inline-block; justify-self: start; color: var(--c-ink); }
+.logo--full { width: clamp(13rem, 26vw, 21rem); height: auto; }
+.site-footer__nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 clamp(1.25rem, 2.5vw, 2.25rem);
+  list-style: none;
+}
+.site-footer__link,
+.site-footer__top {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color var(--dur-1);
+}
+.site-footer__link:hover,
+.site-footer__top:hover { color: var(--c-coral); }
+.site-footer__base {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-6);
+  margin-top: var(--space-7);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--c-line);
+  color: var(--c-mute);
+}
+.site-footer__copy { font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: 0.08em; }
+
+.social { display: flex; gap: var(--space-2); list-style: none; }
+.social__link {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--c-line-strong);
+  border-radius: 50%;
+  color: var(--c-ink);
+  transition: background-color var(--dur-2), border-color var(--dur-2), color var(--dur-2);
+}
+.social__link:hover {
+  border-color: var(--c-coral);
+  background: var(--c-coral);
+  color: var(--c-void);
+}
+.icon { width: 20px; height: 20px; flex: none; }
+
+@media (max-width: 860px) {
+  .site-footer__grid { grid-template-columns: minmax(0, 1fr) auto; }
+  .site-footer__logo { grid-column: 1 / -1; }
+  .site-footer__nav ul { display: grid; grid-template-columns: repeat(2, max-content); }
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────────── */
+/* The original's coral outlined pill, with an arrow and a fill that sweeps in on hover. */
+.btn {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  min-height: 48px;
+  padding: 0.9em 1.7em;
+  overflow: hidden;
+  border: 1px solid var(--c-coral);
+  border-radius: var(--radius-pill);
+  color: var(--c-coral);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: var(--track-label);
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--c-coral);
+  transform: translateX(-102%);
+  transition: transform var(--dur-3) var(--ease-out);
+}
+.btn .icon { transition: transform var(--dur-2) var(--ease-out); }
+.btn .icon--arrow { width: 24px; height: 12px; }
+.btn .icon--external { width: 11px; height: 11px; }
+.btn:hover,
+.btn:focus-visible,
+.btn:active {
+  color: var(--c-void);
+  box-shadow: 0 0 2.2rem rgba(var(--rgb-coral), 0.35);
+}
+.btn:hover::before,
+.btn:focus-visible::before,
+.btn:active::before { transform: none; }
+.btn:hover .icon--arrow,
+.btn:focus-visible .icon--arrow { transform: translateX(5px); }
+.btn:hover .icon--external,
+.btn:focus-visible .icon--external { transform: translate(2px, -2px); }
+
+/* ── Step title ────────────────────────────────────────────────────────── */
+/* The original site's signature: a section heading flanked by stepped red lines. */
+.step-title {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  width: var(--wrap);
+  margin: 0 auto clamp(3rem, 7vw, 5.5rem);
+}
+.step-title__line {
+  flex: 1 1 0;
+  min-width: 1.5rem;
+  height: clamp(30px, 6vw, 48px);
+  overflow: visible;
+}
+.step-title__line path {
+  fill: none;
+  stroke: var(--c-coral);
+  stroke-width: 2;
+  stroke-linecap: square;
+  vector-effect: non-scaling-stroke;
+}
+.step-title__text {
+  flex: 0 1 auto;
+  max-width: min(72%, 24em);
+  font-size: clamp(1rem, 2.1vw, 1.55rem);
+  line-height: 1.15;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+/* Draw-in: only when reveal.js is running with effects on (it adds .reveal-ready, then
+   .is-inview). The lines are clipped open from the title outwards — a clip instead of a dash
+   offset because a dash pattern on a stretched, non-scaling stroke is measured differently by
+   each browser. */
+html.reveal-ready.fx-on .step-title .step-title__line {
+  transition: clip-path var(--dur-4) var(--ease-out) 120ms;
+}
+html.reveal-ready.fx-on .step-title:not(.is-inview) .step-title__line--l { clip-path: inset(-4px -4px -4px 100%); }
+html.reveal-ready.fx-on .step-title:not(.is-inview) .step-title__line--r { clip-path: inset(-4px 100% -4px -4px); }
+html.reveal-ready.fx-on .step-title.is-inview .step-title__line { clip-path: inset(-4px); }
+html.reveal-ready.fx-on .step-title .step-title__text {
+  transition: opacity var(--dur-3) var(--ease-out), transform var(--dur-3) var(--ease-out);
+}
+html.reveal-ready.fx-on .step-title:not(.is-inview) .step-title__text {
+  opacity: 0;
+  transform: translateY(0.6em);
+}
+
+/* ── Media frame ───────────────────────────────────────────────────────── */
+.frame__box { position: relative; }
+.frame__media { position: relative; overflow: hidden; }
+.frame__caption {
+  display: flex;
+  align-items: baseline;
+  gap: 1.1em;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-mute);
+}
+.frame__tag { flex: none; color: var(--c-coral); }
+
+/* Photos: cropped to a calm proportion, HUD brackets just outside the corners. */
+.frame--photo { --corner-gap: 9px; }
+.frame--photo .frame__media {
+  aspect-ratio: var(--ar);
+  border-radius: var(--radius-s);
+  background: var(--c-panel-solid);
+}
+.frame--photo img { width: 100%; height: 100%; object-fit: cover; }
+.frame--photo .frame__caption { margin-top: var(--space-5); }
+.frame--photo.frame--tall { max-width: 25rem; margin-inline: auto; }
+
+/* Plots, CAD renders, rocket profiles: an instrument panel with a caption bar. */
+.frame--panel {
+  overflow: hidden;
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--radius-m);
+  background: var(--c-panel);
+}
+.frame--panel .frame__media {
+  display: grid;
+  place-items: center;
+  padding: clamp(0.7rem, 2cqw, 1.1rem);
+  background:
+    linear-gradient(var(--c-line) 1px, transparent 1px) 0 0 / 100% 28px,
+    linear-gradient(90deg, var(--c-line) 1px, transparent 1px) 0 0 / 28px 100%;
+}
+/* As wide as the panel, but never taller than 27rem. A definite width (not `auto` with a
+   max-height) lets the width/height attributes reserve the box before a lazy image has loaded. */
+.frame--panel img {
+  width: min(100%, calc(27rem * var(--ar)));
+  border-radius: var(--radius-s);
+}
+.frame--panel.frame--wide .frame__media { padding-block: clamp(1.5rem, 5cqw, 3rem); }
+.frame--panel .frame__caption {
+  padding: 0.85em 1.2em;
+  border-top: 1px solid var(--c-line-strong);
+  background: color-mix(in srgb, var(--c-void) 55%, transparent);
+}
+
+/* ── Feature rows ──────────────────────────────────────────────────────── */
+/* Text + media, alternating sides. Rows respond to the width of their list (container query),
+   so the same component works full-width and inside the narrower project column. */
+.features {
+  container-type: inline-size;
+  display: grid;
+  gap: clamp(4.5rem, 10vw, 9rem);
+}
+.feature {
+  display: grid;
+  align-items: center;
+  gap: clamp(2rem, 6vw, 3rem);
+}
+.feature__text {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+}
+/* Soft scrim so the copy stays readable over a moving aurora (invisible on the plain sky). */
+.feature__text::before {
+  content: '';
+  position: absolute;
+  inset: -2rem max(-2.5rem, var(--gutter) * -1);
+  z-index: -1;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c-void) 78%, transparent) 55%, transparent);
+  pointer-events: none;
+}
+.feature__index { margin-bottom: var(--space-4); }
+.feature__index span:first-child { color: var(--c-coral); }
+.feature__title {
+  font-size: clamp(1.3rem, 2.3vw, 1.85rem);
+  line-height: 1.08;
+  overflow-wrap: break-word;
+}
+h2.feature__title { font-size: var(--fs-h2); line-height: 1; }
+.feature__title + .prose { margin-top: var(--space-5); }
+.feature__cta { margin-top: var(--space-6); }
+.feature__media { min-width: 0; }
+
+@container (min-width: 760px) {
+  .feature {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 8cqw, 6.5rem);
+  }
+  .feature--flip .feature__text { order: 2; }
+}
+
+/* ── Mission patch ─────────────────────────────────────────────────────── */
+.patch {
+  position: relative;
+  isolation: isolate;
+  display: block;
+}
+.patch::before {
+  content: '';
+  position: absolute;
+  inset: 4%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(var(--rgb-sky), 0.38), rgba(var(--rgb-coral), 0.12) 60%, transparent);
+  filter: blur(28px);
+}
+/* Masked by the patch artwork itself, so a tilt glare never spills outside the hexagon. */
+.patch__tilt {
+  display: block;
+  -webkit-mask: var(--patch-mask) center / contain no-repeat;
+  mask: var(--patch-mask) center / contain no-repeat;
+}
+.patch img { width: 100%; }
+
+/* ── Pager (previous / next) ───────────────────────────────────────────── */
+.pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: calc(var(--section-gap) / 2);
+  border-block: 1px solid var(--c-line);
+}
+.pager__link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-6) 0;
+  text-decoration: none;
+  transition: color var(--dur-2);
+}
+.pager__link--next { padding-left: var(--space-6); border-left: 1px solid var(--c-line); text-align: right; }
+.pager__link--prev { grid-template-columns: auto minmax(0, 1fr); padding-right: var(--space-6); }
+.pager__label { grid-column: 1 / -1; }
+.pager__name {
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: clamp(1.05rem, 2.6vw, 2.1rem);
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+.pager__link .icon { width: 28px; height: 14px; margin-bottom: 0.25em; color: var(--c-coral); transition: transform var(--dur-2) var(--ease-out); }
+/* previous: arrow first, pointing left */
+.pager__link--prev .pager__name { order: 2; }
+.pager__link--prev .icon { order: 1; transform: scaleX(-1); }
+.pager__link:hover { color: var(--c-coral); }
+.pager__link--next:hover .icon { transform: translateX(6px); }
+.pager__link--prev:hover .icon { transform: scaleX(-1) translateX(6px); }
+
+/* Narrow screens: one link per row, so a long name ("AERODYNAMICS") never breaks mid-word. */
+@media (max-width: 560px) {
+  .pager { grid-template-columns: minmax(0, 1fr); }
+  .pager__link { padding-block: var(--space-5); }
+  .pager__link--prev { padding-right: 0; }
+  .pager__link--next { padding-left: 0; border-left: 0; border-top: 1px solid var(--c-line); }
+}

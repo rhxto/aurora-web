@@ -1,0 +1,342 @@
+/* Projects (src/templates/projects.mjs) — the index "fleet" and the project detail page.
+   Static layout only: everything is readable and navigable without JavaScript. The roll-out
+   and the spotlight are layered on by fx/projects.js (fx/projects.css); the blueprint has its
+   own files. */
+
+/* ── Index: the fleet ───────────────────────────────────────────────────── */
+/* One stepped line joins the rows: it comes down the side (.fleet__drop), runs along the lane
+   under the rocket (.fleet__rail) and turns down the other side into the next row. Odd rows
+   run left → right, even rows (--rtl) right → left, and each rocket points the way it rolls. */
+.fleet {
+  --fleet-gap: clamp(4.5rem, 10vw, 8.5rem);
+  --fleet-pad: clamp(1.1rem, 3.6vw, 3.25rem);
+  --fleet-line: 2px;
+  display: grid;
+  gap: var(--fleet-gap);
+  padding-top: var(--space-6);
+}
+.fleet__row {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  padding: clamp(1.5rem, 4vw, 3rem) var(--fleet-pad) 0;
+  scroll-margin-top: var(--space-5);
+}
+
+/* The line. Both parts are full-size bars that the effect scales from their leading end. */
+.fleet__drop,
+.fleet__rail {
+  position: absolute;
+  background: var(--c-coral);
+  pointer-events: none;
+}
+.fleet__drop {
+  top: calc((var(--fleet-gap) + var(--fleet-line)) * -1);
+  bottom: 0;
+  left: 0;
+  width: var(--fleet-line);
+  transform-origin: 50% 0;
+}
+.fleet__row:first-child .fleet__drop { top: calc(var(--space-6) * -1); }
+.fleet__row--rtl .fleet__drop { right: 0; left: auto; }
+.fleet__rail {
+  inset: auto 0 0;
+  height: var(--fleet-line);
+  transform-origin: 0 50%;
+}
+.fleet__row--rtl .fleet__rail { transform-origin: 100% 50%; }
+
+.fleet__row > .corners {
+  --corner-size: 16px;
+  inset: 12px 12px 14px;
+  opacity: 0;
+  transition: opacity var(--dur-2);
+}
+.fleet__row:hover > .corners,
+.fleet__row:focus-within > .corners { opacity: 1; }
+.fleet__glow { display: none; }
+
+.fleet__card {
+  position: relative;
+  display: grid;
+  align-items: center;
+  gap: clamp(1.5rem, 5vw, 4rem);
+}
+/* Big outlined ordinal behind the copy, in the top-right corner of the text column. */
+.fleet__num {
+  position: absolute;
+  top: -0.42em;
+  right: -0.04em;
+  z-index: -1;
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: clamp(6.5rem, 21vw, 17rem);
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--c-line-strong);
+  user-select: none;
+}
+.fleet__text { position: relative; isolation: isolate; container-type: inline-size; min-width: 0; }
+/* Sized from its own column (one column on phones, about half the row beside the patch on wide
+   screens): the longest name, eight expanded capitals, takes 6.6em, so it always fits. */
+.fleet__title {
+  font-size: clamp(2rem, 14.5cqi, 6.25rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+.fleet__title + .prose { margin-top: var(--space-5); }
+.fleet__cta { margin-top: var(--space-6); }
+.fleet__patch {
+  order: -1;
+  width: min(64%, 15rem);
+}
+/* The pointer-only link laid over the medallion (inside the tilting layer, so it tilts along). */
+.fleet__patch .patch__tilt { position: relative; }
+.patch__link {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+/* Lane: the rocket above the line, on a strip of ground ticks. */
+.fleet__lane {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  margin-inline: calc(var(--fleet-pad) * -1);
+  padding-bottom: clamp(0.9rem, 2vw, 1.4rem);
+}
+.fleet__lane::before {
+  content: '';
+  position: absolute;
+  inset: auto 0 var(--fleet-line);
+  height: 7px;
+  background: repeating-linear-gradient(90deg, var(--c-line-strong) 0 1px, transparent 1px 2.5rem);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+}
+.fleet__rocket {
+  --craft-glow: drop-shadow(0 0 14px rgba(var(--rgb-sky), 0.3));
+  width: min(88%, 66rem);
+}
+
+@media (min-width: 900px) {
+  .fleet__card { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); }
+  .fleet__row--rtl .fleet__card { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); }
+  .fleet__patch { order: 0; justify-self: center; width: min(100%, 22rem); }
+  .fleet__row--rtl .fleet__patch { order: -1; }
+}
+
+/* ── Detail: overview + read-outs ───────────────────────────────────────── */
+.project__body {
+  --body-gap: clamp(3rem, 7vw, 5rem);
+  --subsys-gap: clamp(4.5rem, 9vw, 7.5rem);
+  gap: var(--body-gap);
+}
+
+/* Telemetry read-outs: label, value, and a rule that draws in under each one. */
+.specs {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr));
+  gap: var(--space-6) clamp(1rem, 2.6vw, 2.25rem);
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+.specs__item {
+  position: relative;
+  gap: var(--space-2);
+  padding: 0 0 var(--space-4);
+  box-shadow: none;
+}
+.specs__item::before,
+.specs__item::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+}
+.specs__item::before { background: var(--c-line); }
+.specs__item::after {
+  background: linear-gradient(90deg, var(--c-coral) 0 2.5rem, var(--c-line-strong) 2.5rem);
+  transform-origin: 0 50%;
+}
+.specs__label::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 0.8em;
+  vertical-align: 0.1em;
+  background: currentColor;
+}
+.specs__value { font-size: clamp(1rem, 1.35vw, 1.15rem); }
+
+/* ── Detail: subsystem sections ─────────────────────────────────────────── */
+.subsystems {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--subsys-gap);
+}
+/* Last section + pager. Beside the sticky blueprint they share one sheet-height block, so the
+   blueprint is still pinned (nose in view) while the last section is the one being read. */
+.project__end {
+  display: grid;
+  align-content: space-between;
+  gap: var(--subsys-gap);
+  margin-top: calc(var(--subsys-gap) - var(--body-gap));
+}
+.project__end > .pager { margin-top: 0; }
+@media (min-width: 1000px) {
+  .project__end { min-height: var(--rail-h); }
+}
+.subsys {
+  position: relative;
+  display: grid;
+  align-items: center;
+  gap: clamp(1.75rem, 5vw, 3rem);
+  padding-left: clamp(1.25rem, 3.2vw, 2.25rem);
+  /* lands below the site header (html scroll-padding) and the pinned rocket strip */
+  scroll-margin-top: calc(var(--strip-h) + var(--space-4));
+}
+/* The rule that ties a section to the blueprint: it lights up while its zone is the active one. */
+.subsys::before,
+.subsys::after {
+  content: '';
+  position: absolute;
+  top: 0.3rem;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+}
+.subsys::before { background: var(--c-line-strong); }
+.subsys::after {
+  background: linear-gradient(to bottom, var(--c-coral) 70%, transparent);
+  box-shadow: 0 0 12px var(--c-glow-coral);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  transition: transform var(--dur-4) var(--ease-out), opacity var(--dur-3);
+}
+.subsys.is-active::after { transform: none; }
+/* Sections already read keep a faint trace of the rule. */
+.subsys.is-past::after { transform: none; opacity: 0.32; }
+.subsys__text { position: relative; isolation: isolate; min-width: 0; }
+/* Soft scrim so the copy stays readable over a bright aurora (invisible on the plain sky). */
+.subsys__text::after,
+.fleet__text::after {
+  content: '';
+  position: absolute;
+  inset: -2rem -1.5rem;
+  z-index: -2;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c-void) 76%, transparent) 55%, transparent);
+  pointer-events: none;
+}
+/* node on the rule, level with the index label */
+.subsys__text::before {
+  content: '';
+  position: absolute;
+  top: 0.3rem;
+  left: calc(clamp(1.25rem, 3.2vw, 2.25rem) * -1 - 3px);
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--c-coral);
+  background: var(--c-void);
+  transition: background-color var(--dur-2), box-shadow var(--dur-2);
+}
+.subsys.is-active .subsys__text::before {
+  background: var(--c-coral);
+  box-shadow: 0 0 10px var(--c-glow-coral);
+}
+.subsys__title {
+  font-size: clamp(1.3rem, 2.3vw, 1.85rem);
+  line-height: 1.08;
+  overflow-wrap: break-word;
+}
+/* Where the subsystem sits along the rocket: nose to the right, like the pinned strip. */
+.subsys__zone {
+  position: relative;
+  display: block;
+  width: min(100% - 10px, 12rem);
+  height: 9px;
+  margin-top: var(--space-4);
+  background: linear-gradient(var(--c-line-strong), var(--c-line-strong)) 0 50% / 100% 1px no-repeat;
+}
+.subsys__zone::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: calc(var(--from) * 100%);
+  bottom: 3px;
+  width: calc((var(--to) - var(--from)) * 100%);
+  background: var(--c-coral);
+}
+.subsys__zone::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  border: solid transparent;
+  border-width: 3px 0 3px 8px;
+  border-left-color: var(--c-line-strong);
+  transform: translateY(-50%);
+}
+.subsys__zone + .prose { margin-top: var(--space-5); }
+.subsys__media { min-width: 0; }
+
+@container (min-width: 680px) {
+  .subsys {
+    grid-template-columns: minmax(0, 11fr) minmax(0, 10fr);
+    gap: clamp(2rem, 6cqw, 4.5rem);
+  }
+}
+@media (min-width: 1000px) {
+  .subsys { scroll-margin-top: 0; }
+}
+
+/* The rocket render as a figure: nose right on the drawing panel. */
+.frame--profile .frame__media { padding-block: clamp(1.75rem, 6cqw, 3.25rem); }
+.frame--profile .craft {
+  --craft-glow: drop-shadow(0 0 10px rgba(var(--rgb-sky), 0.3));
+  width: 100%;
+}
+
+/* ── Detail: previous / next with the neighbour's patch ─────────────────── */
+.pager--missions .pager__link {
+  grid-template-columns: auto auto minmax(0, 1fr);
+  grid-template-areas: 'patch label label' 'patch icon name';
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+}
+.pager--missions .pager__link--next {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas: 'label label patch' 'name icon patch';
+}
+.pager--missions .pager__label { grid-area: label; align-self: end; }
+.pager--missions .pager__name { grid-area: name; align-self: start; font-size: clamp(1.05rem, 2.1vw, 1.7rem); overflow-wrap: normal; }
+.pager--missions .pager__link .icon { grid-area: icon; align-self: start; margin: 0.35em 0 0; }
+.pager__patch {
+  grid-area: patch;
+  width: clamp(3.5rem, 7vw, 5.5rem);
+  margin-inline: 0 var(--space-3);
+  filter: saturate(0.7) brightness(0.9);
+  transition: transform var(--dur-3) var(--ease-out), filter var(--dur-2);
+}
+.pager__link--next .pager__patch { margin-inline: var(--space-3) 0; }
+.pager__patch img { width: 100%; }
+.pager__link:hover .pager__patch,
+.pager__link:focus-visible .pager__patch { filter: none; transform: rotate(-8deg) scale(1.08); }
+.pager__link--next:hover .pager__patch,
+.pager__link--next:focus-visible .pager__patch { transform: rotate(8deg) scale(1.08); }
+
+@media (max-width: 560px) {
+  .pager--missions .pager__link,
+  .pager--missions .pager__link--next {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'patch' 'label' 'name';
+  }
+  .pager__patch { margin: 0 0 var(--space-2); }
+  .pager__link--next .pager__patch { justify-self: end; margin: 0 0 var(--space-2); }
+}

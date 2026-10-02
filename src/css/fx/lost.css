@@ -1,0 +1,9 @@
+/* lost.js — the 404 page adrift. The floating bodies get their transform from the module
+   (drift, tumble, pointer parallax); the only CSS it needs is the hint below and the blinking
+   "signal lost" light. */
+
+html.fx-on.lost-ready [data-lost-float] { will-change: transform; }
+html.fx-on.lost-ready .lost__led { animation: lost-led 1.1s steps(2, jump-none) infinite; }
+@keyframes lost-led {
+  to { opacity: 0.15; }
+}

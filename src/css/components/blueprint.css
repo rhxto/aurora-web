@@ -1,0 +1,459 @@
+/* Project blueprint (src/templates/partials/blueprint.mjs) — the static component: it works as
+   plain HTML + CSS. The scroll-synced highlight is layered on by fx/blueprint.js (fx/blueprint.css).
+
+   Two layouts, announced to the script through --blueprint-axis:
+     x  compact strip pinned under the site header, rocket horizontal, nose RIGHT   (< 1000px)
+     y  sticky drafting sheet beside the copy, rocket vertical, nose UP             (>= 1000px)
+   .blueprint__rocket wraps the rocket exactly as displayed, so a zone fraction t sits at
+   right: t * 100% (x) or top: t * 100% (y). */
+
+/* ── Rocket picture lying nose right or left (projects index, figures) ──── */
+/* --rl / --rw are the rocket's length and width in source pixels, --turn the rotation that
+   brings the nose to the wanted side; "across" = the picture lies across its box. */
+.craft-key { position: absolute; }
+.craft {
+  position: relative;
+  container-type: size;
+  aspect-ratio: var(--rl) / var(--rw);
+}
+.craft__img,
+.blueprint__img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  transform: translate(-50%, -50%) rotate(var(--turn, 0deg));
+  /* White-background renders carry their own inline filter (keyed to transparent) + this glow. */
+  filter: var(--craft-glow, none);
+}
+.craft--across .craft__img { width: 100cqh; height: 100cqw; }
+
+/* ── Page layout around the blueprint ───────────────────────────────────── */
+/* Strip: full-bleed bar that sticks under the header and follows the whole project.
+   --strip-h is its height (padding and borders included): anchors land below it (scroll-margin
+   in projects.css). Keep it in step with the rows of .blueprint below. */
+.project__layout { --strip-h: 96px; }
+.project__rail {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 5;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 5px var(--gutter) 4px;
+  border-block: 1px solid var(--c-line);
+  background: color-mix(in srgb, var(--c-night) 95%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  backdrop-filter: blur(14px) saturate(1.3);
+}
+
+.blueprint {
+  --blueprint-axis: x;
+  --bp-line: rgba(var(--rgb-sky), 0.34);
+  --bp-tick: rgba(var(--rgb-sky), 0.62);
+  --craft-glow: drop-shadow(0 0 10px rgba(var(--rgb-sky), 0.38));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: 'readout list' 'field field';
+  align-items: center;
+  gap: 1px var(--space-3);
+}
+.blueprint__sheet { display: contents; }
+.blueprint__head,
+.blueprint__block,
+.blueprint__ruler,
+.blueprint__sheet > .corners { display: none; }
+
+.blueprint__field {
+  grid-area: field;
+  container-type: size;
+  display: grid;
+  place-items: center;
+  height: 44px;
+}
+.blueprint__rocket {
+  --turn: var(--turn-x);
+  position: relative;
+  container-type: size;
+  width: min(100cqw, 38px * var(--rl) / var(--rw));
+  aspect-ratio: var(--rl) / var(--rw);
+}
+.blueprint__art { position: absolute; inset: 0; }
+.blueprint__rocket[data-across~='x'] .blueprint__img { width: 100cqh; height: 100cqw; }
+
+/* Hotspots: one real link per zone, laid over the rocket. */
+.blueprint__hots { position: absolute; inset: 0; }
+.blueprint__hot {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  right: calc(var(--from) * 100%);
+  width: calc((var(--to) - var(--from)) * 100%);
+  border-radius: 2px;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--dur-1);
+}
+.blueprint__hot:hover,
+.blueprint__hot:focus-visible { background-color: rgba(var(--rgb-sky), 0.16); }
+.blueprint__hot:focus-visible { outline-offset: 1px; }
+/* The whole-airframe zone has no room of its own on the strip: the legend covers it. */
+.blueprint__hot--span,
+.blueprint__note { display: none; }
+
+/* Legend — on the strip, a row of index chips (names stay available to assistive tech). They
+   are the section navigation of the page on a phone, so they are sized as touch targets; on the
+   narrowest screens they give up some width to leave room for the read-out beside them. */
+.blueprint__list {
+  grid-area: list;
+  display: flex;
+  gap: 4px;
+  list-style: none;
+}
+.blueprint__link {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(32px, 10vw, 40px);
+  height: 40px;
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-s);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  color: var(--c-mute);
+  transition: color var(--dur-1), border-color var(--dur-1), background-color var(--dur-1);
+}
+.blueprint__name {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.blueprint__meter { display: none; }
+.blueprint__link:hover,
+.blueprint__link:focus-visible { border-color: var(--c-line-strong); color: var(--c-ink); }
+.blueprint__link.is-active {
+  border-color: var(--c-coral);
+  background: rgba(var(--rgb-coral), 0.14);
+  color: var(--c-ink);
+}
+.blueprint__link:focus-visible { outline-offset: 2px; }
+
+/* Wide strip (tablets): read-out, rocket and chips share one row. */
+@media (min-width: 640px) and (max-width: 999px) {
+  .project__layout { --strip-h: 63px; }
+  .blueprint {
+    grid-template-columns: minmax(6rem, 1fr) minmax(0, 3fr) auto;
+    grid-template-areas: 'readout field list';
+  }
+  .blueprint__field { height: 52px; }
+  .blueprint__rocket { width: min(100cqw, 46px * var(--rl) / var(--rw)); }
+}
+
+/* Short viewport (a phone held sideways, a small window, 200 % zoom): with the header above and
+   the status bar below, a pinned strip would leave too little of the screen for the copy — it
+   stays at the top of the project and scrolls away with it. */
+@media (max-width: 999px) and (max-height: 560px) {
+  .project__layout { --strip-h: 0px; }
+  .project__rail { position: static; }
+}
+
+/* ── Sticky drafting sheet ──────────────────────────────────────────────── */
+@media (min-width: 1000px) {
+  /* --rail-h: the sheet fills the viewport between the header and the HUD status bar (32px)
+     docked to its bottom edge. */
+  .project__layout {
+    --rail-h: clamp(22rem, 100vh - var(--header-h) - 32px - 2 * var(--space-4), 60rem);
+    grid-template-columns: clamp(17rem, 26vw, 24rem) minmax(0, 1fr);
+    gap: clamp(2.5rem, 4.5vw, 5rem);
+  }
+  @supports (height: 100svh) {
+    .project__layout { --rail-h: clamp(22rem, 100svh - var(--header-h) - 32px - 2 * var(--space-4), 60rem); }
+  }
+  .project__rail {
+    top: calc(var(--header-h) + var(--space-4));
+    z-index: auto;
+    height: var(--rail-h);
+    min-height: 0;
+    max-height: none;
+    margin-inline: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .blueprint {
+    --blueprint-axis: y;
+    grid-template: minmax(0, 1fr) auto / minmax(0, 1fr);
+    align-items: stretch;
+    gap: var(--space-3);
+    height: 100%;
+  }
+
+  .blueprint__sheet {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border: 1px solid var(--bp-line);
+    border-radius: var(--radius-s);
+    /* drafting grid: 8px minor, 40px major, anchored to the top-left corner of the sheet */
+    background:
+      linear-gradient(rgba(var(--rgb-sky), 0.1) 1px, transparent 1px) 0 0 / 100% 40px,
+      linear-gradient(90deg, rgba(var(--rgb-sky), 0.1) 1px, transparent 1px) 0 0 / 40px 100%,
+      linear-gradient(rgba(var(--rgb-sky), 0.04) 1px, transparent 1px) 0 0 / 100% 8px,
+      linear-gradient(90deg, rgba(var(--rgb-sky), 0.04) 1px, transparent 1px) 0 0 / 8px 100%,
+      radial-gradient(90% 60% at 34% 42%, rgba(var(--rgb-sky), 0.2), transparent 72%),
+      linear-gradient(to bottom, var(--c-navy-deep), var(--c-panel-solid));
+    box-shadow: inset 0 0 3.5rem color-mix(in srgb, var(--c-void) 55%, transparent);
+  }
+  .blueprint__sheet > .corners { --corner-gap: 5px; display: block; }
+
+  .blueprint__head,
+  .blueprint__block {
+    display: flex;
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--c-mute);
+  }
+  .blueprint__head {
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: 0.7em 0.9em;
+    border-bottom: 1px solid var(--bp-line);
+    background: color-mix(in srgb, var(--c-void) 42%, transparent);
+  }
+  .blueprint__state { color: var(--c-ink); }
+  .blueprint__state::before {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    margin-right: 0.7em;
+    vertical-align: 0.08em;
+    background: var(--c-coral);
+  }
+
+  /* Title block, as on an engineering drawing. */
+  .blueprint__block {
+    border-top: 1px solid var(--bp-line);
+    background: color-mix(in srgb, var(--c-void) 42%, transparent);
+  }
+  .blueprint__cell {
+    flex: 1 1 auto;
+    display: grid;
+    gap: 0.3em;
+    min-width: 0;
+    padding: 0.65em 0.9em 0.7em;
+  }
+  .blueprint__cell + .blueprint__cell { border-left: 1px solid var(--bp-line); }
+  .blueprint__k { font-size: 0.5rem; }
+  .blueprint__v {
+    overflow: hidden;
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--c-ink);
+  }
+
+  /* The rocket stands left of centre: the dimension lane on its left, call-outs on its right. */
+  .blueprint__field {
+    flex: 1 1 0;
+    grid-template-columns: 66% minmax(0, 1fr);
+    height: auto;
+    min-height: 0;
+  }
+  .blueprint__rocket {
+    --turn: var(--turn-y);
+    --lane: 26px;
+    width: auto;
+    height: min(91cqh, 30cqw * var(--rl) / var(--rw));
+    aspect-ratio: var(--rw) / var(--rl);
+  }
+  .blueprint__rocket[data-across~='x'] .blueprint__img { width: 100%; height: 100%; }
+  .blueprint__rocket[data-across~='y'] .blueprint__img { width: 100cqh; height: 100cqw; }
+
+  /* Dimension line along the axis: ticks every 5 %, longer every 25 %, caps at nose and tail. */
+  .blueprint__ruler {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--lane) * -1);
+    width: 11px;
+    border-block: 1px solid var(--bp-tick);
+    background:
+      linear-gradient(var(--bp-tick), var(--bp-tick)) 100% 0 / 1px 100% no-repeat,
+      repeating-linear-gradient(to bottom, var(--bp-tick) 0 1px, transparent 1px 25%) 0 0 / 100% 100% no-repeat,
+      repeating-linear-gradient(to bottom, var(--bp-line) 0 1px, transparent 1px 5%) 100% 0 / 55% 100% no-repeat;
+  }
+
+  .blueprint__hot {
+    top: calc(var(--from) * 100%);
+    right: -10px;
+    bottom: auto;
+    left: -10px;
+    width: auto;
+    height: calc((var(--to) - var(--from)) * 100%);
+    /* faint ticks at both ends of the zone */
+    background:
+      linear-gradient(var(--bp-line), var(--bp-line)) 100% 0 / 6px 1px no-repeat,
+      linear-gradient(var(--bp-line), var(--bp-line)) 100% 100% / 6px 1px no-repeat;
+  }
+  .blueprint__hot--span {
+    display: block;
+    top: 0;
+    right: auto;
+    left: calc(var(--lane) * -1 - 6px);
+    width: 23px;
+    height: 100%;
+    background: none;
+  }
+
+  /* Annotations: index + name at the end of a leader line, level with the middle of the zone.
+     --note-w is the room between the rocket and the edge of the sheet (set by fx/blueprint.js). */
+  .blueprint__note {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    width: var(--note-w, 8.5rem);
+    padding-left: calc(22px + 0.9em);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: 0.1em;
+    color: var(--c-mute);
+    transform: translateY(-50%);
+    transition: color var(--dur-1);
+  }
+  .blueprint__note::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 22px;
+    height: 1px;
+    background: var(--bp-line);
+    transition: background-color var(--dur-1);
+  }
+  .blueprint__hot:hover .blueprint__note,
+  .blueprint__hot:focus-visible .blueprint__note,
+  .blueprint__hot.is-active .blueprint__note { color: var(--c-ink); }
+  .blueprint__hot:hover .blueprint__note::before,
+  .blueprint__hot:focus-visible .blueprint__note::before { background: var(--c-sky); }
+  /* The whole-airframe zone is labelled like an overall dimension: along the lane, reading up. */
+  .blueprint__hot--span .blueprint__note {
+    right: calc(100% - 6px);
+    left: auto;
+    width: auto;
+    padding: 0;
+    white-space: nowrap;
+    writing-mode: vertical-rl;
+    transform: translateY(-50%) rotate(180deg);
+  }
+  .blueprint__hot--span .blueprint__note::before { display: none; }
+
+  /* Centre line of the airframe, dash-dot, running past the nose and the tail. */
+  .blueprint__rocket::before {
+    content: '';
+    position: absolute;
+    top: -14px;
+    bottom: -14px;
+    left: 50%;
+    width: 1px;
+    background: repeating-linear-gradient(to bottom, var(--bp-line) 0 12px, transparent 12px 16px, var(--bp-line) 16px 18px, transparent 18px 22px);
+  }
+
+  /* Legend: one row per subsystem, with a meter that fills as its section scrolls by. */
+  .blueprint__list { grid-area: auto; display: block; border-top: 1px solid var(--c-line); }
+  .blueprint__link {
+    display: flex;
+    align-items: center;
+    gap: 0.9em;
+    width: auto;
+    height: auto;
+    min-height: 30px;
+    padding: 0.4em 0.25em;
+    border: 0;
+    border-bottom: 1px solid var(--c-line);
+    border-radius: 0;
+    font-size: 0.66rem;
+    line-height: 1.4;
+    letter-spacing: 0.12em;
+  }
+  .blueprint__idx { color: var(--c-coral); }
+  /* On the sheet the small index sits on the blue drafting grid: the lighter coral keeps it legible. */
+  .blueprint__note .blueprint__idx { color: var(--c-coral-soft); }
+  .blueprint__name {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+  }
+  .blueprint__link.is-active { background: none; }
+  .blueprint__link.is-active .blueprint__name { color: var(--c-ink); }
+  .blueprint__meter {
+    display: block;
+    position: absolute;
+    inset: auto 0 -1px;
+    height: 1px;
+  }
+  .blueprint__meter i {
+    display: block;
+    height: 100%;
+    background: var(--c-coral);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: opacity var(--dur-2);
+  }
+  .blueprint__link.is-past .blueprint__meter i { opacity: 0.4; }
+}
+
+/* Touch screens get taller legend rows; a short window turns the legend into chips again so
+   the rocket keeps its height (touch-sized chips on a touch screen). */
+@media (min-width: 1000px) and (pointer: coarse) {
+  .blueprint__link { min-height: 44px; }
+}
+@media (min-width: 1000px) and (max-height: 719px) {
+  .blueprint__list { display: flex; gap: 4px; border: 0; }
+  .blueprint__link {
+    display: grid;
+    width: 32px;
+    min-height: 0;
+    height: 28px;
+    padding: 0;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-s);
+  }
+  .blueprint__idx { color: inherit; }
+  .blueprint__name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .blueprint__link.is-active { border-color: var(--c-coral); background: rgba(var(--rgb-coral), 0.14); }
+  .blueprint__meter { display: none; }
+}
+@media (min-width: 1000px) and (max-height: 719px) and (pointer: coarse) {
+  .blueprint__link { width: 44px; height: 40px; }
+}

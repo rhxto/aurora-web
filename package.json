@@ -1,0 +1,16 @@
+{
+  "name": "aurora-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Aurora Rocketry — static website with interactive visual effects",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --serve --watch",
+    "preview": "node build.mjs --serve",
+    "shot": "node tools/shot.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}

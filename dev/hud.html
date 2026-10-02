@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>hud harness</title>
+<link rel="stylesheet" href="/src/css/tokens.css">
+<link rel="stylesheet" href="/src/css/fonts.css">
+<link rel="stylesheet" href="/src/css/fx/hud.css">
+<!--
+  Standalone harness for src/js/fx/hud.js — a tall page shaped like the real site (fixed header,
+  hero, bright photographs, link-heavy sections, footer.site-footer).
+
+    node tools/shot.mjs --root .,public --path /dev/hud.html --out .tmp/hud/a.png
+
+  A stand-in for rocket.js chases the pointer, fills core.rocket and emits 'lock' on links and
+  buttons so the status bar has live data (hold the mouse button for BOOST). LAUNCH only emits
+  'launch': the sequence itself lives in fx/egg.js, which this page does not load. The content
+  column here is the token width, so the full ruler shows from about 1430 px up and the strip
+  below that. Query switches:
+    ?sim=0     no stand-in (drive core.rocket / emit('lock') yourself through window.__aurora)
+    ?short=1   a page that does not scroll: no altimeter, only the status bar
+    ?footer=0  no footer
+    ?clear=1   marks the hero's bottom row [data-hud-clear]: the altimeter fades out while it is under it
+-->
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  :root { --hud-bar-h: 30px; } /* base.css defines it on the site */
+  html, body { margin: 0; }
+  #fx-hud { position: fixed; inset: 0; z-index: var(--z-hud); pointer-events: none; }
+  html.has-hud .site-footer { padding-bottom: calc(var(--space-6) + var(--hud-bar-h)); }
+  body { min-height: 100vh; display: flex; flex-direction: column; background: var(--c-void); color: var(--c-ink); font-family: var(--font-body); font-size: var(--fs-body); line-height: var(--lh-body); }
+  body::before { /* stand-in for the sky layer */
+    content: ''; position: fixed; inset: 0; z-index: var(--z-sky); pointer-events: none;
+    background:
+      radial-gradient(60% 40% at 70% 0%, rgba(var(--rgb-aurora), 0.14), transparent 70%),
+      radial-gradient(50% 45% at 15% 20%, rgba(var(--rgb-sky), 0.16), transparent 70%),
+      linear-gradient(var(--c-night), var(--c-void));
+  }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; height: auto; }
+  .container { width: min(100% - 2 * var(--gutter), var(--container)); margin-inline: auto; }
+  .site-header { position: fixed; inset: 0 0 auto; z-index: var(--z-header); height: var(--header-h); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gutter); background: var(--c-panel); backdrop-filter: blur(12px); border-bottom: 1px solid var(--c-line); }
+  .site-header img { height: 36px; width: auto; }
+  .site-nav { display: flex; gap: var(--space-6); font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); }
+  .site-nav a { text-decoration: none; }
+  .page { position: relative; z-index: var(--z-content); flex: 1 0 auto; }
+  .hero { position: relative; min-height: 100vh; display: grid; place-content: center; text-align: left; padding: var(--header-h) var(--gutter) 0; }
+  .hero__meta { position: absolute; inset: auto var(--gutter) var(--space-7); display: flex; justify-content: space-between; padding-top: var(--space-4); border-top: 1px solid var(--c-line-strong); font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); }
+  h1, h2 { font-family: var(--font-display); font-stretch: 125%; font-weight: 900; text-transform: uppercase; line-height: var(--lh-tight); margin: 0; }
+  h1 { font-size: var(--fs-hero); }
+  h1 span { display: block; color: var(--c-coral); }
+  h2 { font-size: var(--fs-h2); margin-bottom: var(--space-5); }
+  section { padding: var(--section-gap) 0 0; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-7); align-items: center; }
+  .split img { border-radius: var(--radius-m); }
+  .btn { display: inline-block; margin-top: var(--space-5); padding: 0.8em 1.6em; border: 1px solid var(--c-coral); border-radius: var(--radius-pill); color: var(--c-coral); background: none; font: inherit; font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-decoration: none; cursor: pointer; }
+  .patches { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-7); text-align: center; }
+  .patches img { margin-inline: auto; width: min(100%, 260px); }
+  .wide img { width: 100%; height: 70vh; object-fit: cover; }
+  p { color: var(--c-mute); max-width: 62ch; }
+  .site-footer { position: relative; z-index: var(--z-content); margin-top: var(--section-gap); padding: var(--space-8) 0; background: var(--c-void); border-top: 1px solid var(--c-line-strong); }
+  .site-footer .container { display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: center; justify-content: space-between; }
+  .site-footer img { height: 64px; width: auto; }
+  .site-footer nav { display: flex; flex-wrap: wrap; gap: var(--space-5); font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); }
+  .site-footer small { flex: 1 0 60%; margin-top: var(--space-6); color: var(--c-dim); }
+  .site-footer small + nav { margin-top: var(--space-6); }
+  .site-footer { padding-bottom: var(--space-6); }
+  @media (max-width: 760px) {
+    .split, .patches { grid-template-columns: 1fr; }
+    .site-nav a:not(:last-child) { display: none; }
+  }
+  html.is-short .page > section { display: none; }
+  html.is-short .hero { min-height: 50vh; }
+  html.is-short .site-footer { margin-top: 0; }
+  html.no-footer .site-footer { display: none; }
+</style>
+<script>
+  { const q = new URLSearchParams(location.search), r = document.documentElement;
+    r.classList.toggle('is-short', q.get('short') === '1');
+    r.classList.toggle('no-footer', q.get('footer') === '0'); }
+</script>
+</head>
+<body data-page="home">
+<header class="site-header" data-header>
+  <a href="#main" aria-label="Aurora Rocketry — home"><img src="/img/brand/logo-mark.svg" width="109" height="125" alt=""></a>
+  <nav class="site-nav" aria-label="Primary">
+    <a class="site-nav__link" href="#projects">PROJECTS</a>
+    <a class="site-nav__link" href="#departments">DEPARTMENTS</a>
+    <a class="site-nav__link" href="#partners">PARTNERS</a>
+    <a class="site-nav__link" href="#contact">CONTACT</a>
+  </nav>
+</header>
+
+<main id="main" class="page">
+  <div class="hero">
+    <h1>Aurora <span>Rocketry</span></h1>
+    <div class="hero__meta"><span>THE UNIVERSITY OF BOLOGNA ROCKETRY TEAM</span><span>WHERE THE SKY IS THE LIMIT</span></div>
+  </div>
+
+  <section class="container split" id="departments">
+    <div>
+      <h2>Who we are</h2>
+      <p>Aurora Rocketry is an Italian non-profit organisation of the University of Bologna based in Forlì. Our team brings together passionate minds from diverse academic backgrounds, creating a truly multidisciplinary environment.</p>
+      <a class="btn" href="#departments">DISCOVER THE TEAM</a>
+    </div>
+    <img src="/img/photos/team-laptops-outdoor-800.webp" width="800" height="600" alt="Three team members outdoors checking data on their laptops">
+  </section>
+
+  <section class="wide">
+    <img src="/img/photos/rocket-carried-desert.webp" width="1600" height="1067" alt="The rocket carried across the desert">
+  </section>
+
+  <section class="container split">
+    <img src="/img/photos/breadboard-prototype-800.webp" width="800" height="533" alt="Avionics prototype wired on a breadboard">
+    <div>
+      <h2>What we do</h2>
+      <p>We offer students an exciting, hands-on journey into the world of aerospace engineering by designing, building and testing rockets from the ground up. To operate efficiently, our association is structured into departments, each covering a specific area of expertise.</p>
+      <a class="btn" href="#projects">DISCOVER THE PROJECTS</a>
+    </div>
+  </section>
+
+  <section class="container" id="projects">
+    <h2>Projects</h2>
+    <div class="patches">
+      <div><img src="/img/patches/borealis.svg" width="260" height="260" alt="Borealis mission patch"><a class="btn" href="#projects">DISCOVER BOREALIS</a></div>
+      <div><img src="/img/patches/nemesis.svg" width="260" height="260" alt="Nemesis mission patch"><a class="btn" href="#projects">DISCOVER NEMESIS</a></div>
+      <div><img src="/img/patches/atlas.svg" width="260" height="260" alt="Atlas mission patch"><a class="btn" href="#projects">DISCOVER ATLAS</a></div>
+    </div>
+  </section>
+
+  <section class="container" id="partners">
+    <h2>Partners</h2>
+    <p>The rocket is powered by a commercial solid motor, designed to carry a 1 kg payload up to an apogee of 3000 m and to return safely to the ground thanks to a recovery system.</p>
+    <a class="btn" href="#partners"><img src="/img/brand/logo-mark.svg" width="22" height="25" alt="Partner logo used as the only link content"></a>
+    <button class="btn" type="button">A button with a deliberately long label to test truncation</button>
+  </section>
+
+  <section class="container" id="contact">
+    <h2>Contact</h2>
+    <p>Reach the team at <a href="mailto:info@aurorarocketry.eu">info@aurorarocketry.eu</a>.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <img src="/img/brand/logo-full.svg" alt="Aurora Rocketry" width="400" height="104">
+    <nav aria-label="Footer">
+      <a href="#partners">PARTNERS</a><a href="#projects">PROJECTS</a><a href="#contact">CONTACT</a><a href="#departments">DEPARTMENTS</a>
+    </nav>
+    <small>© 2024 Aurora Rocketry, All Rights Reserved</small>
+    <nav aria-label="Page"><a href="#main">BACK TO TOP</a></nav>
+  </div>
+</footer>
+
+<script type="module">
+import { core } from '/src/js/core.js';
+import initHud from '/src/js/fx/hud.js';
+
+const query = new URLSearchParams(location.search);
+if (query.get('clear') === '1') document.querySelector('.hero__meta').setAttribute('data-hud-clear', '');
+initHud();
+
+// Stand-in for fx/rocket.js: chase the pointer, publish core.rocket, emit 'lock' on links/buttons.
+if (query.get('sim') !== '0') {
+  const { damp } = core.utils;
+  const r = core.rocket;
+  let locked = null;
+  core.tick((dt) => {
+    const px = r.x, py = r.y;
+    r.x = damp(r.x, core.pointer.x, 5, dt);
+    r.y = damp(r.y, core.pointer.y, 5, dt);
+    r.vx = (r.x - px) / dt; r.vy = (r.y - py) / dt;
+    r.speed = Math.hypot(r.vx, r.vy);
+    if (r.speed > 8) r.angle = Math.atan2(r.vy, r.vx);
+    r.boost = damp(r.boost, core.pointer.down ? 1 : 0, 8, dt);
+    r.visible = core.pointer.active;
+  }, { order: -10 });
+  core.on('pointermove', (p) => {
+    const el = p.target && p.target.closest ? p.target.closest('a[href], button') : null;
+    if (el === locked) return;
+    locked = el; r.locked = el;
+    core.emit('lock', el ? { el } : null);
+  });
+}
+</script>
+</body>
+</html>
