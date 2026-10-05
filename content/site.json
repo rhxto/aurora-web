@@ -1511,10 +1511,14 @@
             "alt": "Cofert S.r.l. logo"
           },
           {
-            "name": "Formtec",
-            "href": "",
+            "name": "Tecnomec – Lavorazione lamiere e tubi ad alta tecnologia",
+            "href": "https://www.tecnomecforli.com/",
             "plate": "light",
-            "alt": "Formtec logo"
+            "key": "partners/tecnomec",
+            "src": "/img/partners/tecnomec.png",
+            "w": 621,
+            "h": 128,
+            "alt": "Tecnomec logo"
           }
         ]
       },

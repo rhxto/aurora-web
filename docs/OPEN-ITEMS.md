@@ -3,7 +3,6 @@
 ## Waiting for material
 
 - FRED mission patch and mission description (the FRED page uses only facts already on the site).
-- Formtec logo file and website.
 - Department photos (planned) and any further CAD renders without background.
 
 The automated review round was stopped early (2 Oct 2026). All 18 pages build, load without console errors on desktop and mobile, and pass the content/link checks. The desktop review below ran against the build *before* the last fixes, so some items may already be solved — reproduce before working on one.

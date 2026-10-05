@@ -67,6 +67,6 @@ The wording is unchanged except for the mechanical fixes below (typos, missing s
 
 - Home stats: 120+ passionate students, 10+ private sponsors.
 - New project **FRED**: only facts already on the site are used (Propulsion department text: reduced-scale prototype, in-house solid motor, potassium nitrate / sorbitol propellant). Its mission patch and mission description are still to be provided; the FRED render stands in for the patch.
-- Partners: Emmetre moved to Main sponsors; Cofert moved to Strategic partners; Formtec added to Strategic partners (logo file and website still to be provided — the name is shown as a wordmark, without a link).
+- Partners: Emmetre moved to Main sponsors; Cofert moved to Strategic partners; Tecnomec (Forlì, tecnomecforli.com) added to Strategic partners.
 - Photo descriptions removed: images carry an empty `alt` and figures only show their number. Patches, rocket renders and partner logos keep their names.
 - New team photos in a home-page gallery (`public/img/gallery`); transparent CAD renders replace some white-background renders/duplicated photos (aerodynamics, GNC, recovery, Atlas electronics, Borealis structure).
