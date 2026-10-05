@@ -119,10 +119,10 @@ export const corners = '<span class="corners" aria-hidden="true"></span>';
 /**
  * A figure around a content image. Photos get HUD corner brackets; plots, CAD renders and
  * rocket profiles (often on white) sit in an "instrument panel" so they look intentional on
- * the dark page. The caption repeats the alt text visually, so it is hidden from assistive tech.
+ * the dark page. The caption is only a figure number (decorative, hidden from assistive tech).
  */
 export function frame(image, { tag = '', sizes = '(min-width: 900px) 46vw, 92vw' } = {}) {
-  const panel = !image.src.startsWith('/img/photos/');
+  const panel = /^\/img\/(plots|renders|rockets)\//.test(image.src);
   const ratio = image.w / image.h;
   // Photos are cropped to a calm range of proportions; panels never crop their content.
   const ar = panel ? ratio : Math.min(1.6, Math.max(0.8, ratio));
@@ -134,7 +134,7 @@ export function frame(image, { tag = '', sizes = '(min-width: 900px) 46vw, 92vw'
     </div>
     ${panel ? '' : corners}
   </div>
-  <figcaption class="frame__caption" aria-hidden="true">${tag ? `<span class="frame__tag">${esc(tag)}</span>` : ''}<span class="frame__text">${esc(image.alt)}</span></figcaption>
+  ${tag ? `<figcaption class="frame__caption" aria-hidden="true"><span class="frame__tag">${esc(tag)}</span></figcaption>` : ''}
 </figure>`;
 }
 

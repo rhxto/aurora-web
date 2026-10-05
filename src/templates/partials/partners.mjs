@@ -69,18 +69,24 @@ function nameHtml(name) {
 function partner(item, tier, index) {
   if (item.plate !== 'light' && item.plate !== 'dark') throw new Error(`Partner "${item.name}": plate must be "light" or "dark"`);
   const plate = PLATE[tier.id] || PLATE.default;
+  // A partner may still lack a logo file (the name is set as a wordmark) or a website (no link).
+  const face = item.src
+    ? img(item, { sizes: plate.sizes, cls: 'decal__logo', attrs: `style="${fit(item, plate)}"` })
+    : `<span class="decal__word">${esc(item.name.split(' – ')[0])}</span>`;
+  const tag = item.href ? 'a' : 'div';
+  const attrs = item.href ? ` href="${esc(item.href)}" target="_blank" rel="noopener" aria-label="${esc(item.name)}"` : '';
   return `<li class="tier__item" data-reveal="custom">
-      <a class="partner" href="${esc(item.href)}" target="_blank" rel="noopener" aria-label="${esc(item.name)}">
+      <${tag} class="partner${item.href ? '' : ' partner--static'}"${attrs}>
         <span class="decal decal--${item.plate}" data-tilt data-tilt-max="7" data-tilt-glare>
-          <span class="decal__face">${img(item, { sizes: plate.sizes, cls: 'decal__logo', attrs: `style="${fit(item, plate)}"` })}</span>
+          <span class="decal__face">${face}</span>
           ${corners}
         </span>
-        <span class="partner__meta" aria-hidden="true">
-          <span class="partner__idx">${pad2(index)}</span>
+        <span class="partner__meta"${item.href ? ' aria-hidden="true"' : ''}>
+          <span class="partner__idx" aria-hidden="true">${pad2(index)}</span>
           <span class="partner__name">${nameHtml(item.name)}</span>
-          <span class="partner__open"><span class="partner__open-text">OPEN</span>${icon('external')}</span>
+          ${item.href ? `<span class="partner__open"><span class="partner__open-text">OPEN</span>${icon('external')}</span>` : ''}
         </span>
-      </a>
+      </${tag}>
     </li>`;
 }
 

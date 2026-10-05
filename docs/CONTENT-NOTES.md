@@ -62,3 +62,11 @@ The wording is unchanged except for the mechanical fixes below (typos, missing s
 - Photos were downloaded from the live site at max 2048 px and re-encoded to WebP (1600 px + 800 px variants).
 - The hero video was re-encoded from 44 MB (1080p) to ~7 MB (720p, no audio).
 - The original display typeface (Integral CF, commercial) is replaced by **Archivo** expanded black; body text uses Space Grotesk as on the original. Fonts are self-hosted in `public/fonts`.
+
+## Changes requested by the team (October 2026)
+
+- Home stats: 120+ passionate students, 10+ private sponsors.
+- New project **FRED**: only facts already on the site are used (Propulsion department text: reduced-scale prototype, in-house solid motor, potassium nitrate / sorbitol propellant). Its mission patch and mission description are still to be provided; the FRED render stands in for the patch.
+- Partners: Emmetre moved to Main sponsors; Cofert moved to Strategic partners; Formtec added to Strategic partners (logo file and website still to be provided — the name is shown as a wordmark, without a link).
+- Photo descriptions removed: images carry an empty `alt` and figures only show their number. Patches, rocket renders and partner logos keep their names.
+- New team photos in a home-page gallery (`public/img/gallery`); transparent CAD renders replace some white-background renders/duplicated photos (aerodynamics, GNC, recovery, Atlas electronics, Borealis structure).

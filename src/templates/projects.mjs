@@ -90,7 +90,7 @@ function figure(project, section, i) {
       ${rocketImage({ ...project.rocket, alt: section.image.alt }, { point: 'right' })}
     </div>
   </div>
-  <figcaption class="frame__caption" aria-hidden="true"><span class="frame__tag">${tag}</span><span class="frame__text">${esc(section.image.alt)}</span></figcaption>
+  <figcaption class="frame__caption" aria-hidden="true"><span class="frame__tag">${tag}</span></figcaption>
 </figure>`;
 }
 

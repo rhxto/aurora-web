@@ -3,7 +3,7 @@
 // Styles: src/css/components/home.css; motion: src/css/fx/home.css + src/js/fx/home.js.
 
 import fs from 'node:fs';
-import { esc, url, pad2, paragraphs, button, stepTitle, feature, indexLabel, img, corners } from './lib.mjs';
+import { esc, url, pad2, paragraphs, button, stepTitle, feature, indexLabel, img, corners, frame } from './lib.mjs';
 import { hero } from './partials/hero.mjs';
 
 // ── figures ────────────────────────────────────────────────────────────────
@@ -46,7 +46,6 @@ function plate(image, i, total) {
       <div class="plate__photo" style="--ar:${ratio.toFixed(3)}">${img(image, { sizes: '(min-width: 900px) 46vw, 92vw' })}</div>
       <div class="plate__strip" aria-hidden="true">
         <span class="plate__tag">FIG. ${pad2(i + 1)}</span>
-        <span class="plate__text">${esc(image.alt)}</span>
         <span class="plate__count">${pad2(i + 1)}/${pad2(total)}</span>
       </div>
     </div>
@@ -120,6 +119,30 @@ function waypoint(project, i, total, lift) {
       </li>`;
 }
 
+/**
+ * Team photos as a horizontal film strip: native scroll with snap points (touch, trackpad,
+ * keyboard), plus previous/next buttons wired in main.js ([data-carousel]). Each photo is a
+ * regular figure, so the lightbox can enlarge it.
+ */
+function gallery(page) {
+  if (!page.gallery?.length) return '';
+  const total = page.gallery.length;
+  return `<section class="section gallery" id="gallery" aria-labelledby="gallery-title">
+  ${stepTitle(page.galleryTitle, { id: 'gallery-title' })}
+  <div class="gallery__frame" data-carousel>
+    <div class="gallery__strip" tabindex="0" role="region" aria-label="Photo gallery, scroll horizontally" data-carousel-track>
+      <ul class="gallery__list" role="list">
+        ${page.gallery.map((image, i) => `<li class="gallery__item">${frame(image, { tag: `${pad2(i + 1)} / ${pad2(total)}`, sizes: '(min-width: 900px) 34vw, 80vw' })}</li>`).join('\n        ')}
+      </ul>
+    </div>
+    <div class="gallery__nav container">
+      <button class="gallery__btn" type="button" data-carousel-prev aria-label="Previous photos"><span aria-hidden="true">←</span></button>
+      <button class="gallery__btn" type="button" data-carousel-next aria-label="Next photos"><span aria-hidden="true">→</span></button>
+    </div>
+  </div>
+</section>`;
+}
+
 export function home({ site, home: page, projects }) {
   const about = page.about.map((block, i, all) => feature({
     id: block.id,
@@ -153,6 +176,8 @@ export function home({ site, home: page, projects }) {
 ${about}
   </div>
 </section>
+
+${gallery(page)}
 
 <section class="section" id="projects" aria-labelledby="projects-title">
   ${stepTitle(page.projectsTitle, { id: 'projects-title' })}

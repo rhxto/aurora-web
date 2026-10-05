@@ -63,6 +63,27 @@ function initMenu() {
   window.addEventListener('pageshow', (e) => { if (e.persisted) setOpen(false, { focus: false }); });
 }
 
+// ── carousels ─────────────────────────────────────────────────────────────
+/** Previous/next buttons for horizontal strips ([data-carousel] > [data-carousel-track]). */
+function initCarousels() {
+  for (const box of qsa('[data-carousel]')) {
+    const track = qs('[data-carousel-track]', box);
+    const prev = qs('[data-carousel-prev]', box);
+    const next = qs('[data-carousel-next]', box);
+    if (!track || !prev || !next) continue;
+    const step = (dir) => track.scrollBy({ left: dir * track.clientWidth * 0.8, behavior: core.fx.enabled ? 'smooth' : 'auto' });
+    const sync = () => {
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 2;
+    };
+    prev.addEventListener('click', () => step(-1));
+    next.addEventListener('click', () => step(1));
+    track.addEventListener('scroll', sync, { passive: true });
+    core.on('resize', sync);
+    sync();
+  }
+}
+
 // ── hero video ─────────────────────────────────────────────────────────────
 /**
  * The hero <video> ships with data-src only. It is fetched and played when motion is welcome
@@ -138,6 +159,7 @@ async function loadFx() {
 
 initHeader();
 initMenu();
+initCarousels();
 // html.fx-boot (inline head snippet) kept animated content unpainted until now: every module has
 // taken over its own initial states in this same task, so the hand-over is never visible.
 loadFx().finally(() => {

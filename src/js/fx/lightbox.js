@@ -61,7 +61,7 @@ export default function init() {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'lightbox-trigger';
-    button.setAttribute('aria-label', `Enlarge image: ${item.text}`);
+    button.setAttribute('aria-label', item.text ? `Enlarge image: ${item.text}` : 'Enlarge image');
     button.setAttribute('aria-haspopup', 'dialog');
     button.setAttribute('data-no-lock', '');
     button.innerHTML = `<span class="lightbox-trigger__icon">${ICONS.expand}</span>`;

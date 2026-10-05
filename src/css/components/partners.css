@@ -261,3 +261,21 @@
   .partner__meta { gap: 0.6em; font-size: 0.6875rem; line-height: 1.45; letter-spacing: 0.04em; }
   .decal > .corners { inset: 5px; }
 }
+
+/* A partner without a logo file yet: its name set as a wordmark on the plate. */
+.decal__word {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding-inline: 8%;
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: clamp(1.1rem, 2.2vw, 1.9rem);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--c-navy);
+  text-align: center;
+}
+.decal--dark .decal__word { color: var(--c-ink); }
+.partner--static { cursor: default; }

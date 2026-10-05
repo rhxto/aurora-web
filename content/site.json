@@ -30,7 +30,7 @@
     ],
     "subpageHero": {
       "key": "hero/team-rocket-lift",
-      "alt": "Aurora Rocketry team members cheering while one of them lifts a rocket above his head",
+      "alt": "",
       "src": "/img/hero/team-rocket-lift.webp",
       "w": 1600,
       "h": 1067,
@@ -46,11 +46,11 @@
       "slogan": "WHERE THE SKY IS THE LIMIT",
       "video": "/video/hero.mp4",
       "poster": "/video/hero-poster.webp",
-      "videoAlt": "Drone footage of the team carrying the Nemesis rocket to the launch pad"
+      "videoAlt": ""
     },
     "stats": [
       {
-        "value": 90,
+        "value": 120,
         "suffix": "+",
         "strong": "PASSIONATE STUDENTS",
         "rest": "BUILDING SOUNDING ROCKETS."
@@ -62,7 +62,7 @@
         "rest": "OF THE UNIVERSITY OF BOLOGNA"
       },
       {
-        "value": 8,
+        "value": 10,
         "suffix": "+",
         "strong": "PRIVATE SPONSORS",
         "rest": "SUPPORTING THE TEAM."
@@ -82,7 +82,7 @@
         },
         "image": {
           "key": "photos/team-laptops-outdoor",
-          "alt": "Three team members outdoors checking data on their laptops",
+          "alt": "",
           "src": "/img/photos/team-laptops-outdoor.webp",
           "w": 1600,
           "h": 1200,
@@ -101,7 +101,7 @@
         },
         "image": {
           "key": "photos/breadboard-prototype",
-          "alt": "Avionics prototype wired on a breadboard",
+          "alt": "",
           "src": "/img/photos/breadboard-prototype.webp",
           "w": 1600,
           "h": 1067,
@@ -109,7 +109,220 @@
         }
       }
     ],
-    "projectsTitle": "PROJECTS"
+    "projectsTitle": "PROJECTS",
+    "galleryTitle": "GALLERY",
+    "gallery": [
+      {
+        "src": "/img/gallery/team-01.webp",
+        "w": 1600,
+        "h": 1067,
+        "alt": "",
+        "src800": "/img/gallery/team-01-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-02.webp",
+        "w": 1600,
+        "h": 1067,
+        "alt": "",
+        "src800": "/img/gallery/team-02-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-03.webp",
+        "w": 1600,
+        "h": 1280,
+        "alt": "",
+        "src800": "/img/gallery/team-03-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-04.webp",
+        "w": 1600,
+        "h": 1280,
+        "alt": "",
+        "src800": "/img/gallery/team-04-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-05.webp",
+        "w": 1600,
+        "h": 1280,
+        "alt": "",
+        "src800": "/img/gallery/team-05-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-06.webp",
+        "w": 1600,
+        "h": 1280,
+        "alt": "",
+        "src800": "/img/gallery/team-06-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-07.webp",
+        "w": 1600,
+        "h": 1280,
+        "alt": "",
+        "src800": "/img/gallery/team-07-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-08.webp",
+        "w": 1200,
+        "h": 1600,
+        "alt": "",
+        "src800": "/img/gallery/team-08-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-09.webp",
+        "w": 1600,
+        "h": 1067,
+        "alt": "",
+        "src800": "/img/gallery/team-09-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-10.webp",
+        "w": 1295,
+        "h": 1600,
+        "alt": "",
+        "src800": "/img/gallery/team-10-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-11.webp",
+        "w": 1600,
+        "h": 1066,
+        "alt": "",
+        "src800": "/img/gallery/team-11-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-12.webp",
+        "w": 1600,
+        "h": 1066,
+        "alt": "",
+        "src800": "/img/gallery/team-12-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-13.webp",
+        "w": 1600,
+        "h": 900,
+        "alt": "",
+        "src800": "/img/gallery/team-13-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-14.webp",
+        "w": 1600,
+        "h": 1200,
+        "alt": "",
+        "src800": "/img/gallery/team-14-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-15.webp",
+        "w": 1179,
+        "h": 1078,
+        "alt": "",
+        "src800": "/img/gallery/team-15-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-16.webp",
+        "w": 1600,
+        "h": 1201,
+        "alt": "",
+        "src800": "/img/gallery/team-16-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-17.webp",
+        "w": 1600,
+        "h": 1201,
+        "alt": "",
+        "src800": "/img/gallery/team-17-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-18.webp",
+        "w": 1600,
+        "h": 1201,
+        "alt": "",
+        "src800": "/img/gallery/team-18-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-19.webp",
+        "w": 1600,
+        "h": 1201,
+        "alt": "",
+        "src800": "/img/gallery/team-19-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-20.webp",
+        "w": 1600,
+        "h": 1201,
+        "alt": "",
+        "src800": "/img/gallery/team-20-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-21.webp",
+        "w": 1600,
+        "h": 1201,
+        "alt": "",
+        "src800": "/img/gallery/team-21-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-22.webp",
+        "w": 1600,
+        "h": 1201,
+        "alt": "",
+        "src800": "/img/gallery/team-22-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-23.webp",
+        "w": 1600,
+        "h": 1200,
+        "alt": "",
+        "src800": "/img/gallery/team-23-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-24.webp",
+        "w": 1600,
+        "h": 1200,
+        "alt": "",
+        "src800": "/img/gallery/team-24-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-25.webp",
+        "w": 1600,
+        "h": 1200,
+        "alt": "",
+        "src800": "/img/gallery/team-25-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-26.webp",
+        "w": 1600,
+        "h": 1200,
+        "alt": "",
+        "src800": "/img/gallery/team-26-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-27.webp",
+        "w": 1600,
+        "h": 1200,
+        "alt": "",
+        "src800": "/img/gallery/team-27-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-28.webp",
+        "w": 1600,
+        "h": 1201,
+        "alt": "",
+        "src800": "/img/gallery/team-28-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-29.webp",
+        "w": 1600,
+        "h": 1201,
+        "alt": "",
+        "src800": "/img/gallery/team-29-800.webp"
+      },
+      {
+        "src": "/img/gallery/team-30.webp",
+        "w": 1170,
+        "h": 928,
+        "alt": "",
+        "src800": "/img/gallery/team-30-800.webp"
+      }
+    ]
   },
   "projects": {
     "hero": {
@@ -168,7 +381,7 @@
             ],
             "image": {
               "key": "photos/solid-motor-closeup",
-              "alt": "Close-up of a solid rocket motor nozzle after firing",
+              "alt": "",
               "src": "/img/photos/solid-motor-closeup.webp",
               "w": 946,
               "h": 2048,
@@ -187,7 +400,7 @@
             ],
             "image": {
               "key": "photos/recovery-hardware-table",
-              "alt": "Recovery bay hardware and shock cord laid out on a table",
+              "alt": "",
               "src": "/img/photos/recovery-hardware-table.webp",
               "w": 1600,
               "h": 1066,
@@ -206,7 +419,7 @@
             ],
             "image": {
               "key": "photos/borealis-ground-station-team",
-              "alt": "Three team members operating the ground station antenna and a laptop outdoors",
+              "alt": "",
               "src": "/img/photos/borealis-ground-station-team.webp",
               "w": 1600,
               "h": 1200,
@@ -224,11 +437,11 @@
               "The rocket’s airframe is designed to be lightweight yet robust, built primarily from aluminum. The nosecone, fins and geometry minimise drag and maintain a stable centre of pressure/center of mass relationship throughout the flight, providing consistent stability."
             ],
             "image": {
-              "key": "rockets/borealis-render",
-              "alt": "Side render of the Borealis rocket",
-              "src": "/img/rockets/borealis-render.png",
-              "w": 2048,
-              "h": 281
+              "key": "renders/borealis-inside",
+              "src": "/img/renders/borealis-inside.webp",
+              "w": 1919,
+              "h": 156,
+              "alt": ""
             },
             "zone": [
               0.0,
@@ -292,7 +505,7 @@
             ],
             "image": {
               "key": "photos/motor-assembly-table",
-              "alt": "Team members assembling the solid motor casing on a table",
+              "alt": "",
               "src": "/img/photos/motor-assembly-table.webp",
               "w": 1600,
               "h": 1205,
@@ -311,7 +524,7 @@
             ],
             "image": {
               "key": "photos/nemesis-recovery-bay",
-              "alt": "Nemesis body tube with the parachute and shock cord packed inside",
+              "alt": "",
               "src": "/img/photos/nemesis-recovery-bay.webp",
               "w": 1600,
               "h": 1280,
@@ -330,7 +543,7 @@
             ],
             "image": {
               "key": "photos/pcb-soldering",
-              "alt": "Soldering a round avionics PCB held in a helping-hands clamp",
+              "alt": "",
               "src": "/img/photos/pcb-soldering.webp",
               "w": 1600,
               "h": 1066,
@@ -349,7 +562,7 @@
             ],
             "image": {
               "key": "photos/nemesis-carried-to-pad",
-              "alt": "Three team members in hard hats carrying Nemesis towards the launch pad",
+              "alt": "",
               "src": "/img/photos/nemesis-carried-to-pad.webp",
               "w": 1600,
               "h": 1202,
@@ -368,7 +581,7 @@
             ],
             "image": {
               "key": "photos/payload-cubesat-assembly",
-              "alt": "Hands assembling the Aether CubeSat payload electronics stack",
+              "alt": "",
               "src": "/img/photos/payload-cubesat-assembly.webp",
               "w": 1600,
               "h": 1280,
@@ -436,7 +649,7 @@
             ],
             "image": {
               "key": "photos/motor-assembly-table",
-              "alt": "Team members assembling the solid motor casing on a table",
+              "alt": "",
               "src": "/img/photos/motor-assembly-table.webp",
               "w": 1600,
               "h": 1205,
@@ -455,7 +668,7 @@
             ],
             "image": {
               "key": "photos/recovery-3d-printed-parts",
-              "alt": "Two red 3D-printed recovery system parts held in hand",
+              "alt": "",
               "src": "/img/photos/recovery-3d-printed-parts.webp",
               "w": 1152,
               "h": 2048,
@@ -473,11 +686,11 @@
               "Atlas avionics undergoes a major upgrade with a modular four-board architecture connected through a central backplane: microcontroller (an ESP32-S3), integrated sensing suite, radio telemetry and GPS reception, and the power-management stage. A custom battery pack powers the system, while activation uses high-current MOSFETs for pyrotechnics and air-brake control. Ground support reuses Nemesis’ station to provide real-time telemetry via its high-gain antenna and dedicated receiver."
             ],
             "image": {
-              "key": "photos/atlas-avionics-board",
-              "alt": "Atlas avionics board with an ESP32-S3 module and wiring harness",
-              "src": "/img/photos/atlas-avionics-board.webp",
-              "w": 720,
-              "h": 1280
+              "key": "renders/atlas-ebay-cad",
+              "src": "/img/renders/atlas-ebay-cad.webp",
+              "w": 511,
+              "h": 449,
+              "alt": ""
             },
             "zone": [
               0.45,
@@ -510,7 +723,7 @@
             ],
             "image": {
               "key": "renders/payload-box-cad",
-              "alt": "CAD model of the biomedical payload enclosure",
+              "alt": "",
               "src": "/img/renders/payload-box-cad.webp",
               "w": 863,
               "h": 758
@@ -518,6 +731,66 @@
             "zone": [
               0.05,
               0.2
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "fred",
+        "name": "FRED",
+        "year": "",
+        "badge": "PROTOTYPE",
+        "cta": "DISCOVER FRED",
+        "href": "/projects/fred/",
+        "patch": {
+          "src": "/img/rockets/fred-angle.png",
+          "w": 511,
+          "h": 348,
+          "alt": "FRED rocket render"
+        },
+        "rocket": {
+          "src": "/img/rockets/fred-render.png",
+          "w": 501,
+          "h": 149,
+          "alt": "Side render of the FRED rocket",
+          "orientation": "horizontal",
+          "nose": "left"
+        },
+        "overview": [
+          "FRED is the reduced-scale prototype that will fly the in-house solid rocket motor developed by the Propulsion Department, laying the groundwork for its future evolutions."
+        ],
+        "specs": [
+          {
+            "label": "TYPE",
+            "value": "Reduced-scale prototype"
+          },
+          {
+            "label": "MOTOR",
+            "value": "In-house solid (SRAD)"
+          },
+          {
+            "label": "PROPELLANT",
+            "value": "Potassium nitrate / sorbitol"
+          }
+        ],
+        "sections": [
+          {
+            "id": "propulsion",
+            "title": "PROPULSION",
+            "text": [
+              "In the field of solid rocket motors, the department is engaged in the development of the motor that will be launched on a reduced-scale prototype - FRED - and in its future evolutions. The project includes the design of the nozzle, combustion chamber, and solid grain, manufactured using potassium nitrate- and sorbitol-based mixtures, with additives to enhance performance.",
+              "In parallel, a dedicated test chamber is being developed for grain characterization, enabling pressure data acquisition and validation of predictive models, thus laying the groundwork for larger and higher-performance motors."
+            ],
+            "image": {
+              "key": "renders/solid-motor-cad",
+              "src": "/img/renders/solid-motor-cad.webp",
+              "w": 998,
+              "h": 121,
+              "alt": ""
+            },
+            "zone": [
+              0.62,
+              1.0
             ]
           }
         ]
@@ -542,7 +815,7 @@
         ],
         "indexImage": {
           "key": "plots/cfd-mach-field",
-          "alt": "CFD simulation showing the Mach field around the rocket",
+          "alt": "",
           "src": "/img/plots/cfd-mach-field.webp",
           "w": 1411,
           "h": 575,
@@ -557,7 +830,7 @@
             ],
             "image": {
               "key": "plots/drag-coefficient-comparison",
-              "alt": "Plot comparing drag coefficient from RASAero and CFD against Mach number",
+              "alt": "",
               "src": "/img/plots/drag-coefficient-comparison.webp",
               "w": 1600,
               "h": 848,
@@ -571,12 +844,11 @@
               "One division of the activity is dedicated to the optimization of external aerodynamic surfaces. This research and development process is carried out working in synergy with thesis and trainees. The optimization activities focus specifically on the following structural and control components:"
             ],
             "image": {
-              "key": "plots/cfd-mach-field",
-              "alt": "CFD simulation showing the Mach field around the rocket",
-              "src": "/img/plots/cfd-mach-field.webp",
-              "w": 1411,
-              "h": 575,
-              "src800": "/img/plots/cfd-mach-field-800.webp"
+              "key": "renders/fin-can-cad",
+              "src": "/img/renders/fin-can-cad.webp",
+              "w": 563,
+              "h": 479,
+              "alt": ""
             },
             "list": [
               "Flaps",
@@ -592,12 +864,11 @@
               "A central initiative of the department is the airbrakes project. The processing of data and the post-processing procedures related to this and other projects are geared to determining precision of aerodynamic coefficients. A fundamental metric extracted from the simulations is the curve of the drag coefficient (CD) as a function of Mach number (CD–Mach curve)."
             ],
             "image": {
-              "key": "renders/airbrakes-cad",
-              "alt": "CAD model of the airbrake module with its deployable flaps",
-              "src": "/img/renders/airbrakes-cad.webp",
-              "w": 1343,
-              "h": 953,
-              "src800": "/img/renders/airbrakes-cad-800.webp"
+              "key": "renders/airbrakes-module",
+              "src": "/img/renders/airbrakes-module.webp",
+              "w": 465,
+              "h": 447,
+              "alt": ""
             }
           },
           {
@@ -608,7 +879,7 @@
             ],
             "image": {
               "key": "plots/cfd-pressure-tail",
-              "alt": "CFD static pressure contour around the fins and boat tail",
+              "alt": "",
               "src": "/img/plots/cfd-pressure-tail.webp",
               "w": 1411,
               "h": 575,
@@ -630,7 +901,7 @@
         ],
         "indexImage": {
           "key": "renders/solid-motor-section",
-          "alt": "Cutaway render of a solid rocket motor",
+          "alt": "",
           "src": "/img/renders/solid-motor-section.webp",
           "w": 695,
           "h": 1197
@@ -645,7 +916,7 @@
             ],
             "image": {
               "key": "renders/solid-motor-exploded",
-              "alt": "Exploded view of the solid rocket motor components",
+              "alt": "",
               "src": "/img/renders/solid-motor-exploded.webp",
               "w": 1375,
               "h": 533,
@@ -661,7 +932,7 @@
             ],
             "image": {
               "key": "renders/test-bench-cad",
-              "alt": "CAD model of the static test bench holding a motor",
+              "alt": "",
               "src": "/img/renders/test-bench-cad.webp",
               "w": 820,
               "h": 588
@@ -677,7 +948,7 @@
             ],
             "image": {
               "key": "renders/hybrid-motor-assembly",
-              "alt": "Render of the hybrid rocket motor assembly",
+              "alt": "",
               "src": "/img/renders/hybrid-motor-assembly.webp",
               "w": 1600,
               "h": 917,
@@ -692,7 +963,7 @@
             ],
             "image": {
               "key": "renders/launch-rail",
-              "alt": "CAD model of the modular launch rail",
+              "alt": "",
               "src": "/img/renders/launch-rail.webp",
               "w": 701,
               "h": 1098
@@ -712,7 +983,7 @@
         ],
         "indexImage": {
           "key": "plots/gnc-angular-velocity",
-          "alt": "Plot of the simulated angular velocity history during flight",
+          "alt": "",
           "src": "/img/plots/gnc-angular-velocity.webp",
           "w": 1600,
           "h": 887,
@@ -728,7 +999,7 @@
             ],
             "image": {
               "key": "plots/atlas-simulator-simulink",
-              "alt": "Simulink block diagram of the Atlas flight simulator",
+              "alt": "",
               "src": "/img/plots/atlas-simulator-simulink.webp",
               "w": 1551,
               "h": 728,
@@ -743,12 +1014,11 @@
               "Different control approaches are studied and implemented, with particular focus on well-established and validated aerospace techniques, including PID controllers and model-based predictive strategies (simplified MPC). The algorithms are designed to operate in real time on embedded hardware, while satisfying computational constraints and reliability requirements imposed by the flight environment."
             ],
             "image": {
-              "key": "renders/airbrakes-cad",
-              "alt": "CAD model of the airbrake module with its deployable flaps",
-              "src": "/img/renders/airbrakes-cad.webp",
-              "w": 1343,
-              "h": 953,
-              "src800": "/img/renders/airbrakes-cad-800.webp"
+              "key": "renders/airbrakes-arms",
+              "src": "/img/renders/airbrakes-arms.webp",
+              "w": 486,
+              "h": 447,
+              "alt": ""
             }
           },
           {
@@ -761,7 +1031,7 @@
             ],
             "image": {
               "key": "plots/gnc-airbrake-controller",
-              "alt": "Plot of the airbrake controller output against the reference",
+              "alt": "",
               "src": "/img/plots/gnc-airbrake-controller.webp",
               "w": 1600,
               "h": 874,
@@ -782,7 +1052,7 @@
         ],
         "indexImage": {
           "key": "photos/ground-station-sunset",
-          "alt": "Ground station laptop and radio set up on a rooftop at sunset",
+          "alt": "",
           "src": "/img/photos/ground-station-sunset.webp",
           "w": 1600,
           "h": 900,
@@ -797,7 +1067,7 @@
             ],
             "image": {
               "key": "photos/software-coding",
-              "alt": "A team member writing flight software on a laptop",
+              "alt": "",
               "src": "/img/photos/software-coding.webp",
               "w": 960,
               "h": 1280,
@@ -812,7 +1082,7 @@
             ],
             "image": {
               "key": "photos/ground-station-sunset",
-              "alt": "Ground station laptop and radio set up on a rooftop at sunset",
+              "alt": "",
               "src": "/img/photos/ground-station-sunset.webp",
               "w": 1600,
               "h": 900,
@@ -827,7 +1097,7 @@
             ],
             "image": {
               "key": "photos/software-lab",
-              "alt": "Team members testing hardware and software in the lab",
+              "alt": "",
               "src": "/img/photos/software-lab.webp",
               "w": 960,
               "h": 1280,
@@ -849,7 +1119,7 @@
         ],
         "indexImage": {
           "key": "photos/fin-can-integration",
-          "alt": "Team members integrating the fin can of the rocket",
+          "alt": "",
           "src": "/img/photos/fin-can-integration.webp",
           "w": 1600,
           "h": 1202,
@@ -864,7 +1134,7 @@
             ],
             "image": {
               "key": "renders/rocket-cad-section",
-              "alt": "SolidWorks section view of the full rocket",
+              "alt": "",
               "src": "/img/renders/rocket-cad-section.png",
               "w": 142,
               "h": 746
@@ -878,7 +1148,7 @@
             ],
             "image": {
               "key": "photos/rocket-carried-desert",
-              "alt": "Team carrying the rocket across the launch site",
+              "alt": "",
               "src": "/img/photos/rocket-carried-desert.webp",
               "w": 1600,
               "h": 1066,
@@ -893,7 +1163,7 @@
             ],
             "image": {
               "key": "photos/prototype-construction",
-              "alt": "Team members wearing masks while laminating composite parts outdoors",
+              "alt": "",
               "src": "/img/photos/prototype-construction.webp",
               "w": 1600,
               "h": 1066,
@@ -908,7 +1178,7 @@
             ],
             "image": {
               "key": "photos/fin-can-integration",
-              "alt": "Team members integrating the fin can of the rocket",
+              "alt": "",
               "src": "/img/photos/fin-can-integration.webp",
               "w": 1600,
               "h": 1202,
@@ -929,7 +1199,7 @@
         ],
         "indexImage": {
           "key": "plots/dispersion-ellipses",
-          "alt": "Map with 1σ, 2σ and 3σ dispersion ellipses for apogee and landing points",
+          "alt": "",
           "src": "/img/plots/dispersion-ellipses.webp",
           "w": 1180,
           "h": 929,
@@ -944,7 +1214,7 @@
             ],
             "image": {
               "key": "plots/speed-vs-time",
-              "alt": "Plot of simulated rocket speed against time",
+              "alt": "",
               "src": "/img/plots/speed-vs-time.webp",
               "w": 1341,
               "h": 692,
@@ -959,7 +1229,7 @@
             ],
             "image": {
               "key": "plots/flight-trajectories",
-              "alt": "3D comparison of simulated flight trajectories",
+              "alt": "",
               "src": "/img/plots/flight-trajectories.webp",
               "w": 1344,
               "h": 1344,
@@ -980,7 +1250,7 @@
         ],
         "indexImage": {
           "key": "photos/electronics-workbench",
-          "alt": "Electronics team working at a bench with a power supply and the rocket body",
+          "alt": "",
           "src": "/img/photos/electronics-workbench.webp",
           "w": 1600,
           "h": 1280,
@@ -995,7 +1265,7 @@
             ],
             "image": {
               "key": "photos/atlas-avionics-board",
-              "alt": "Custom avionics board with an ESP32-S3 module and wiring harness",
+              "alt": "",
               "src": "/img/photos/atlas-avionics-board.webp",
               "w": 720,
               "h": 1280
@@ -1009,7 +1279,7 @@
             ],
             "image": {
               "key": "photos/avionics-boards-in-hand",
-              "alt": "Two custom avionics PCBs held in hand",
+              "alt": "",
               "src": "/img/photos/avionics-boards-in-hand.webp",
               "w": 1280,
               "h": 960,
@@ -1022,7 +1292,7 @@
             "text": [],
             "image": {
               "key": "photos/electronics-workbench",
-              "alt": "Electronics team working at a bench with a power supply and the rocket body",
+              "alt": "",
               "src": "/img/photos/electronics-workbench.webp",
               "w": 1600,
               "h": 1280,
@@ -1043,7 +1313,7 @@
         ],
         "indexImage": {
           "key": "photos/parachute-packing",
-          "alt": "A team member packing a parachute into the recovery bay",
+          "alt": "",
           "src": "/img/photos/parachute-packing.webp",
           "w": 1600,
           "h": 1066,
@@ -1058,7 +1328,7 @@
             ],
             "image": {
               "key": "photos/recovery-bay-parachute",
-              "alt": "Recovery bay with the parachute and harness laid out next to the rocket",
+              "alt": "",
               "src": "/img/photos/recovery-bay-parachute.webp",
               "w": 1600,
               "h": 1280,
@@ -1072,12 +1342,11 @@
               "The team performs analytical and numerical simulations to model the rocket behavior during descent. These analyses include the study of aerodynamic drag, opening loads, descent velocities, wind influence, drift prediction, and landing dispersion. Simulations are used to validate parachute sizing, deployment timing, and overall recovery stability under different mission conditions."
             ],
             "image": {
-              "key": "photos/recovery-3d-printed-parts",
-              "alt": "Two red 3D-printed recovery system parts held in hand",
-              "src": "/img/photos/recovery-3d-printed-parts.webp",
-              "w": 1152,
-              "h": 2048,
-              "src800": "/img/photos/recovery-3d-printed-parts-800.webp"
+              "key": "renders/recovery-bay-cad",
+              "src": "/img/renders/recovery-bay-cad.webp",
+              "w": 476,
+              "h": 567,
+              "alt": ""
             }
           },
           {
@@ -1088,7 +1357,7 @@
             ],
             "image": {
               "key": "photos/parachute-packing",
-              "alt": "A team member packing a parachute into the recovery bay",
+              "alt": "",
               "src": "/img/photos/parachute-packing.webp",
               "w": 1600,
               "h": 1066,
@@ -1109,7 +1378,7 @@
         ],
         "indexImage": {
           "key": "photos/camera-on-workbench",
-          "alt": "Video camera resting on a workbench next to tools",
+          "alt": "",
           "src": "/img/photos/camera-on-workbench.webp",
           "w": 1600,
           "h": 1200,
@@ -1124,7 +1393,7 @@
             ],
             "image": {
               "key": "photos/camera-on-workbench",
-              "alt": "Video camera resting on a workbench next to tools",
+              "alt": "",
               "src": "/img/photos/camera-on-workbench.webp",
               "w": 1600,
               "h": 1200,
@@ -1139,7 +1408,7 @@
             ],
             "image": {
               "key": "photos/event-presentation",
-              "alt": "A team member presenting Aurora Rocketry on stage at an event",
+              "alt": "",
               "src": "/img/photos/event-presentation.webp",
               "w": 1600,
               "h": 2000,
@@ -1154,7 +1423,7 @@
             ],
             "image": {
               "key": "photos/expo-stand",
-              "alt": "Visitors at the Aurora Rocketry stand during an exhibition",
+              "alt": "",
               "src": "/img/photos/expo-stand.webp",
               "w": 1600,
               "h": 1066,
@@ -1169,7 +1438,7 @@
             ],
             "image": {
               "key": "photos/merch-tshirt",
-              "alt": "Aurora Rocketry team t-shirt with sponsor logos",
+              "alt": "",
               "src": "/img/photos/merch-tshirt.webp",
               "w": 1024,
               "h": 1024,
@@ -1198,6 +1467,15 @@
             "w": 2048,
             "h": 363,
             "alt": "Europlast logo"
+          },
+          {
+            "name": "Emmetre – Torneria automatica e artigianale",
+            "href": "https://www.torneriaemmetre.com/en/",
+            "plate": "light",
+            "src": "/img/partners/emmetre.png",
+            "w": 1659,
+            "h": 303,
+            "alt": "Emmetre – Torneria automatica e artigianale logo"
           }
         ]
       },
@@ -1222,6 +1500,21 @@
             "w": 325,
             "h": 227,
             "alt": "Neri S.r.l. – Trasporti e Depositi logo"
+          },
+          {
+            "name": "Cofert S.r.l.",
+            "href": "https://cofert.it/",
+            "plate": "light",
+            "src": "/img/partners/cofert.png",
+            "w": 382,
+            "h": 93,
+            "alt": "Cofert S.r.l. logo"
+          },
+          {
+            "name": "Formtec",
+            "href": "",
+            "plate": "light",
+            "alt": "Formtec logo"
           }
         ]
       },
@@ -1270,24 +1563,6 @@
             "w": 770,
             "h": 288,
             "alt": "SOLIDWORKS logo"
-          },
-          {
-            "name": "Cofert S.r.l.",
-            "href": "https://cofert.it/",
-            "plate": "light",
-            "src": "/img/partners/cofert.png",
-            "w": 382,
-            "h": 93,
-            "alt": "Cofert S.r.l. logo"
-          },
-          {
-            "name": "Emmetre – Torneria automatica e artigianale",
-            "href": "https://www.torneriaemmetre.com/en/",
-            "plate": "light",
-            "src": "/img/partners/emmetre.png",
-            "w": 1659,
-            "h": 303,
-            "alt": "Emmetre – Torneria automatica e artigianale logo"
           },
           {
             "name": "Nuova Andrea – Macchine per cucire industriali",
